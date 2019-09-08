@@ -1,0 +1,3 @@
+[submodule "StubbFramework"]
+	path = StubbFramework
+	url = git@github.com:VirtualMaestro/StubbFramework.git
