@@ -1,3 +1,6 @@
 [submodule "StubbFramework"]
 	path = StubbFramework
 	url = git@github.com:VirtualMaestro/StubbFramework.git
+[submodule "ecs-unityintegration"]
+	path = ecs-unityintegration
+	url = https://github.com/Leopotam/ecs-unityintegration.git
