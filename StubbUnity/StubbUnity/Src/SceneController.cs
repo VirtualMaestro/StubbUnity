@@ -1,8 +1,7 @@
-﻿using System;
+﻿using UnityEngine;
 
 namespace StubbUnity
 {
-    using UnityEngine;
     public class SceneController : MonoBehaviour
     {
         private uint MAX_OBJECTS_ON_SCENE = 2;
@@ -29,15 +28,8 @@ namespace StubbUnity
             }
         }
 
-        public bool IsContentShown
-        {
-            get { return _sceneContentRoot.activeSelf; }
-        }
+        public bool IsContentShown => _sceneContentRoot.activeSelf;
 
-        private string SceneName
-        {
-            get { return gameObject.scene.name; }
-        }
-
+        private string SceneName => gameObject.scene.name;
     }
 }
