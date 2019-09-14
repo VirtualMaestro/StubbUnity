@@ -1,6 +1,10 @@
 using Leopotam.Ecs;
 using StubbFramework;
 
+#if UNITY_EDITOR
+using Leopotam.Ecs.UnityIntegration;
+#endif
+
 namespace StubbUnity.Debugging
 {
     public class UnityEcsDebug : IStubbDebug
@@ -8,8 +12,8 @@ namespace StubbUnity.Debugging
         public void Debug(EcsSystems rootSystems, EcsWorld world)
         {
         #if UNITY_EDITOR
-            UnityIntegration.EcsWorldObserver.Create (world);
-            UnityIntegration.EcsSystemsObserver.Create (rootSystems);
+            EcsWorldObserver.Create (world);
+            EcsSystemsObserver.Create (rootSystems);
         #endif
         }
     }
