@@ -36,9 +36,9 @@ namespace StubbUnity
             get => _world;
         }
         
-        public void Add(EcsSystems ecsSystems)
+        public void Add(EcsSystem ecsSystem)
         {
-            _userSystems.Add(ecsSystems);
+            _userSystems.Add(ecsSystem);
         }
 
         public void Initialize()
