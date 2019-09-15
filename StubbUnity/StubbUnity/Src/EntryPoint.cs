@@ -1,5 +1,4 @@
 using StubbFramework;
-using StubbUnity.Debugging;
 using StubbUnity.Logging;
 using UnityEngine;
 
@@ -8,25 +7,22 @@ namespace StubbUnity
     public class EntryPoint : MonoBehaviour
     {
         [SerializeField]
-        private EcsFeature _rootFeature;
-        private Stubb _stubb;
+        private UnityContext _context;
         
         private void Start()
         {
             log.AddAppender(UnityLogAppender.logDelegate);
-            _stubb = Stubb.Instance;
-            _stubb.Add(_rootFeature);
-            _stubb.Initialize(new UnityEcsDebug());
+            Stubb.Create(_context);
         }
 
         private void Update()
         {
-            _stubb.Update();
+            Stubb.Update();
         }
 
         private void OnDestroy()
         {
-            _stubb.Dispose();
+            Stubb.Dispose();
         }
     }
 }
