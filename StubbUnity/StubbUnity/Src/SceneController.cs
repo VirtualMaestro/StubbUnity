@@ -1,22 +1,34 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using StubbUnity.Extensions;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace StubbUnity
 {
     public class SceneController : MonoBehaviour
     {
-        private uint MAX_OBJECTS_ON_SCENE = 2;
-    
-        private GameObject _sceneContentRoot;
+        private GameObject _content;
+        private Scene _scene;
+
+        public bool IsContentShown => _content.activeSelf;
+        public string SceneName => gameObject.scene.name;
+
         private void Start()
         {
-            
+            Initialize();
+        }
+
+        public void Initialize()
+        {
+            _scene = gameObject.scene;
+            _content = _scene.GetRootGameObjects().First(go => go.HasComponent<SceneContentController>());
         }
         
         public void ShowContent()
         {
             if (!IsContentShown)
             {
-                _sceneContentRoot.SetActive(true);
+                _content.SetActive(true);
             }
         }
 
@@ -24,12 +36,8 @@ namespace StubbUnity
         {
             if (IsContentShown)
             {
-                _sceneContentRoot.SetActive(false);
+                _content.SetActive(false);
             }
         }
-
-        public bool IsContentShown => _sceneContentRoot.activeSelf;
-
-        private string SceneName => gameObject.scene.name;
     }
 }
