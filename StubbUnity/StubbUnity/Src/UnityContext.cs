@@ -12,7 +12,7 @@ namespace StubbUnity
         private EcsSystems _rootSystems;
         private EcsSystems _userSystems;
 
-        public void Create()
+        public virtual void Create()
         {
             _world = new EcsWorld();
             _rootSystems = new EcsSystems(_world, "SystemsRoot");
