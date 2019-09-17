@@ -1,18 +1,23 @@
-﻿using System.Linq;
-using StubbUnity.Extensions;
+﻿using System;
+using System.Runtime.CompilerServices;
+using StubbFramework.Scenes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace StubbUnity
 {
-    public class SceneController : MonoBehaviour
+    public class SceneController : MonoBehaviour, ISceneController
     {
-        private GameObject _content;
+        private ISceneContentController _content;
         private Scene _scene;
 
-        public bool IsContentShown => _content.activeSelf;
-        public string SceneName => gameObject.scene.name;
+        public string SceneName => _scene.name;
 
+        public bool IsContentActive
+        {
+            get { return _content.IsActive(); }
+        }
+ 
         private void Start()
         {
             Initialize();
@@ -21,23 +26,40 @@ namespace StubbUnity
         public void Initialize()
         {
             _scene = gameObject.scene;
-            _content = _scene.GetRootGameObjects().First(go => go.HasComponent<SceneContentController>());
+            _content = _GetContentController();
         }
         
         public void ShowContent()
         {
-            if (!IsContentShown)
-            {
-                _content.SetActive(true);
-            }
+            _content.Show();
         }
 
         public void HideContent()
         {
-            if (IsContentShown)
+            _content.Hide();
+        }
+
+        public void Destroy()
+        {
+            _content.Destroy();
+            _content = null;
+        }
+
+        [MethodImpl (MethodImplOptions.AggressiveInlining)]
+        private ISceneContentController _GetContentController()
+        {
+            var gObjects = _scene.GetRootGameObjects();
+            foreach (var gObj in gObjects)
             {
-                _content.SetActive(false);
+                ISceneContentController contentController = gObj.GetComponent<ISceneContentController>();
+                
+                if (contentController != null)
+                {
+                    return contentController;
+                }
             }
+            
+            throw new Exception("SceneController, SceneName: " + SceneName + " Content doesn't contain ISceneContentController component!'");
         }
     }
 }
