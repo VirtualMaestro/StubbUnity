@@ -17,7 +17,7 @@ namespace StubbUnity
             Create();
         }
 
-        protected virtual void Create()
+        public void Create()
         {
             _world = new EcsWorld();
             _rootSystems = new EcsSystems(_world, "SystemsRoot");
