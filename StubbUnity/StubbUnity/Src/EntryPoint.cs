@@ -6,13 +6,12 @@ namespace StubbUnity
 {
     public class EntryPoint : MonoBehaviour
     {
-        [SerializeField]
-        private UnityContext _context;
-        
         private void Start()
         {
             log.AddAppender(UnityLogAppender.logDelegate);
-            Stubb.Create(_context);
+            IStubbContext context = GetComponent<IStubbContext>();
+            Stubb.Create(context);
+            Stubb.Initialize();
         }
 
         private void Update()
