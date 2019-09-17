@@ -12,11 +12,6 @@ namespace StubbUnity
         private EcsSystems _rootSystems;
         private EcsSystems _userSystems;
 
-        private void OnEnable()
-        {
-            Create();
-        }
-
         public void Create()
         {
             _world = new EcsWorld();
