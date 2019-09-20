@@ -12,12 +12,8 @@ namespace StubbUnity
         private Scene _scene;
 
         public string SceneName => _scene.name;
+        public bool IsContentActive => _content.IsActive;
 
-        public bool IsContentActive
-        {
-            get { return _content.IsActive(); }
-        }
- 
         private void Start()
         {
             Initialize();

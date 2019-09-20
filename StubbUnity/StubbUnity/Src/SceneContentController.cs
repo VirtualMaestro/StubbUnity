@@ -5,24 +5,27 @@ namespace StubbUnity
 {
     public class SceneContentController : MonoBehaviour, ISceneContentController
     {
-        public bool IsActive()
+        public virtual bool IsActive => gameObject.activeSelf;
+
+        public virtual void Show()
         {
-            throw new System.NotImplementedException();
+            if (IsActive == false)
+            {
+                gameObject.SetActive(true);
+            }
         }
 
-        public void Show()
+        public virtual void Hide()
         {
-            throw new System.NotImplementedException();
+            if (IsActive)
+            {
+                gameObject.SetActive(false);
+            }
         }
 
-        public void Hide()
+        public virtual void Destroy()
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void Destroy()
-        {
-            throw new System.NotImplementedException();
+            
         }
     }
 }
