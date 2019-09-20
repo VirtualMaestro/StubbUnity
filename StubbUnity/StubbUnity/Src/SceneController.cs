@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using StubbFramework;
+using StubbFramework.Common;
 using StubbFramework.Scenes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +13,7 @@ namespace StubbUnity
         private ISceneContentController _content;
         private Scene _scene;
 
+        public bool IsDestroyed => _content == null;
         public string SceneName => _scene.name;
         public bool IsContentActive => _content.IsActive;
 
@@ -23,6 +26,9 @@ namespace StubbUnity
         {
             _scene = gameObject.scene;
             _content = _GetContentController();
+
+            Stubb.World.CreateEntityWith<SceneComponent, NewEntityComponent>(out var sceneComponent, out var newEntityComponent);
+            sceneComponent.scene = this;
         }
         
         public void ShowContent()
@@ -37,8 +43,16 @@ namespace StubbUnity
 
         public void Destroy()
         {
-            _content.Destroy();
-            _content = null;
+            if (IsDestroyed == false)
+            {
+                _content.Destroy();
+                _content = null;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            Destroy();
         }
 
         [MethodImpl (MethodImplOptions.AggressiveInlining)]
