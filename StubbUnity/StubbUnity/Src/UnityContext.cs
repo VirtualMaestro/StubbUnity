@@ -31,7 +31,7 @@ namespace StubbUnity
             get => _world;
         }
         
-        public void Add(EcsSystem ecsSystem)
+        public void Add(IEcsSystem ecsSystem)
         {
             _userSystems.Add(ecsSystem);
         }
@@ -40,19 +40,19 @@ namespace StubbUnity
         {
             DebugInfo?.Debug(_rootSystems, _world);
 
-            _rootSystems.Initialize();
+            _rootSystems.Init();
         }
 
         public void Update()
         {
             _rootSystems.Run();
-            _world.RemoveOneFrameComponents ();
+            _world.EndFrame();
         }
 
         public void Dispose()
         {
-            _rootSystems.Dispose();
-            _world.Dispose();
+            _rootSystems.Destroy();
+            _world.Destroy();
 
             _world = null;
             _rootSystems = null;
