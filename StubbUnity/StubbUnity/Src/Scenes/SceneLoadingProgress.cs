@@ -6,7 +6,7 @@ namespace StubbUnity.Scenes
     public class SceneLoadingProgress : ISceneLoadingProgress
     {
         public ISceneName SceneName { get; }
-        public bool IsComplete => _async.isDone;
+        public bool IsComplete => _async.progress >= 0.9;
         public float Progress => _async.progress;
         public object Payload { get; }
 
