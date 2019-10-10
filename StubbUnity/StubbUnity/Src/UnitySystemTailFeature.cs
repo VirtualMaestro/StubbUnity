@@ -2,7 +2,7 @@ using StubbFramework;
 
 namespace StubbUnity
 {
-    public class UnitySystemTailFeature : SystemHeadFeature
+    public class UnitySystemTailFeature : SystemTailFeature
     {
         public UnitySystemTailFeature() : base()
         {
