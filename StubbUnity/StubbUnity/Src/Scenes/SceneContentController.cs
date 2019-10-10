@@ -1,7 +1,7 @@
 using StubbFramework.Scenes;
 using UnityEngine;
 
-namespace StubbUnity
+namespace StubbUnity.Scenes
 {
     public class SceneContentController : MonoBehaviour, ISceneContentController
     {

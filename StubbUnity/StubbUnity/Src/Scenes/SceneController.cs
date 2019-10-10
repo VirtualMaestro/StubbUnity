@@ -7,15 +7,16 @@ using StubbFramework.Scenes.Components;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace StubbUnity
+namespace StubbUnity.Scenes
 {
     public class SceneController : MonoBehaviour, ISceneController
     {
         private ISceneContentController _content;
         private Scene _scene;
+        private ISceneName _sceneName;
 
         public bool IsDestroyed => _content == null;
-        public string SceneName => _scene.name;
+        public ISceneName SceneName => _sceneName;
         public bool IsContentActive => _content.IsActive;
 
         private void Start()
@@ -26,6 +27,7 @@ namespace StubbUnity
         public void Initialize()
         {
             _scene = gameObject.scene;
+            _sceneName = new SceneName(_scene.name, _scene.path);
             _content = _GetContentController();
 
             Stubb.World.NewEntityWith<SceneComponent, NewEntityComponent>(out var sceneComponent, out var newEntityComponent);
