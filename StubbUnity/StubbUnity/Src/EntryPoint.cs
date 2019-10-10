@@ -10,6 +10,7 @@ namespace StubbUnity
         {
             log.AddAppender(UnityLogAppender.logDelegate);
             IStubbContext context = GetComponent<IStubbContext>();
+            log.Assert(context != null, "Context missing! Attach UnityContext to the GameObject where EntryPoint script is attached!");
             Stubb.Create(context);
             Stubb.Initialize();
         }
