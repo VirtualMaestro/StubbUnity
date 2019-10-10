@@ -15,8 +15,8 @@ namespace StubbUnity
         public virtual void Create()
         {
             _world = new EcsWorld();
-            _rootSystems = new EcsSystems(_world, "SystemsRoot");
-            _userSystems = new EcsSystems(_world, "SystemsBody");
+            _rootSystems = new EcsSystems(_world, "RootSystems");
+            _userSystems = new EcsSystems(_world, "UserSystems");
 
             _rootSystems.Add(new UnitySystemHeadFeature());
             _rootSystems.Add(_userSystems);
