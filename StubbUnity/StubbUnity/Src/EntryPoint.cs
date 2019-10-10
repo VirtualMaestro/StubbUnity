@@ -17,7 +17,7 @@ namespace StubbUnity
 
         private void Update()
         {
-            Stubb.Update();
+            Stubb.Run();
         }
 
         private void OnDestroy()
