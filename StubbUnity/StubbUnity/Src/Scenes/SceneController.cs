@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 using StubbFramework;
-using StubbFramework.Common;
+using StubbFramework.Common.Components;
 using StubbFramework.Scenes;
 using StubbFramework.Scenes.Components;
 using UnityEngine;

@@ -18,9 +18,9 @@ namespace StubbUnity
             _rootSystems = new EcsSystems(_world, "SystemsRoot");
             _userSystems = new EcsSystems(_world, "SystemsBody");
 
-            _rootSystems.Add(SystemsHeadConfig.Create(_world));
+            _rootSystems.Add(new UnitySystemHeadFeature());
             _rootSystems.Add(_userSystems);
-            _rootSystems.Add(SystemsTailConfig.Create(_world));
+            _rootSystems.Add(new UnitySystemTailFeature());
             
             DebugInfo = new UnityEcsDebug();
         }
