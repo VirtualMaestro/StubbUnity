@@ -10,7 +10,7 @@ namespace StubbUnity.Services
 {
     public class SceneService : ISceneService
     {
-        public ISceneLoadingProgress[] Load(ILoadingScenesConfig config)
+        public ISceneLoadingProgress[] Load(in ILoadingScenesConfig config)
         {
             SceneLoadingProgress[] progresses = new SceneLoadingProgress[config.NumScenes];
             int index = 0;
@@ -26,12 +26,12 @@ namespace StubbUnity.Services
             return progresses;
         }
 
-        public void Unload(ISceneName sceneName)
+        public void Unload(in ISceneName sceneName)
         {
             SceneManager.UnloadSceneAsync(sceneName.FullName, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
         }
 
-        public void Unload(IList<ISceneName> sceneNames)
+        public void Unload(in IList<ISceneName> sceneNames)
         {
             foreach (var name in sceneNames)
             {
@@ -41,7 +41,7 @@ namespace StubbUnity.Services
             Resources.UnloadUnusedAssets();
         }
 
-        public void Activate(ISceneLoadingProgress[] progresses)
+        public void Activate(in ISceneLoadingProgress[] progresses)
         {
             foreach (var progress in progresses)
             {
@@ -49,7 +49,7 @@ namespace StubbUnity.Services
             }
         }
 
-        public void Activate(ISceneLoadingProgress progress)
+        public void Activate(in ISceneLoadingProgress progress)
         {
              AsyncOperation async = (AsyncOperation) progress.Payload;
              async.allowSceneActivation = true;
