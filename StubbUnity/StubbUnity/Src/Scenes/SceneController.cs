@@ -30,6 +30,7 @@ namespace StubbUnity.Scenes
             _sceneName = new SceneName(_scene.name, _scene.path);
             _content = _GetContentController();
 
+            // add new SceneComponent with current loaded scene to the ECS layer
             Stubb.World.NewEntityWith<SceneComponent, NewEntityComponent>(out var sceneComponent, out var newEntityComponent);
             sceneComponent.Scene = this;
         }

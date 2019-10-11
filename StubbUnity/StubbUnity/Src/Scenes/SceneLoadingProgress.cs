@@ -12,7 +12,7 @@ namespace StubbUnity.Scenes
 
         private readonly AsyncOperation _async;
 
-        public SceneLoadingProgress(in ISceneName name, AsyncOperation payload)
+        public SceneLoadingProgress(in ISceneName name, in AsyncOperation payload)
         {
             SceneName = name;
             Payload = payload;
