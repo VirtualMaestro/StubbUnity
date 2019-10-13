@@ -18,7 +18,7 @@ namespace StubbUnity.Services
 
         private void _SceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Debug.LogWarning($"SceneService._SceneLoaded. Scene name: {scene.name}, mode: {mode.ToString()}");
+            Debug.LogWarning($"SceneService._SceneLoaded. Frame count: {Time.frameCount}, Scene name: {scene.name}, mode: {mode.ToString()}");
         }
         
         public ISceneLoadingProgress[] Load(in ILoadingScenesConfig config)
@@ -53,7 +53,7 @@ namespace StubbUnity.Services
 
         public void LoadingComplete(in ISceneLoadingProgress[] progresses)
         {
-            log.Warn("SceneService.LoadingComplete: progresses num " + progresses.Length);
+            log.Warn($"SceneService.LoadingComplete. Scenes num: {progresses.Length}");
             foreach (var progress in progresses)
             {
                 LoadingComplete(progress);
@@ -62,7 +62,8 @@ namespace StubbUnity.Services
 
         public void LoadingComplete(in ISceneLoadingProgress progress)
         {
-            log.Warn($"Scene name: {progress.Config.Name}, Progress: {progress.Progress}, IsComplete: {progress.IsComplete}");
+            
+            log.Warn($"SceneService.LoadingComplete. Frame count: {Time.frameCount}, Scene name: {progress.Config.Name}, Progress: {progress.Progress}, IsComplete: {progress.IsComplete}");
         }
 
 //        public void Activate(in ISceneLoadingProgress[] progresses)
