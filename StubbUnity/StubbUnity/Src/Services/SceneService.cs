@@ -7,7 +7,6 @@ using StubbFramework.Scenes.Components;
 using StubbFramework.Scenes.Configurations;
 using StubbFramework.Services;
 using StubbUnity.Extensions;
-using StubbUnity.Logging;
 using StubbUnity.Scenes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,8 +25,6 @@ namespace StubbUnity.Services
 
         private void _SceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            Debug.LogWarning($"SceneService._SceneLoaded. Frame count: {Time.frameCount}, Scene name: {scene.name}, mode: {mode.ToString()}");
-            
             // add new SceneComponent with current loaded scene to the ECS layer
             Stubb.World.NewEntityWith<SceneComponent, NewEntityComponent>(out var sceneComponent, out var newEntityComponent);
             sceneComponent.Scene = scene.GetController<SceneController>();
@@ -37,7 +34,6 @@ namespace StubbUnity.Services
         {
             SceneLoadingProgress[] progresses = new SceneLoadingProgress[config.NumScenes];
             int index = 0;
-            bool allowSceneActivation = !config.IsActivatingAll;
 
             foreach (var sceneConfig in config)
             {
@@ -65,7 +61,6 @@ namespace StubbUnity.Services
 
         public void LoadingComplete(in ISceneLoadingProgress[] progresses)
         {
-            log.Warn($"SceneService.LoadingComplete. Scenes num: {progresses.Length}");
             foreach (var progress in progresses)
             {
                 LoadingComplete(progress);
@@ -74,22 +69,27 @@ namespace StubbUnity.Services
 
         public void LoadingComplete(in ISceneLoadingProgress progress)
         {
+            var config = progress.Config;
+            var sceneName = config.Name.FullName;
             
-            log.Warn($"SceneService.LoadingComplete. Frame count: {Time.frameCount}, Scene name: {progress.Config.Name}, Progress: {progress.Progress}, IsComplete: {progress.IsComplete}");
-        }
+            foreach (var idx in _newScenesFilter)
+            {
+                var controller = _newScenesFilter.Get1[idx].Scene;
+                if (controller.SceneName.FullName == sceneName)
+                {
+                    if (config.IsActive)
+                    {
+                        controller.ShowContent();    
+                    }
 
-//        public void Activate(in ISceneLoadingProgress[] progresses)
-//        {
-//            foreach (var progress in progresses)
-//            {
-//                Activate(progress);
-//            }
-//        }
-//
-//        public void Activate(in ISceneLoadingProgress progress)
-//        {
-//             AsyncOperation async = (AsyncOperation) progress.Payload;
-//             async.allowSceneActivation = true;
-//        }
+                    if (config.IsMain)
+                    {
+                        controller.SetAsMain();
+                    }
+                    
+                    break;
+                }
+            }
+        }
     }
 }
