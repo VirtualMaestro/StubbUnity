@@ -18,6 +18,7 @@ namespace StubbUnity.Scenes
         public bool IsDestroyed => _content == null;
         public ISceneName SceneName => _sceneName;
         public bool IsContentActive => _content.IsActive;
+        public bool IsMain => SceneManager.GetActiveScene() == _scene;
 
         private void Start()
         {
@@ -34,7 +35,12 @@ namespace StubbUnity.Scenes
             Stubb.World.NewEntityWith<SceneComponent, NewEntityComponent>(out var sceneComponent, out var newEntityComponent);
             sceneComponent.Scene = this;
         }
-        
+
+        public void SetAsMain()
+        {
+            SceneManager.SetActiveScene(_scene); 
+        }
+
         public void ShowContent()
         {
             _content.Show();
