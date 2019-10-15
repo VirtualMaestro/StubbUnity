@@ -6,6 +6,11 @@ namespace StubbUnity.Extensions
 {
     public static class SceneExtension
     {
+        public static bool HasController<T>(this Scene scene) where T : ISceneController
+        {
+            return GetController<T>(scene) != null;
+        }
+        
         [CanBeNull]
         public static ISceneController GetController<T>(this Scene scene) where T : ISceneController
         {
@@ -23,6 +28,11 @@ namespace StubbUnity.Extensions
             return null;
         }
 
+        public static bool HasContentController<T>(this Scene scene) where T : ISceneContentController
+        {
+            return GetContentController<T>(scene) != null;
+        }
+        
         [CanBeNull]
         public static ISceneContentController GetContentController<T>(this Scene scene) where T : ISceneContentController
         {

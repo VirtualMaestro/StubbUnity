@@ -24,9 +24,18 @@ namespace StubbUnity.Services
 
         private void _SceneLoaded(Scene scene, LoadSceneMode mode)
         {
+            _SceneVerification(scene);
             // add new SceneComponent with current loaded scene to the ECS layer
             Stubb.World.NewEntityWith<SceneComponent, NewEntityComponent>(out var sceneComponent, out var newEntityComponent);
             sceneComponent.Scene = scene.GetController<SceneController>();
+        }
+        
+        private void _SceneVerification(Scene scene)
+        {
+            #if DEBUG
+                log.Assert(scene.HasController<ISceneController>(), $"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
+                log.Assert(scene.HasContentController<ISceneContentController>(), $"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
+            #endif
         }
         
         public ISceneLoadingProgress[] Load(in ILoadingScenesConfig config)
