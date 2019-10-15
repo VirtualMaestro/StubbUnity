@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Leopotam.Ecs;
 using StubbFramework;
 using StubbFramework.Common.Components;
@@ -7,8 +6,8 @@ using StubbFramework.Scenes.Components;
 using StubbFramework.Scenes.Configurations;
 using StubbFramework.Services;
 using StubbUnity.Extensions;
+using StubbUnity.Logging;
 using StubbUnity.Scenes;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace StubbUnity.Services
@@ -44,19 +43,11 @@ namespace StubbUnity.Services
             return progresses;
         }
 
-        public void Unload(in IList<ISceneName> sceneNames)
+        public void Unload(in ISceneController controller)
         {
-            foreach (var name in sceneNames)
-            {
-                Unload(name);
-            }
-           
-            Resources.UnloadUnusedAssets();
-        }
-
-        public void Unload(in ISceneName sceneName)
-        {
-            SceneManager.UnloadSceneAsync(sceneName.FullName, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
+            log.Assert(!controller.IsDestroyed, $"SceneService.Unload. Scene '{controller.SceneName.FullName}' is already destroyed!");
+            controller.HideContent();
+            SceneManager.UnloadSceneAsync(controller.SceneName.FullName, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
         }
 
         public void LoadingComplete(in ISceneLoadingProgress[] progresses)
