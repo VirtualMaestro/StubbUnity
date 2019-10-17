@@ -44,7 +44,7 @@ namespace StubbUnity.Services
 
             foreach (var sceneConfig in config)
             {
-                var async = SceneManager.LoadSceneAsync(sceneConfig.Name.FullName, sceneConfig.IsSingle ? LoadSceneMode.Single: LoadSceneMode.Additive);
+                var async = SceneManager.LoadSceneAsync(sceneConfig.Name.FullName, LoadSceneMode.Additive);
                 progresses[index++] = new SceneLoadingProgress(sceneConfig, async);
             }
 
