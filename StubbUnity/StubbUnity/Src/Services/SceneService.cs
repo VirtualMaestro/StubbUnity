@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Leopotam.Ecs;
 using StubbFramework;
 using StubbFramework.Scenes;
@@ -37,12 +38,12 @@ namespace StubbUnity.Services
             #endif
         }
         
-        public ISceneLoadingProgress[] Load(in ILoadingScenesConfig config)
+        public ISceneLoadingProgress[] Load(in IList<ILoadingSceneConfig> configs)
         {
-            SceneLoadingProgress[] progresses = new SceneLoadingProgress[config.NumScenes];
+            SceneLoadingProgress[] progresses = new SceneLoadingProgress[configs.Count];
             int index = 0;
 
-            foreach (var sceneConfig in config)
+            foreach (var sceneConfig in configs)
             {
                 var async = SceneManager.LoadSceneAsync(sceneConfig.Name.FullName, LoadSceneMode.Additive);
                 progresses[index++] = new SceneLoadingProgress(sceneConfig, async);

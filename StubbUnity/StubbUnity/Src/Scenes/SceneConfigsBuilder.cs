@@ -16,7 +16,7 @@ namespace StubbUnity.Scenes
 
         public SceneConfigsBuilder Add(string sceneName, string scenePath = null, bool isActive = true, bool isMain = false, object payload = null)
         {
-            var config = new LoadingSceneConfig(new SceneName(sceneName, scenePath)) {IsActive = isActive, IsMain = isMain, Payload = payload};
+            var config = new LoadingSceneConfig(new SceneName(sceneName, scenePath), isActive, isMain, payload);
             _configs.Add(config);
             return this;
         }
