@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using Leopotam.Ecs;
-using StubbFramework;
+using System.Runtime.CompilerServices;
 using StubbFramework.Scenes;
-using StubbFramework.Scenes.Components;
 using StubbFramework.Scenes.Configurations;
 using StubbFramework.Services;
 using StubbUnity.Extensions;
@@ -14,39 +12,14 @@ namespace StubbUnity.Services
 {
     public class SceneService : ISceneService
     {
-        private EcsFilter<SceneComponent, NewSceneMarkerComponent> _newScenesFilter;
-        
-        public SceneService()
+        public IList<ISceneLoadingProgress> Load(in IList<ILoadingSceneConfig> configs)
         {
-            _newScenesFilter = (EcsFilter<SceneComponent, NewSceneMarkerComponent>) Stubb.World.GetFilter(typeof(EcsFilter<SceneComponent, NewSceneMarkerComponent>));
-            SceneManager.sceneLoaded += _SceneLoaded;
-        }
-
-        private void _SceneLoaded(Scene scene, LoadSceneMode mode)
-        {
-            _SceneVerification(scene);
-            // add new SceneComponent with current loaded scene to the ECS layer and this scene as new
-            Stubb.World.NewEntityWith<SceneComponent, NewSceneMarkerComponent>(out var sceneComponent, out var newSceneMarkerComponent);
-            sceneComponent.Scene = scene.GetController<SceneController>();
-        }
-        
-        private void _SceneVerification(Scene scene)
-        {
-            #if DEBUG
-                log.Assert(scene.HasController<ISceneController>(), $"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
-                log.Assert(scene.HasContentController<ISceneContentController>(), $"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
-            #endif
-        }
-        
-        public ISceneLoadingProgress[] Load(in IList<ILoadingSceneConfig> configs)
-        {
-            SceneLoadingProgress[] progresses = new SceneLoadingProgress[configs.Count];
-            int index = 0;
+            IList<ISceneLoadingProgress> progresses = new List<ISceneLoadingProgress>(configs.Count);
 
             foreach (var sceneConfig in configs)
             {
                 var async = SceneManager.LoadSceneAsync(sceneConfig.Name.FullName, LoadSceneMode.Additive);
-                progresses[index++] = new SceneLoadingProgress(sceneConfig, async);
+                progresses.Add(new SceneLoadingProgress(sceneConfig, async));
             }
 
             return progresses;
@@ -59,36 +32,52 @@ namespace StubbUnity.Services
             SceneManager.UnloadSceneAsync(controller.SceneName.FullName, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
         }
 
-        public void LoadingComplete(in ISceneLoadingProgress[] progresses)
+        public IList<ISceneController> LoadingComplete(IList<ISceneLoadingProgress> progresses)
         {
-            foreach (var progress in progresses)
+            IList<ISceneController> controllers = new List<ISceneController>(progresses.Count);
+            
+            for (var i = 0; i < SceneManager.sceneCount; i++)
             {
-                LoadingComplete(progress);
+                Scene scene = SceneManager.GetSceneAt(i);
+                _SceneVerification(scene);
+
+                var controller = scene.GetController<ISceneController>();
+
+                if (_MarkProgress(controller, progresses))
+                {
+                    controllers.Add(controller);
+                }
+
+                if (progresses.Count == 0) break;
             }
+
+            return controllers;
         }
 
-        public void LoadingComplete(in ISceneLoadingProgress progress)
+        private bool _MarkProgress(ISceneController controller, IList<ISceneLoadingProgress> progresses)
         {
-            var config = progress.Config;
-            
-            foreach (var idx in _newScenesFilter)
+            int index = 0;
+            foreach (var progress in progresses)
             {
-                var controller = _newScenesFilter.Get1[idx].Scene;
-                if (controller.SceneName.Equals(config.Name))
+                if (progress.Config.Name.Equals(controller.SceneName))
                 {
-                    if (config.IsActive)
-                    {
-                        controller.ShowContent();    
-                    }
-
-                    if (config.IsMain)
-                    {
-                        controller.SetAsMain();
-                    }
-                    
-                    break;
+                    progresses.RemoveAt(index);
+                    return true;
                 }
+
+                ++index;
             }
+
+            return false;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void _SceneVerification(Scene scene)
+        {
+#if DEBUG
+            log.Assert(scene.HasController<ISceneController>(), $"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
+            log.Assert(scene.HasContentController<ISceneContentController>(), $"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
+#endif
         }
     }
 }
