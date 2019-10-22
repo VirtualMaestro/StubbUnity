@@ -43,7 +43,7 @@ namespace StubbUnity.Services
 
                 var controller = scene.GetController<ISceneController>();
 
-                if (_MarkProgress(controller, progresses))
+                if (controller != null && _MarkProgress(controller, progresses))
                 {
                     controllers.Add(controller);
                 }
@@ -75,8 +75,8 @@ namespace StubbUnity.Services
         private void _SceneVerification(Scene scene)
         {
 #if DEBUG
-            log.Assert(scene.HasController<ISceneController>(), $"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
-            log.Assert(scene.HasContentController<ISceneContentController>(), $"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
+            if (!scene.HasController<ISceneController>()) log.Warn($"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
+            if (!scene.HasContentController<ISceneContentController>()) log.Warn($"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
 #endif
         }
     }
