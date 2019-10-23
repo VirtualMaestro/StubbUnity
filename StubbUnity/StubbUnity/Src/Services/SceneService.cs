@@ -32,9 +32,9 @@ namespace StubbUnity.Services
             SceneManager.UnloadSceneAsync(controller.SceneName.FullName, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
         }
 
-        public IList<ISceneController> LoadingComplete(IList<ISceneLoadingProgress> progresses)
+        public KeyValuePair<ISceneController, ILoadingSceneConfig>[] LoadingComplete(IList<ISceneLoadingProgress> progresses)
         {
-            IList<ISceneController> controllers = new List<ISceneController>(progresses.Count);
+            KeyValuePair<ISceneController, ILoadingSceneConfig>[] result = new KeyValuePair<ISceneController, ILoadingSceneConfig>[progresses.Count];
             
             for (var i = 0; i < SceneManager.sceneCount; i++)
             {
@@ -43,32 +43,38 @@ namespace StubbUnity.Services
 
                 var controller = scene.GetController<ISceneController>();
 
-                if (controller != null && _MarkProgress(controller, progresses))
+                if (controller != null)
                 {
-                    controllers.Add(controller);
+                    var res = _MarkProgress(controller, progresses);
+                    if (res != null)
+                    {
+                        result[result.Length] = (KeyValuePair<ISceneController, ILoadingSceneConfig>) res;
+                    }
                 }
 
                 if (progresses.Count == 0) break;
             }
 
-            return controllers;
+            return result;
         }
 
-        private bool _MarkProgress(ISceneController controller, IList<ISceneLoadingProgress> progresses)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private KeyValuePair<ISceneController, ILoadingSceneConfig>? _MarkProgress(ISceneController controller, IList<ISceneLoadingProgress> progresses)
         {
             int index = 0;
             foreach (var progress in progresses)
             {
                 if (progress.Config.Name.Equals(controller.SceneName))
                 {
+                    KeyValuePair<ISceneController, ILoadingSceneConfig> result = new KeyValuePair<ISceneController, ILoadingSceneConfig>(controller, progress.Config);
                     progresses.RemoveAt(index);
-                    return true;
+                    return result;
                 }
 
                 ++index;
             }
 
-            return false;
+            return null;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
