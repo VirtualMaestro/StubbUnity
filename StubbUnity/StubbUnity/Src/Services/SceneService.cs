@@ -35,6 +35,7 @@ namespace StubbUnity.Services
         public KeyValuePair<ISceneController, ILoadingSceneConfig>[] LoadingComplete(IList<ISceneLoadingProgress> progresses)
         {
             KeyValuePair<ISceneController, ILoadingSceneConfig>[] result = new KeyValuePair<ISceneController, ILoadingSceneConfig>[progresses.Count];
+            int resultIndex = 0;
             
             for (var i = 0; i < SceneManager.sceneCount; i++)
             {
@@ -48,7 +49,7 @@ namespace StubbUnity.Services
                     var res = _MarkProgress(controller, progresses);
                     if (res != null)
                     {
-                        result[result.Length] = (KeyValuePair<ISceneController, ILoadingSceneConfig>) res;
+                        result[resultIndex++] = (KeyValuePair<ISceneController, ILoadingSceneConfig>) res;
                     }
                 }
 
@@ -61,20 +62,28 @@ namespace StubbUnity.Services
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private KeyValuePair<ISceneController, ILoadingSceneConfig>? _MarkProgress(ISceneController controller, IList<ISceneLoadingProgress> progresses)
         {
-            int index = 0;
-            foreach (var progress in progresses)
+            KeyValuePair<ISceneController, ILoadingSceneConfig>? result = null;
+            int index;
+            int progressesCount = progresses.Count;
+            
+            for (index = 0; index < progressesCount; index++)
             {
+                var progress = progresses[index];
                 if (progress.Config.Name.Equals(controller.SceneName))
                 {
-                    KeyValuePair<ISceneController, ILoadingSceneConfig> result = new KeyValuePair<ISceneController, ILoadingSceneConfig>(controller, progress.Config);
-                    progresses.RemoveAt(index);
-                    return result;
+                    result = new KeyValuePair<ISceneController, ILoadingSceneConfig>(controller, progress.Config);
+                    break;
                 }
 
                 ++index;
             }
 
-            return null;
+            if (index < progressesCount)
+            {
+                progresses.RemoveAt(index);
+            }
+
+            return result;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
