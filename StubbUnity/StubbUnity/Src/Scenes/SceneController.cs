@@ -1,6 +1,7 @@
 ﻿using Leopotam.Ecs;
 using StubbFramework.Scenes;
 using StubbUnity.Extensions;
+using StubbUnity.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -60,20 +61,29 @@ namespace StubbUnity.Scenes
         {
             if (IsDestroyed == false)
             {
-                _content.Destroy();
-                _content = null;
+                log.Warn($"SceneController.Destroy. Controller with scene '{SceneName.FullName}' is already destroyed!");
+                return;
             }
+
+            _content.Hide();
+            _content.Destroy();
+            _content = null;
+            SceneManager.UnloadSceneAsync(_scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
         }
 
         void OnDestroy()
+        {
+            _DestroyEntity();
+            Destroy();
+        }
+
+        private void _DestroyEntity()
         {
             if (HasEntity)
             {
                 _entity.Destroy();
                 _entity = EcsEntity.Null;
             }
-            
-            Destroy();
         }
     }
 }

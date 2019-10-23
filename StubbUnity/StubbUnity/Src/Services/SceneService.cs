@@ -25,12 +25,13 @@ namespace StubbUnity.Services
             return progresses;
         }
 
+        /// <summary>
+        /// Unity implementation doesn't require this method.
+        /// Use World extension if you want to unload scenes.
+        /// </summary>
+        /// <param name="controller"></param>
         public void Unload(in ISceneController controller)
-        {
-            log.Assert(!controller.IsDestroyed, $"SceneService.Unload. Scene '{controller.SceneName.FullName}' is already destroyed!");
-            controller.HideContent();
-            SceneManager.UnloadSceneAsync(controller.SceneName.FullName, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
-        }
+        {}
 
         public KeyValuePair<ISceneController, ILoadingSceneConfig>[] LoadingComplete(IList<ISceneLoadingProgress> progresses)
         {
