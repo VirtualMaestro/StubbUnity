@@ -45,7 +45,7 @@ namespace StubbUnity.Services
 
                 var controller = scene.GetController<ISceneController>();
 
-                if (controller != null)
+                if (controller != null && controller.HasEntity == false)
                 {
                     var res = _MarkProgress(controller, progresses);
                     if (res != null)

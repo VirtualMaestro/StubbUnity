@@ -18,7 +18,7 @@ namespace StubbUnity.Scenes
         public ISceneName SceneName => _sceneName;
         public bool IsContentActive => _content.IsActive;
         public bool IsMain => SceneManager.GetActiveScene() == _scene;
-        public bool HasEntity => _entity.IsAlive(); 
+        public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive(); 
 
         void Start()
         {
@@ -68,22 +68,8 @@ namespace StubbUnity.Scenes
             _content.Hide();
             _content.Destroy();
             _content = null;
+            _entity = EcsEntity.Null;
             SceneManager.UnloadSceneAsync(_scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
-        }
-
-        void OnDestroy()
-        {
-            _DestroyEntity();
-            Destroy();
-        }
-
-        private void _DestroyEntity()
-        {
-            if (HasEntity)
-            {
-                _entity.Destroy();
-                _entity = EcsEntity.Null;
-            }
         }
     }
 }
