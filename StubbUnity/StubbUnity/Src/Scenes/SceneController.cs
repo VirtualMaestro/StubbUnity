@@ -59,7 +59,7 @@ namespace StubbUnity.Scenes
 
         public void Destroy()
         {
-            if (IsDestroyed == false)
+            if (IsDestroyed)
             {
                 log.Warn($"SceneController.Destroy. Controller with scene '{SceneName.FullName}' is already destroyed!");
                 return;
