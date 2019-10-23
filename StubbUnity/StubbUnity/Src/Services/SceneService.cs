@@ -38,7 +38,8 @@ namespace StubbUnity.Services
             KeyValuePair<ISceneController, ILoadingSceneConfig>[] result = new KeyValuePair<ISceneController, ILoadingSceneConfig>[progresses.Count];
             int resultIndex = 0;
             
-            for (var i = 0; i < SceneManager.sceneCount; i++)
+            // start from 1, skip first scene which is root
+            for (var i = 1; i < SceneManager.sceneCount; i++)
             {
                 Scene scene = SceneManager.GetSceneAt(i);
                 _SceneVerification(scene);
