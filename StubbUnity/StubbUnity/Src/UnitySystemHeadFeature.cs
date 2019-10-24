@@ -5,8 +5,9 @@ namespace StubbUnity
 {
     public class UnitySystemHeadFeature : SystemHeadFeature
     {
-        public UnitySystemHeadFeature() : base()
+        protected override void SetupSystems()
         {
+            base.SetupSystems();
             Add(new InitializeServiceSystem());
         }
     }
