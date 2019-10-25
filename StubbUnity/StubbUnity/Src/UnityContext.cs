@@ -12,6 +12,8 @@ namespace StubbUnity
         private EcsSystems _rootSystems;
         private EcsSystems _userSystems;
 
+        public bool IsDisposed => _world == null;
+
         public virtual void Create()
         {
             _world = new EcsWorld();

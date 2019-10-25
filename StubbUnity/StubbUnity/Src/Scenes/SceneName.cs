@@ -1,15 +1,17 @@
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using StubbFramework.Scenes;
+using StubbFramework.Common.Names;
 
 namespace StubbUnity.Scenes
 {
-    public class SceneName : AbstractSceneName
+    public class SceneName : BaseAssetName
     {
         private static readonly Regex NormalizePathRegex = new Regex(@"^\s*/|Assets/|\w+.unity", RegexOptions.Singleline | RegexOptions.IgnoreCase);
         
-        public static SceneNameBuilder Create => new SceneNameBuilder();
+        public static AssetNamesBuilder<SceneName> Create => new AssetNamesBuilder<SceneName>();
 
+        public SceneName() : base()
+        {}
+        
         public SceneName(string name, string path = null) : base(name, path)
         {}
 
@@ -34,29 +36,6 @@ namespace StubbUnity.Scenes
         protected override string FormatFullName(string name, string path)
         {
             return "Assets/" + path + name + ".unity";
-        }
-
-        public override ISceneName Clone()
-        {
-            return new SceneName(Name, Path);
-        }
-    }
-    
-    public class SceneNameBuilder
-    {
-        private readonly IList<ISceneName> _sceneNames;
-        
-        public IList<ISceneName> Build => _sceneNames;
-        
-        public SceneNameBuilder()
-        {
-            _sceneNames = new List<ISceneName>();
-        }
-
-        public SceneNameBuilder Add(string sceneName, string scenePath = null)
-        {
-            _sceneNames.Add(new SceneName(sceneName, scenePath));
-            return this;
         }
     }
 }

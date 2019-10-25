@@ -1,4 +1,5 @@
 ﻿using Leopotam.Ecs;
+using StubbFramework.Common.Names;
 using StubbFramework.Scenes;
 using StubbUnity.Extensions;
 using StubbUnity.Logging;
@@ -10,12 +11,12 @@ namespace StubbUnity.Scenes
     public class SceneController : MonoBehaviour, ISceneController
     {
         private Scene _scene;
-        private ISceneName _sceneName;
+        private IAssetName _sceneName;
         private ISceneContentController _content;
         private EcsEntity _entity = EcsEntity.Null;
 
         public bool IsDestroyed => _content == null;
-        public ISceneName SceneName => _sceneName;
+        public IAssetName SceneName => _sceneName;
         public bool IsContentActive => _content.IsActive;
         public bool IsMain => SceneManager.GetActiveScene() == _scene;
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive(); 
