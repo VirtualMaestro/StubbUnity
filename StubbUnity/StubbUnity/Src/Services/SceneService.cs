@@ -12,9 +12,9 @@ namespace StubbUnity.Services
 {
     public class SceneService : ISceneService
     {
-        public IList<ISceneLoadingProgress> Load(in IList<ILoadingSceneConfig> configs)
+        public List<ISceneLoadingProgress> Load(in List<ILoadingSceneConfig> configs)
         {
-            IList<ISceneLoadingProgress> progresses = new List<ISceneLoadingProgress>(configs.Count);
+            List<ISceneLoadingProgress> progresses = new List<ISceneLoadingProgress>(configs.Count);
 
             foreach (var sceneConfig in configs)
             {
@@ -33,7 +33,7 @@ namespace StubbUnity.Services
         public void Unload(in ISceneController controller)
         {}
 
-        public KeyValuePair<ISceneController, ILoadingSceneConfig>[] LoadingComplete(IList<ISceneLoadingProgress> progresses)
+        public KeyValuePair<ISceneController, ILoadingSceneConfig>[] LoadingComplete(List<ISceneLoadingProgress> progresses)
         {
             KeyValuePair<ISceneController, ILoadingSceneConfig>[] result = new KeyValuePair<ISceneController, ILoadingSceneConfig>[progresses.Count];
             int resultIndex = 0;
@@ -62,7 +62,7 @@ namespace StubbUnity.Services
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private KeyValuePair<ISceneController, ILoadingSceneConfig>? _MarkProgress(ISceneController controller, IList<ISceneLoadingProgress> progresses)
+        private KeyValuePair<ISceneController, ILoadingSceneConfig>? _MarkProgress(ISceneController controller, List<ISceneLoadingProgress> progresses)
         {
             KeyValuePair<ISceneController, ILoadingSceneConfig>? result = null;
             int index;
