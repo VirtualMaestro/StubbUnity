@@ -42,6 +42,7 @@ namespace StubbUnity
         {
             DebugInfo?.Debug(_rootSystems, _world);
 
+            _rootSystems.ProcessInjects();
             _rootSystems.Init();
         }
 
