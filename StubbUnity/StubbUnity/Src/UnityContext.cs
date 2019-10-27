@@ -10,21 +10,21 @@ namespace StubbUnity
     {
         private EcsWorld _world;
         private EcsSystems _rootSystems;
-        private EcsSystems _userSystems;
 
         public bool IsDisposed => _world == null;
+        public IStubbDebug DebugInfo { get; private set; }
 
-        public virtual void Create()
+        public virtual void Init(EcsWorld world = null, IStubbDebug debug = null)
         {
-            _world = new EcsWorld();
-            _rootSystems = new EcsSystems(_world, "RootSystems");
-            _userSystems = new EcsSystems(_world, "UserSystems");
+            _world = world ?? new EcsWorld();
+            DebugInfo = debug ?? new UnityEcsDebug();
 
-            _rootSystems.Add(new UnitySystemHeadFeature());
-            _rootSystems.Add(_userSystems);
-            _rootSystems.Add(new UnitySystemTailFeature());
+            _rootSystems = InitSystems();
             
-            DebugInfo = new UnityEcsDebug();
+            DebugInfo?.Debug(_rootSystems, _world);
+
+            _rootSystems.ProcessInjects();
+            _rootSystems.Init();
         }
 
         public EcsWorld World
@@ -32,18 +32,20 @@ namespace StubbUnity
             [MethodImpl (MethodImplOptions.AggressiveInlining)]
             get => _world;
         }
-        
-        public void Add(IEcsSystem ecsSystem)
+
+        protected virtual EcsSystems InitSystems()
         {
-            _userSystems.Add(ecsSystem);
+            var rootSystems = new EcsSystems(World, "RootSystems");
+            rootSystems.Add(new UnitySystemHeadFeature(World));
+            rootSystems.Add(InitUserSystems());
+            rootSystems.Add(new UnitySystemTailFeature(World));
+
+            return rootSystems;
         }
-
-        public void Initialize()
+        
+        protected virtual IEcsSystem InitUserSystems()
         {
-            DebugInfo?.Debug(_rootSystems, _world);
-
-            _rootSystems.ProcessInjects();
-            _rootSystems.Init();
+            return new EcsSystems(World, "UserSystems");
         }
 
         public void Run()
@@ -59,9 +61,6 @@ namespace StubbUnity
 
             _world = null;
             _rootSystems = null;
-            _userSystems = null;
         }
-
-        public IStubbDebug DebugInfo { get; set; }
     }
 }

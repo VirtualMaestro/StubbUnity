@@ -6,23 +6,23 @@ namespace StubbUnity
 {
     public class EntryPoint : MonoBehaviour
     {
+        private IStubbContext _context;
         private void Start()
         {
             log.AddAppender(UnityLogAppender.logDelegate);
-            IStubbContext context = GetComponent<IStubbContext>();
-            log.Assert(context != null, "Context missing! Attach UnityContext to the GameObject where EntryPoint script is attached!");
-            Stubb.Create(context);
-            Stubb.Initialize();
+            _context = GetComponent<IStubbContext>();
+            log.Assert(_context != null, "Context is missing! Attach UnityContext to the GameObject where EntryPoint script is attached!");
+            _context.Init();
         }
 
         private void Update()
         {
-            Stubb.Run();
+            _context.Run();
         }
 
         private void OnDestroy()
         {
-            Stubb.Dispose();
+            _context.Dispose();
         }
     }
 }
