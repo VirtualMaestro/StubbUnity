@@ -1,36 +1,50 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
-using StubbUnity.Debugging;
 using UnityEngine;
 
-namespace StubbUnity
+namespace StubbUnity.Contexts
 {
     public class UnityContext : MonoBehaviour, IStubbContext
     {
         private EcsWorld _world;
         private EcsSystems _rootSystems;
+        private IStubbDebug _debugInfo;
 
         public bool IsDisposed => _world == null;
-        public IStubbDebug DebugInfo { get; private set; }
-
-        public virtual void Init(EcsWorld world = null, IStubbDebug debug = null)
-        {
-            _world = world ?? new EcsWorld();
-            DebugInfo = debug ?? new UnityEcsDebug();
-
-            _rootSystems = InitSystems();
-            
-            DebugInfo?.Debug(_rootSystems, _world);
-
-            _rootSystems.ProcessInjects();
-            _rootSystems.Init();
-        }
 
         public EcsWorld World
         {
             [MethodImpl (MethodImplOptions.AggressiveInlining)]
             get => _world;
+        }
+        
+        public void Init()
+        {
+            Init(new EcsWorld(), null);
+        }
+
+        public virtual void Init(EcsWorld world)
+        {
+            Init(world, null);
+        }
+        
+        public virtual void Init(IStubbDebug debug)
+        {
+            Init(new EcsWorld(), debug);
+        }
+        
+        public virtual void Init(EcsWorld world, IStubbDebug debug)
+        {
+            _world = world;
+            _debugInfo = debug;
+
+            _rootSystems = InitSystems();
+            
+            _debugInfo?.Debug(_rootSystems, _world);
+
+            _rootSystems.ProcessInjects();
+            _rootSystems.Init();
         }
 
         protected virtual EcsSystems InitSystems()
