@@ -1,15 +1,11 @@
-using Leopotam.Ecs;
-using StubbFramework.Common;
+using StubbFramework;
 
 namespace StubbUnity.Contexts
 {
     /// <summary>
     /// Context which is implemented this interface will be processed only on FixedUpdate loop.
     /// </summary>
-    public interface IFixedUpdateContext : IDispose
+    public interface IFixedUpdateContext : IStubbContext
     {
-        EcsWorld World { get; }
-        void Init(EcsWorld world);
-        void Run();
     }
 }

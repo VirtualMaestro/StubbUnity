@@ -19,26 +19,13 @@ namespace StubbUnity.Contexts
             get => _world;
         }
         
-        public void Init()
+        public virtual void Init(EcsWorld world, IStubbDebug debug = null)
         {
-            Init(new EcsWorld(), null);
-        }
+            Stubb.AddContext(this);
 
-        public virtual void Init(EcsWorld world)
-        {
-            Init(world, null);
-        }
-        
-        public virtual void Init(IStubbDebug debug)
-        {
-            Init(new EcsWorld(), debug);
-        }
-        
-        public virtual void Init(EcsWorld world, IStubbDebug debug)
-        {
             _world = world;
             _debugInfo = debug;
-
+            
             _rootSystems = InitSystems();
             
             _debugInfo?.Debug(_rootSystems, _world);

@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
+using StubbFramework;
 using UnityEngine;
 
 namespace StubbUnity.Contexts
@@ -17,12 +18,12 @@ namespace StubbUnity.Contexts
             get => _world;
         }
 
-        public void Init(EcsWorld world)
+        public void Init(EcsWorld world, IStubbDebug debug = null)
         {
-            _world = world;
+            Stubb.AddContext(this);
 
+            _world = world;
             _rootSystems = InitSystems();
-            
             _rootSystems.ProcessInjects();
             _rootSystems.Init();
         }
