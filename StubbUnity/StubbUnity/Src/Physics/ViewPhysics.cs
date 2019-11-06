@@ -9,6 +9,8 @@ namespace StubbUnity.Physics
 {
     public class ViewPhysics : ViewObject, IViewPhysics
     {
+        [SerializeField]        
+        private bool dynamicSetup;
         [SerializeField]
         private EditorCollisionDispatchSettings triggerSettings;
         [SerializeField]
@@ -140,13 +142,26 @@ namespace StubbUnity.Physics
 
         protected virtual void Start()
         {
-            EnableTriggerEnter = triggerSettings.Enter;
-            EnableTriggerStay = triggerSettings.Stay;
-            EnableTriggerExit = triggerSettings.Exit;
+            if (dynamicSetup)
+            {
+                EnableTriggerEnter = triggerSettings.Enter;
+                EnableTriggerStay = triggerSettings.Stay;
+                EnableTriggerExit = triggerSettings.Exit;
             
-            EnableCollisionEnter = collisionSettings.Enter;
-            EnableCollisionStay = collisionSettings.Stay;
-            EnableCollisionExit = collisionSettings.Exit;
+                EnableCollisionEnter = collisionSettings.Enter;
+                EnableCollisionStay = collisionSettings.Stay;
+                EnableCollisionExit = collisionSettings.Exit;
+            }
+            else
+            {
+                _triggerEnter = gameObject.GetComponent<TriggerEnterDispatcher>();
+                _triggerStay = gameObject.GetComponent<TriggerStayDispatcher>();
+                _triggerExit = gameObject.GetComponent<TriggerExitDispatcher>();
+
+                _collisionEnter = gameObject.GetComponent<CollisionEnterDispatcher>();
+                _collisionStay = gameObject.GetComponent<CollisionStayDispatcher>();
+                _collisionExit = gameObject.GetComponent<CollisionExitDispatcher>();
+            }
         }
     }
 }
