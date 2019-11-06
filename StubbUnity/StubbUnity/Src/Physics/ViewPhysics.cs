@@ -1,11 +1,18 @@
 using StubbFramework.Physics;
+using StubbUnity.Physics.Settings;
 using StubbUnity.Physics.Triggers;
 using StubbUnity.View;
+using UnityEngine;
 
 namespace StubbUnity.Physics
 {
     public class ViewPhysics : ViewObject, IViewPhysics
     {
+        [SerializeField]
+        private EditorCollisionDispatchSettings _triggerSettings;
+        [SerializeField]
+        private EditorCollisionDispatchSettings _collisionSettings;
+        
         private TriggerEnterDispatcher _triggerEnter;
         private TriggerStayDispatcher _triggerStay;
         private TriggerExitDispatcher _triggerExit;
