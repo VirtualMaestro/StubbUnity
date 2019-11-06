@@ -1,3 +1,4 @@
+using Leopotam.Ecs;
 using StubbFramework;
 using StubbUnity.Contexts;
 using StubbUnity.Debugging;
@@ -16,7 +17,7 @@ namespace StubbUnity
             log.AddAppender(UnityLogAppender.logDelegate);
             _context = GetComponent<IStubbContext>();
             log.Assert(_context != null, "Context is missing! Attach UnityContext to the GameObject where EntryPoint script is attached!");
-            _context?.Init(new UnityEcsDebug());
+            _context?.Init(new EcsWorld(), new UnityEcsDebug());
 
             _fixedUpdateContext = GetComponent<IFixedUpdateContext>();
             _fixedUpdateContext?.Init(_context.World);
