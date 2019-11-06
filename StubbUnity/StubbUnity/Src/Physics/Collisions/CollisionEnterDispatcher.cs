@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace StubbUnity.Physics.Collisions
 {
-    public class PhysicsCollisionDispatcher : BasePhysicsDispatcher
+    public class CollisionEnterDispatcher : BasePhysicsDispatcher
     {
         void OnCollisionEnter(Collision other)
         {
