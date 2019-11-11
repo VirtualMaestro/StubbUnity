@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace StubbUnity.Physics
 {
-    public class ViewPhysics : ViewObject, IViewPhysics
+    public sealed class ViewPhysics : ViewObject, IViewPhysics
     {
         [SerializeField]        
         private bool dynamicSetup;
@@ -31,7 +31,7 @@ namespace StubbUnity.Physics
             get => _triggerEnter != null;
             set
             {
-                if ((value == false && _triggerEnter == null) || (value == true && _triggerEnter != null)) return;
+                if ((value == false && _triggerEnter == null) || (value && _triggerEnter != null)) return;
 
                 if (value)
                 {
@@ -50,7 +50,7 @@ namespace StubbUnity.Physics
             get => _triggerStay != null;
             set
             {
-                if ((value == false && _triggerStay == null) || (value == true && _triggerStay != null)) return;
+                if ((value == false && _triggerStay == null) || (value && _triggerStay != null)) return;
 
                 if (value)
                 {
@@ -69,7 +69,7 @@ namespace StubbUnity.Physics
             get => _triggerExit != null;
             set
             {
-                if ((value == false && _triggerExit == null) || (value == true && _triggerExit != null)) return;
+                if ((value == false && _triggerExit == null) || (value && _triggerExit != null)) return;
 
                 if (value)
                 {
@@ -88,7 +88,7 @@ namespace StubbUnity.Physics
             get => _collisionEnter != null;
             set
             {
-                if ((value == false && _collisionEnter == null) || (value == true && _collisionEnter != null)) return;
+                if ((value == false && _collisionEnter == null) || (value && _collisionEnter != null)) return;
 
                 if (value)
                 {
@@ -107,7 +107,7 @@ namespace StubbUnity.Physics
             get => _collisionStay != null;
             set
             {
-                if ((value == false && _collisionStay == null) || (value == true && _collisionStay != null)) return;
+                if ((value == false && _collisionStay == null) || (value && _collisionStay != null)) return;
 
                 if (value)
                 {
@@ -126,7 +126,7 @@ namespace StubbUnity.Physics
             get => _collisionExit != null;
             set
             {
-                if ((value == false && _collisionExit == null) || (value == true && _collisionExit != null)) return;
+                if ((value == false && _collisionExit == null) || (value && _collisionExit != null)) return;
 
                 if (value)
                 {
@@ -139,8 +139,17 @@ namespace StubbUnity.Physics
                 }
             }
         }
+        public ref EditorCollisionDispatchSettings GetTriggerSettings()
+        {
+            return ref triggerSettings;
+        }
 
-        protected virtual void Start()
+        public ref EditorCollisionDispatchSettings GetCollisionSettings()
+        {
+            return ref collisionSettings;
+        }
+
+        void Start()
         {
             if (dynamicSetup)
             {
