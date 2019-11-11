@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace StubbUnity.Physics.Collisions
@@ -7,7 +6,7 @@ namespace StubbUnity.Physics.Collisions
     {
         void OnCollisionExit(Collision other)
         {
-            throw new NotImplementedException();
+            Dispatcher.DispatchCollisionExit(other);
         }
     }
 }

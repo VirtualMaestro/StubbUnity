@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace StubbUnity.Physics.Triggers
@@ -7,7 +6,7 @@ namespace StubbUnity.Physics.Triggers
     {
         void OnTriggerStay(Collider other)
         {
-            throw new NotImplementedException();
+            Dispatcher.DispatchTriggerStay(other);
         }
     }
 }

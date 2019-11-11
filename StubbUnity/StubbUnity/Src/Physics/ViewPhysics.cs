@@ -147,5 +147,35 @@ namespace StubbUnity.Physics
         {
             return ref collisionSettings;
         }
+
+        internal void DispatchTriggerEnter(Collider other)
+        {
+            
+        }
+
+        internal void DispatchTriggerStay(Collider other)
+        {
+            
+        }
+        
+        internal void DispatchTriggerExit(Collider other)
+        {
+            
+        }
+
+        internal void DispatchCollisionEnter(Collision other)
+        {
+            
+        }
+
+        internal void DispatchCollisionStay(Collision other)
+        {
+            
+        }
+        
+        internal void DispatchCollisionExit(Collision other)
+        {
+            
+        }
     }
 }
