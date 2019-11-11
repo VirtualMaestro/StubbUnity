@@ -9,8 +9,6 @@ namespace StubbUnity.Physics
 {
     public sealed class ViewPhysics : ViewObject, IViewPhysics
     {
-        [SerializeField]        
-        private bool dynamicSetup;
         [SerializeField]
         private EditorCollisionDispatchSettings triggerSettings;
         [SerializeField]
@@ -28,17 +26,17 @@ namespace StubbUnity.Physics
 
         public bool EnableTriggerEnter
         {
-            get => _triggerEnter != null;
+            get => triggerSettings.Enter;
             set
             {
-                if ((value == false && _triggerEnter == null) || (value && _triggerEnter != null)) return;
-
-                if (value)
+                if (value && !triggerSettings.Enter)
                 {
-                   _triggerEnter =  gameObject.AddComponent<TriggerEnterDispatcher>();
-                }
-                else
+                    triggerSettings.Enter = true;
+                    _triggerEnter = gameObject.AddComponent<TriggerEnterDispatcher>();
+                } 
+                else if (!value && triggerSettings.Enter)
                 {
+                    triggerSettings.Enter = false;
                     Destroy(_triggerEnter);
                     _triggerEnter = null;
                 }
@@ -47,17 +45,17 @@ namespace StubbUnity.Physics
         
         public bool EnableTriggerStay
         {
-            get => _triggerStay != null;
+            get => triggerSettings.Stay;
             set
             {
-                if ((value == false && _triggerStay == null) || (value && _triggerStay != null)) return;
-
-                if (value)
+                if (value && !triggerSettings.Stay)
                 {
-                    _triggerStay =  gameObject.AddComponent<TriggerStayDispatcher>();
-                }
-                else
+                    triggerSettings.Stay = true;
+                    _triggerStay = gameObject.AddComponent<TriggerStayDispatcher>();
+                } 
+                else if (!value && triggerSettings.Stay)
                 {
+                    triggerSettings.Stay = false;
                     Destroy(_triggerStay);
                     _triggerStay = null;
                 }
@@ -66,17 +64,17 @@ namespace StubbUnity.Physics
         
         public bool EnableTriggerExit
         {
-            get => _triggerExit != null;
+            get => triggerSettings.Exit;
             set
             {
-                if ((value == false && _triggerExit == null) || (value && _triggerExit != null)) return;
-
-                if (value)
+                if (value && !triggerSettings.Exit)
                 {
-                    _triggerExit =  gameObject.AddComponent<TriggerExitDispatcher>();
-                }
-                else
+                    triggerSettings.Exit = true;
+                    _triggerExit = gameObject.AddComponent<TriggerExitDispatcher>();
+                } 
+                else if (!value && triggerSettings.Exit)
                 {
+                    triggerSettings.Exit = false;
                     Destroy(_triggerExit);
                     _triggerExit = null;
                 }
@@ -85,17 +83,17 @@ namespace StubbUnity.Physics
         
         public bool EnableCollisionEnter 
         {       
-            get => _collisionEnter != null;
+            get => collisionSettings.Enter;
             set
             {
-                if ((value == false && _collisionEnter == null) || (value && _collisionEnter != null)) return;
-
-                if (value)
+                if (value && !collisionSettings.Enter)
                 {
-                    _collisionEnter =  gameObject.AddComponent<CollisionEnterDispatcher>();
-                }
-                else
+                    collisionSettings.Enter = true;
+                    _collisionEnter = gameObject.AddComponent<CollisionEnterDispatcher>();
+                } 
+                else if (!value && collisionSettings.Enter)
                 {
+                    collisionSettings.Enter = false;
                     Destroy(_collisionEnter);
                     _collisionEnter = null;
                 }
@@ -104,17 +102,17 @@ namespace StubbUnity.Physics
 
         public bool EnableCollisionStay
         {
-            get => _collisionStay != null;
+            get => collisionSettings.Stay;
             set
             {
-                if ((value == false && _collisionStay == null) || (value && _collisionStay != null)) return;
-
-                if (value)
+                if (value && !collisionSettings.Stay)
                 {
-                    _collisionStay =  gameObject.AddComponent<CollisionStayDispatcher>();
-                }
-                else
+                    collisionSettings.Stay = true;
+                    _collisionStay = gameObject.AddComponent<CollisionStayDispatcher>();
+                } 
+                else if (!value && collisionSettings.Stay)
                 {
+                    collisionSettings.Stay = false;
                     Destroy(_collisionStay);
                     _collisionStay = null;
                 }
@@ -123,22 +121,23 @@ namespace StubbUnity.Physics
 
         public bool EnableCollisionExit
         {
-            get => _collisionExit != null;
+            get => collisionSettings.Exit;
             set
             {
-                if ((value == false && _collisionExit == null) || (value && _collisionExit != null)) return;
-
-                if (value)
+                if (value && !collisionSettings.Exit)
                 {
-                    _collisionExit =  gameObject.AddComponent<CollisionExitDispatcher>();
-                }
-                else
+                    collisionSettings.Exit = true;
+                    _collisionExit = gameObject.AddComponent<CollisionExitDispatcher>();
+                } 
+                else if (!value && collisionSettings.Exit)
                 {
+                    collisionSettings.Exit = false;
                     Destroy(_collisionExit);
                     _collisionExit = null;
                 }
             }
         }
+        
         public ref EditorCollisionDispatchSettings GetTriggerSettings()
         {
             return ref triggerSettings;
@@ -147,30 +146,6 @@ namespace StubbUnity.Physics
         public ref EditorCollisionDispatchSettings GetCollisionSettings()
         {
             return ref collisionSettings;
-        }
-
-        void Start()
-        {
-            if (dynamicSetup)
-            {
-                EnableTriggerEnter = triggerSettings.Enter;
-                EnableTriggerStay = triggerSettings.Stay;
-                EnableTriggerExit = triggerSettings.Exit;
-            
-                EnableCollisionEnter = collisionSettings.Enter;
-                EnableCollisionStay = collisionSettings.Stay;
-                EnableCollisionExit = collisionSettings.Exit;
-            }
-            else
-            {
-                _triggerEnter = gameObject.GetComponent<TriggerEnterDispatcher>();
-                _triggerStay = gameObject.GetComponent<TriggerStayDispatcher>();
-                _triggerExit = gameObject.GetComponent<TriggerExitDispatcher>();
-
-                _collisionEnter = gameObject.GetComponent<CollisionEnterDispatcher>();
-                _collisionStay = gameObject.GetComponent<CollisionStayDispatcher>();
-                _collisionExit = gameObject.GetComponent<CollisionExitDispatcher>();
-            }
         }
     }
 }
