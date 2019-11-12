@@ -1,3 +1,4 @@
+using StubbFramework.Extensions;
 using StubbFramework.Physics;
 using StubbUnity.Physics.Collisions;
 using StubbUnity.Physics.Settings;
@@ -150,32 +151,43 @@ namespace StubbUnity.Physics
 
         internal void DispatchTriggerEnter(Collider other)
         {
-            
+            World.DispatchTriggerEnter(this, other.GetComponent<IViewPhysics>(), other);
         }
 
         internal void DispatchTriggerStay(Collider other)
         {
-            
+            World.DispatchTriggerStay(this, other.GetComponent<IViewPhysics>(), other);
         }
         
         internal void DispatchTriggerExit(Collider other)
         {
-            
+            World.DispatchTriggerExit(this, other.GetComponent<IViewPhysics>(), other);
         }
 
         internal void DispatchCollisionEnter(Collision other)
         {
-            
+            World.DispatchCollisionEnter(this, other.gameObject.GetComponent<IViewPhysics>(), other);
         }
 
         internal void DispatchCollisionStay(Collision other)
         {
-            
+            World.DispatchCollisionStay(this, other.gameObject.GetComponent<IViewPhysics>(), other);
         }
         
         internal void DispatchCollisionExit(Collision other)
         {
-            
+            World.DispatchCollisionExit(this, other.gameObject.GetComponent<IViewPhysics>(), other);
+        }
+
+        void OnDestroy()
+        {
+            EnableTriggerEnter = false;
+            EnableTriggerStay = false;
+            EnableTriggerExit = false;
+
+            EnableCollisionEnter = false;
+            EnableCollisionStay = false;
+            EnableCollisionExit = false;
         }
     }
 }

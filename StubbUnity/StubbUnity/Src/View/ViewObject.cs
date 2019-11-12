@@ -11,7 +11,8 @@ namespace StubbUnity.View
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public string Name => gameObject.name;
         public bool IsDisposed => gameObject == null;
-
+        public EcsWorld World => _entity.Owner;
+        
         public ref EcsEntity GetEntity()
         {
             return ref _entity;
