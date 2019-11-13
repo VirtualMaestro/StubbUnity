@@ -1,6 +1,9 @@
+using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
 using StubbFramework.View;
+using StubbFramework.View.Components;
+using StubbUnity.Logging;
 using UnityEngine;
 
 namespace StubbUnity.View
@@ -13,7 +16,26 @@ namespace StubbUnity.View
         public string Name => gameObject.name;
         public bool IsDisposed => gameObject == null;
         public EcsWorld World => Stubb.GetContext().World;
-        
+
+        protected virtual void Awake()
+        {
+            _InitEntity();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void _InitEntity()
+        {
+            if (!HasEntity)
+            {
+                _entity = World.NewEntityWith<ViewComponent>(out var viewComponent);
+                viewComponent.View = this;
+            }
+            else
+            {
+                log.Warn($"{GetType()}._InitEntity: Trying to create an entity while the entity exists in the current ViewObject");
+            }
+        }
+
         public ref EcsEntity GetEntity()
         {
             return ref _entity;
