@@ -1,4 +1,5 @@
 using Leopotam.Ecs;
+using StubbFramework;
 using StubbFramework.View;
 using UnityEngine;
 
@@ -11,7 +12,7 @@ namespace StubbUnity.View
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public string Name => gameObject.name;
         public bool IsDisposed => gameObject == null;
-        public EcsWorld World => _entity.Owner;
+        public EcsWorld World => Stubb.GetContext().World;
         
         public ref EcsEntity GetEntity()
         {
