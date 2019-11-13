@@ -179,8 +179,10 @@ namespace StubbUnity.Physics
             World.DispatchCollisionExit(this, other.gameObject.GetComponent<IViewPhysics>(), other);
         }
 
-        void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             EnableTriggerEnter = false;
             EnableTriggerStay = false;
             EnableTriggerExit = false;

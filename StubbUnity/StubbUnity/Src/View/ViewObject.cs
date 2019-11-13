@@ -54,7 +54,7 @@ namespace StubbUnity.View
             }
         }
 
-        void OnDestroy()
+        protected virtual void OnDestroy()
         {
             if (IsDisposed) return;
 
