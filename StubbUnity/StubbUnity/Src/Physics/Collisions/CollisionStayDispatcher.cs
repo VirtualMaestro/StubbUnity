@@ -1,3 +1,5 @@
+using StubbFramework.Extensions;
+using StubbFramework.Physics;
 using UnityEngine;
 
 namespace StubbUnity.Physics.Collisions
@@ -6,7 +8,7 @@ namespace StubbUnity.Physics.Collisions
     {
         void OnCollisionStay(Collision other)
         {
-            Dispatcher.DispatchCollisionStay(other);
+            Dispatcher.World.DispatchCollisionStay(Dispatcher, other.gameObject.GetComponent<IViewPhysics>(), other);
         }
     }
 }

@@ -1,4 +1,3 @@
-using StubbFramework.Extensions;
 using StubbFramework.Physics;
 using StubbUnity.Physics.Collisions;
 using StubbUnity.Physics.Settings;
@@ -153,54 +152,6 @@ namespace StubbUnity.Physics
         public ref EditorCollisionDispatchSettings GetCollisionSettings()
         {
             return ref collisionSettings;
-        }
-
-        internal void DispatchTriggerEnter(Collider other)
-        {
-            var otherView = other.GetComponent<IViewPhysics>();
-            if (World.HasCollisionPair(TypeId, otherView.TypeId) >= 0) return;
-            
-            World.DispatchTriggerEnter(this, otherView, other);
-        }
-
-        internal void DispatchTriggerStay(Collider other)
-        {
-            var otherView = other.GetComponent<IViewPhysics>();
-            if (World.HasCollisionPair(TypeId, otherView.TypeId) >= 0) return;
-
-            World.DispatchTriggerStay(this, otherView, other);
-        }
-        
-        internal void DispatchTriggerExit(Collider other)
-        {
-            var otherView = other.GetComponent<IViewPhysics>();
-            if (World.HasCollisionPair(TypeId, otherView.TypeId) >= 0) return;
-            
-            World.DispatchTriggerExit(this, otherView, other);
-        }
-
-        internal void DispatchCollisionEnter(Collision other)
-        {
-            var otherView = other.gameObject.GetComponent<IViewPhysics>();
-            if (World.HasCollisionPair(TypeId, otherView.TypeId) >= 0) return;
-            
-            World.DispatchCollisionEnter(this, otherView, other);
-        }
-
-        internal void DispatchCollisionStay(Collision other)
-        {
-            var otherView = other.gameObject.GetComponent<IViewPhysics>();
-            if (World.HasCollisionPair(TypeId, otherView.TypeId) >= 0) return;
-            
-            World.DispatchCollisionStay(this, otherView, other);
-        }
-        
-        internal void DispatchCollisionExit(Collision other)
-        {
-            var otherView = other.gameObject.GetComponent<IViewPhysics>();
-            if (World.HasCollisionPair(TypeId, otherView.TypeId) >= 0) return;
-            
-            World.DispatchCollisionExit(this, otherView, other);
         }
 
         protected override void OnDestroy()
