@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
-using StubbFramework.Extensions;
 using UnityEngine;
 
 namespace StubbUnity.Contexts
@@ -53,7 +52,6 @@ namespace StubbUnity.Contexts
         public void Run()
         {
             _rootSystems.Run();
-            _world.EndCollisionFrame();
             _world.EndFrame();
         }
 

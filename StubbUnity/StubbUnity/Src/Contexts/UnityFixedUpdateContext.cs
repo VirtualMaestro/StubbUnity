@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
+using StubbFramework.Physics.Systems;
 using UnityEngine;
 
 namespace StubbUnity.Contexts
@@ -24,6 +25,7 @@ namespace StubbUnity.Contexts
 
             _world = world;
             _rootSystems = InitSystems();
+            _rootSystems.Add(_InitInternalSystems(world));
             _rootSystems.ProcessInjects();
             _rootSystems.Init();
         }
@@ -43,6 +45,14 @@ namespace StubbUnity.Contexts
             _rootSystems.Destroy();
             _rootSystems = null;
             _world = null;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private EcsSystems _InitInternalSystems(EcsWorld world)
+        {
+            var systems = new EcsSystems(world, "InternalFixedUpdateSystems");
+            systems.Add(new CleanupCollisionSystem());
+            return systems;
         }
     }
 }
