@@ -1,12 +1,13 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
+using StubbFramework.Physics;
 using StubbFramework.Physics.Systems;
 using UnityEngine;
 
 namespace StubbUnity.Contexts
 {
-    public class UnityFixedUpdateContext : MonoBehaviour, IFixedUpdateContext
+    public class UnityPhysicsContext : MonoBehaviour, IPhysicsContext
     {
         private EcsWorld _world;
         private EcsSystems _rootSystems;
@@ -32,7 +33,7 @@ namespace StubbUnity.Contexts
 
         protected virtual EcsSystems InitSystems()
         {
-            return new EcsSystems(World, "Default UnityFixedUpdateContext systems implementation");
+            return new EcsSystems(World, "Default UnityPhysicsContext systems implementation");
         }
 
         public void Run()
@@ -50,7 +51,7 @@ namespace StubbUnity.Contexts
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private EcsSystems _InitInternalSystems(EcsWorld world)
         {
-            var systems = new EcsSystems(world, "InternalFixedUpdateSystems");
+            var systems = new EcsSystems(world, "InternalPhysicsSystems");
             systems.Add(new CleanupCollisionSystem());
             return systems;
         }
