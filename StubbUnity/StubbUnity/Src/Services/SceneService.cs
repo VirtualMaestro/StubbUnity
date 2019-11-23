@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using StubbFramework.Scenes;
 using StubbFramework.Scenes.Configurations;
-using StubbFramework.Services;
+using StubbFramework.Scenes.Services;
 using StubbUnity.Extensions;
 using StubbUnity.Logging;
 using StubbUnity.Scenes;
