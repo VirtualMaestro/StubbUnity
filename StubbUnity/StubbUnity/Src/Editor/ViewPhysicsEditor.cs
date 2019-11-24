@@ -1,14 +1,15 @@
 using StubbUnity.Extensions;
+using StubbUnity.Physics;
 using StubbUnity.Physics.Collisions;
 using StubbUnity.Physics.Settings;
 using StubbUnity.Physics.Triggers;
 using UnityEditor;
 using UnityEngine;
 
-namespace StubbUnity.Physics
+namespace StubbUnity.Editor
 {
     [CustomEditor(typeof(ViewPhysics))]
-    public class ViewPhysicsEditor : Editor
+    public class ViewPhysicsEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
