@@ -1,8 +1,8 @@
 ﻿using Leopotam.Ecs;
 using StubbFramework.Common.Names;
+using StubbFramework.Logging;
 using StubbFramework.Scenes;
 using StubbUnity.Extensions;
-using StubbUnity.Logging;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

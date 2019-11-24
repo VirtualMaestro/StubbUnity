@@ -1,9 +1,9 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
+using StubbFramework.Logging;
 using StubbFramework.View;
 using StubbFramework.View.Components;
-using StubbUnity.Logging;
 using UnityEngine;
 
 namespace StubbUnity.View

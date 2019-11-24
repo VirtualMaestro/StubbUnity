@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using StubbFramework.Logging;
 using StubbFramework.Scenes;
 using StubbFramework.Scenes.Configurations;
 using StubbFramework.Scenes.Services;
 using StubbUnity.Extensions;
-using StubbUnity.Logging;
 using StubbUnity.Scenes;
 using UnityEngine.SceneManagement;
 
@@ -88,13 +89,18 @@ namespace StubbUnity.Services
             return result;
         }
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Conditional("DEBUG")]
         private void _SceneVerification(Scene scene)
         {
-#if DEBUG
-            if (!scene.HasController<ISceneController>()) log.Warn($"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
-            if (!scene.HasContentController<ISceneContentController>()) log.Warn($"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
-#endif
+            if (!scene.HasController<ISceneController>())
+            {
+                log.Warn($"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
+            }
+
+            if (!scene.HasContentController<ISceneContentController>())
+            {
+                log.Warn($"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
+            }
         }
     }
 }

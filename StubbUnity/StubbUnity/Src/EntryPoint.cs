@@ -1,5 +1,6 @@
 using Leopotam.Ecs;
 using StubbFramework;
+using StubbFramework.Logging;
 using StubbFramework.Physics;
 using StubbUnity.Debugging;
 using StubbUnity.Logging;
