@@ -1,15 +1,16 @@
 using System.Collections.Generic;
-using DesperateDevs.Logging;
+using StubbLog.StubbLog;
 using UnityEngine;
-using Logger = DesperateDevs.Logging.Logger;
+using Logger = StubbLog.StubbLog.Logger;
 
 namespace StubbUnity.Logging
 {
     public static class UnityLogAppender 
     {
         private delegate void UnityLogDelegate(string message);
-
         private static readonly Dictionary<LogLevel, UnityLogDelegate> Mapper;
+
+        public static Logger.LogDelegate LogDelegate => Log;
 
         static UnityLogAppender()
         {
@@ -20,8 +21,6 @@ namespace StubbUnity.Logging
                 {LogLevel.Error, (message) => Debug.unityLogger.Log(LogType.Error, message)},
                 {LogLevel.Fatal, (message) => Debug.unityLogger.Log(LogType.Exception, message)},
                 {LogLevel.Trace, (message) => Debug.unityLogger.Log(LogType.Log, message)},
-                {LogLevel.On, (message) => Debug.unityLogger.Log(LogType.Log, message)},
-                {LogLevel.Off, (message) => Debug.unityLogger.Log(LogType.Log, message)},
                 {LogLevel.Debug, (message) => Debug.unityLogger.Log(LogType.Log, message)}
             };
         }
@@ -29,11 +28,6 @@ namespace StubbUnity.Logging
         private static void Log(Logger logger, LogLevel logLevel, string message)
         {
             Mapper[logLevel].Invoke(message);
-        }
-
-        public static LogDelegate logDelegate
-        {
-            get { return new LogDelegate(Log); }
         }
     }
 }
