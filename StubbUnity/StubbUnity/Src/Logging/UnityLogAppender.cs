@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using StubbLog.StubbLog;
+using StubbFramework.Logging;
 using UnityEngine;
-using Logger = StubbLog.StubbLog.Logger;
+using Logger = StubbFramework.Logging.Logger;
 
 namespace StubbUnity.Logging
 {
