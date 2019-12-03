@@ -1,7 +1,6 @@
 # StubbUnity
  Implementation Unity specific functionality for the
- [StubbFramework](https://github.com/VirtualMaestro/StubbFramework) -
- WIP
+ [StubbFramework](https://github.com/VirtualMaestro/StubbFramework)
 
 **To install the framework use**: 
 
