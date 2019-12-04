@@ -15,12 +15,18 @@ namespace StubbUnity.Physics
         private EditorCollisionDispatchSettings collisionSettings;
         
         private TriggerEnterDispatcher _triggerEnter;
+        private TriggerEnter2DDispatcher _triggerEnter2D;
         private TriggerStayDispatcher _triggerStay;
+        private TriggerStay2DDispatcher _triggerStay2D;
         private TriggerExitDispatcher _triggerExit;
+        private TriggerExit2DDispatcher _triggerExit2D;
 
         private CollisionEnterDispatcher _collisionEnter;
+        private CollisionEnter2DDispatcher _collisionEnter2D;
         private CollisionStayDispatcher _collisionStay;
+        private CollisionStay2DDispatcher _collisionStay2D;
         private CollisionExitDispatcher _collisionExit;
+        private CollisionExit2DDispatcher _collisionExit2D;
 
         /// <summary>
         /// int number which represents type for an object.
@@ -49,6 +55,25 @@ namespace StubbUnity.Physics
             }
         }
         
+        public bool EnableTriggerEnter2D
+        {
+            get => triggerSettings.Enter2D;
+            set
+            {
+                if (value && !triggerSettings.Enter2D)
+                {
+                    triggerSettings.Enter2D = true;
+                    _triggerEnter2D = gameObject.AddComponent<TriggerEnter2DDispatcher>();
+                } 
+                else if (!value && triggerSettings.Enter2D)
+                {
+                    triggerSettings.Enter2D = false;
+                    Destroy(_triggerEnter2D);
+                    _triggerEnter2D = null;
+                }
+            }
+        }
+        
         public bool EnableTriggerStay
         {
             get => triggerSettings.Stay;
@@ -64,6 +89,25 @@ namespace StubbUnity.Physics
                     triggerSettings.Stay = false;
                     Destroy(_triggerStay);
                     _triggerStay = null;
+                }
+            }
+        }
+        
+        public bool EnableTriggerStay2D
+        {
+            get => triggerSettings.Stay2D;
+            set
+            {
+                if (value && !triggerSettings.Stay2D)
+                {
+                    triggerSettings.Stay2D = true;
+                    _triggerStay2D = gameObject.AddComponent<TriggerStay2DDispatcher>();
+                } 
+                else if (!value && triggerSettings.Stay2D)
+                {
+                    triggerSettings.Stay2D = false;
+                    Destroy(_triggerStay2D);
+                    _triggerStay2D = null;
                 }
             }
         }
@@ -87,6 +131,25 @@ namespace StubbUnity.Physics
             }
         }
         
+        public bool EnableTriggerExit2D
+        {
+            get => triggerSettings.Exit2D;
+            set
+            {
+                if (value && !triggerSettings.Exit2D)
+                {
+                    triggerSettings.Exit2D = true;
+                    _triggerExit2D = gameObject.AddComponent<TriggerExit2DDispatcher>();
+                } 
+                else if (!value && triggerSettings.Exit2D)
+                {
+                    triggerSettings.Exit2D = false;
+                    Destroy(_triggerExit2D);
+                    _triggerExit2D = null;
+                }
+            }
+        }
+        
         public bool EnableCollisionEnter 
         {       
             get => collisionSettings.Enter;
@@ -102,6 +165,25 @@ namespace StubbUnity.Physics
                     collisionSettings.Enter = false;
                     Destroy(_collisionEnter);
                     _collisionEnter = null;
+                }
+            }
+        }
+
+        public bool EnableCollisionEnter2D 
+        {       
+            get => collisionSettings.Enter2D;
+            set
+            {
+                if (value && !collisionSettings.Enter2D)
+                {
+                    collisionSettings.Enter2D = true;
+                    _collisionEnter2D = gameObject.AddComponent<CollisionEnter2DDispatcher>();
+                } 
+                else if (!value && collisionSettings.Enter2D)
+                {
+                    collisionSettings.Enter2D = false;
+                    Destroy(_collisionEnter2D);
+                    _collisionEnter2D = null;
                 }
             }
         }
@@ -125,6 +207,25 @@ namespace StubbUnity.Physics
             }
         }
 
+        public bool EnableCollisionStay2D
+        {
+            get => collisionSettings.Stay2D;
+            set
+            {
+                if (value && !collisionSettings.Stay2D)
+                {
+                    collisionSettings.Stay2D = true;
+                    _collisionStay2D = gameObject.AddComponent<CollisionStay2DDispatcher>();
+                } 
+                else if (!value && collisionSettings.Stay2D)
+                {
+                    collisionSettings.Stay2D = false;
+                    Destroy(_collisionStay2D);
+                    _collisionStay2D = null;
+                }
+            }
+        }
+
         public bool EnableCollisionExit
         {
             get => collisionSettings.Exit;
@@ -144,6 +245,25 @@ namespace StubbUnity.Physics
             }
         }
         
+        public bool EnableCollisionExit2D
+        {
+            get => collisionSettings.Exit2D;
+            set
+            {
+                if (value && !collisionSettings.Exit2D)
+                {
+                    collisionSettings.Exit2D = true;
+                    _collisionExit2D = gameObject.AddComponent<CollisionExit2DDispatcher>();
+                } 
+                else if (!value && collisionSettings.Exit2D)
+                {
+                    collisionSettings.Exit2D = false;
+                    Destroy(_collisionExit2D);
+                    _collisionExit2D = null;
+                }
+            }
+        }
+        
         public ref EditorCollisionDispatchSettings GetTriggerSettings()
         {
             return ref triggerSettings;
@@ -159,12 +279,18 @@ namespace StubbUnity.Physics
             base.OnDestroy();
             
             EnableTriggerEnter = false;
+            EnableTriggerEnter2D = false;
             EnableTriggerStay = false;
+            EnableTriggerStay2D = false;
             EnableTriggerExit = false;
+            EnableTriggerExit2D = false;
 
             EnableCollisionEnter = false;
+            EnableCollisionEnter2D = false;
             EnableCollisionStay = false;
+            EnableCollisionStay2D = false;
             EnableCollisionExit = false;
+            EnableCollisionExit2D = false;
         }
     }
 }
