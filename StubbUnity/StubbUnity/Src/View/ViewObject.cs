@@ -15,11 +15,13 @@ namespace StubbUnity.View
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public string Name => gameObject.name;
         public bool IsDisposed => gameObject == null;
-        public EcsWorld World => Stubb.GetContext().World;
+        public EcsWorld World { get; private set; }
 
         protected virtual void Awake()
         {
             _InitEntity();
+            
+            World = Stubb.GetContext().World;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
