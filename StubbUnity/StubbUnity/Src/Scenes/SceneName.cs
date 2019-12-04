@@ -5,15 +5,18 @@ namespace StubbUnity.Scenes
 {
     public class SceneName : BaseAssetName
     {
-        private static readonly Regex NormalizePathRegex = new Regex(@"^\s*/|Assets/|\w+.unity", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-        
+        private static readonly Regex NormalizePathRegex =
+            new Regex(@"^\s*/|Assets/|\w+.unity", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
         public static AssetNamesBuilder<SceneName> Create => new AssetNamesBuilder<SceneName>();
 
         public SceneName() : base()
-        {}
-        
+        {
+        }
+
         public SceneName(string name, string path = null) : base(name, path)
-        {}
+        {
+        }
 
         protected override string FormatName(string sceneName)
         {
@@ -29,7 +32,7 @@ namespace StubbUnity.Scenes
             path = path.Replace("\\", "/");
             path = NormalizePathRegex.Replace(path, string.Empty);
             path = (path[path.Length - 1] != '/') ? (path + "/") : path;
-            
+
             return path;
         }
 

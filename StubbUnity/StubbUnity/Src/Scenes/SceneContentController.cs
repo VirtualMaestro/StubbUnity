@@ -25,7 +25,6 @@ namespace StubbUnity.Scenes
 
         public virtual void Destroy()
         {
-            
         }
     }
 }

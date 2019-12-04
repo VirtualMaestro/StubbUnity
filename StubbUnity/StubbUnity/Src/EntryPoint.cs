@@ -12,12 +12,13 @@ namespace StubbUnity
     {
         private IStubbContext _context;
         private IPhysicsContext _physicsContext;
-        
+
         private void Start()
         {
             log.AddAppender(UnityLogAppender.LogDelegate);
             _context = GetComponent<IStubbContext>();
-            log.Assert(_context != null, "Context is missing! Attach UnityContext to the GameObject where EntryPoint script is attached!");
+            log.Assert(_context != null,
+                "Context is missing! Attach UnityContext to the GameObject where EntryPoint script is attached!");
             _context?.Init(new EcsWorld(), new UnityEcsDebug());
 
             _physicsContext = GetComponent<IPhysicsContext>();

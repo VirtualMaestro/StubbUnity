@@ -9,11 +9,9 @@ namespace StubbUnity.Physics
 {
     public sealed class ViewPhysics : ViewObject, IViewPhysics
     {
-        [SerializeField]
-        private EditorCollisionDispatchSettings triggerSettings;
-        [SerializeField]
-        private EditorCollisionDispatchSettings collisionSettings;
-        
+        [SerializeField] private EditorCollisionDispatchSettings triggerSettings;
+        [SerializeField] private EditorCollisionDispatchSettings collisionSettings;
+
         private TriggerEnterDispatcher _triggerEnter;
         private TriggerEnter2DDispatcher _triggerEnter2D;
         private TriggerStayDispatcher _triggerStay;
@@ -45,7 +43,7 @@ namespace StubbUnity.Physics
                 {
                     triggerSettings.Enter = true;
                     _triggerEnter = gameObject.AddComponent<TriggerEnterDispatcher>();
-                } 
+                }
                 else if (!value && triggerSettings.Enter)
                 {
                     triggerSettings.Enter = false;
@@ -54,7 +52,7 @@ namespace StubbUnity.Physics
                 }
             }
         }
-        
+
         public bool EnableTriggerEnter2D
         {
             get => triggerSettings.Enter2D;
@@ -64,7 +62,7 @@ namespace StubbUnity.Physics
                 {
                     triggerSettings.Enter2D = true;
                     _triggerEnter2D = gameObject.AddComponent<TriggerEnter2DDispatcher>();
-                } 
+                }
                 else if (!value && triggerSettings.Enter2D)
                 {
                     triggerSettings.Enter2D = false;
@@ -73,7 +71,7 @@ namespace StubbUnity.Physics
                 }
             }
         }
-        
+
         public bool EnableTriggerStay
         {
             get => triggerSettings.Stay;
@@ -83,7 +81,7 @@ namespace StubbUnity.Physics
                 {
                     triggerSettings.Stay = true;
                     _triggerStay = gameObject.AddComponent<TriggerStayDispatcher>();
-                } 
+                }
                 else if (!value && triggerSettings.Stay)
                 {
                     triggerSettings.Stay = false;
@@ -92,7 +90,7 @@ namespace StubbUnity.Physics
                 }
             }
         }
-        
+
         public bool EnableTriggerStay2D
         {
             get => triggerSettings.Stay2D;
@@ -102,7 +100,7 @@ namespace StubbUnity.Physics
                 {
                     triggerSettings.Stay2D = true;
                     _triggerStay2D = gameObject.AddComponent<TriggerStay2DDispatcher>();
-                } 
+                }
                 else if (!value && triggerSettings.Stay2D)
                 {
                     triggerSettings.Stay2D = false;
@@ -111,7 +109,7 @@ namespace StubbUnity.Physics
                 }
             }
         }
-        
+
         public bool EnableTriggerExit
         {
             get => triggerSettings.Exit;
@@ -121,7 +119,7 @@ namespace StubbUnity.Physics
                 {
                     triggerSettings.Exit = true;
                     _triggerExit = gameObject.AddComponent<TriggerExitDispatcher>();
-                } 
+                }
                 else if (!value && triggerSettings.Exit)
                 {
                     triggerSettings.Exit = false;
@@ -130,7 +128,7 @@ namespace StubbUnity.Physics
                 }
             }
         }
-        
+
         public bool EnableTriggerExit2D
         {
             get => triggerSettings.Exit2D;
@@ -140,7 +138,7 @@ namespace StubbUnity.Physics
                 {
                     triggerSettings.Exit2D = true;
                     _triggerExit2D = gameObject.AddComponent<TriggerExit2DDispatcher>();
-                } 
+                }
                 else if (!value && triggerSettings.Exit2D)
                 {
                     triggerSettings.Exit2D = false;
@@ -149,9 +147,9 @@ namespace StubbUnity.Physics
                 }
             }
         }
-        
-        public bool EnableCollisionEnter 
-        {       
+
+        public bool EnableCollisionEnter
+        {
             get => collisionSettings.Enter;
             set
             {
@@ -159,7 +157,7 @@ namespace StubbUnity.Physics
                 {
                     collisionSettings.Enter = true;
                     _collisionEnter = gameObject.AddComponent<CollisionEnterDispatcher>();
-                } 
+                }
                 else if (!value && collisionSettings.Enter)
                 {
                     collisionSettings.Enter = false;
@@ -169,8 +167,8 @@ namespace StubbUnity.Physics
             }
         }
 
-        public bool EnableCollisionEnter2D 
-        {       
+        public bool EnableCollisionEnter2D
+        {
             get => collisionSettings.Enter2D;
             set
             {
@@ -178,7 +176,7 @@ namespace StubbUnity.Physics
                 {
                     collisionSettings.Enter2D = true;
                     _collisionEnter2D = gameObject.AddComponent<CollisionEnter2DDispatcher>();
-                } 
+                }
                 else if (!value && collisionSettings.Enter2D)
                 {
                     collisionSettings.Enter2D = false;
@@ -197,7 +195,7 @@ namespace StubbUnity.Physics
                 {
                     collisionSettings.Stay = true;
                     _collisionStay = gameObject.AddComponent<CollisionStayDispatcher>();
-                } 
+                }
                 else if (!value && collisionSettings.Stay)
                 {
                     collisionSettings.Stay = false;
@@ -216,7 +214,7 @@ namespace StubbUnity.Physics
                 {
                     collisionSettings.Stay2D = true;
                     _collisionStay2D = gameObject.AddComponent<CollisionStay2DDispatcher>();
-                } 
+                }
                 else if (!value && collisionSettings.Stay2D)
                 {
                     collisionSettings.Stay2D = false;
@@ -235,7 +233,7 @@ namespace StubbUnity.Physics
                 {
                     collisionSettings.Exit = true;
                     _collisionExit = gameObject.AddComponent<CollisionExitDispatcher>();
-                } 
+                }
                 else if (!value && collisionSettings.Exit)
                 {
                     collisionSettings.Exit = false;
@@ -244,7 +242,7 @@ namespace StubbUnity.Physics
                 }
             }
         }
-        
+
         public bool EnableCollisionExit2D
         {
             get => collisionSettings.Exit2D;
@@ -254,7 +252,7 @@ namespace StubbUnity.Physics
                 {
                     collisionSettings.Exit2D = true;
                     _collisionExit2D = gameObject.AddComponent<CollisionExit2DDispatcher>();
-                } 
+                }
                 else if (!value && collisionSettings.Exit2D)
                 {
                     collisionSettings.Exit2D = false;
@@ -263,7 +261,7 @@ namespace StubbUnity.Physics
                 }
             }
         }
-        
+
         public ref EditorCollisionDispatchSettings GetTriggerSettings()
         {
             return ref triggerSettings;
@@ -277,7 +275,7 @@ namespace StubbUnity.Physics
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            
+
             EnableTriggerEnter = false;
             EnableTriggerEnter2D = false;
             EnableTriggerStay = false;

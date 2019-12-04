@@ -19,7 +19,7 @@ namespace StubbUnity.Scenes
         public IAssetName SceneName => _sceneName;
         public bool IsContentActive => _content.IsActive;
         public bool IsMain => SceneManager.GetActiveScene() == _scene;
-        public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive(); 
+        public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
 
         void Start()
         {
@@ -35,7 +35,7 @@ namespace StubbUnity.Scenes
 
         public void SetAsMain()
         {
-            SceneManager.SetActiveScene(_scene); 
+            SceneManager.SetActiveScene(_scene);
         }
 
         public void ShowContent()

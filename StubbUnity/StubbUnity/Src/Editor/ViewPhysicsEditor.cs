@@ -15,7 +15,7 @@ namespace StubbUnity.Editor
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            
+
             var viewPhysics = (ViewPhysics) target;
             var gameObject = viewPhysics.gameObject;
             ref var triggerSettings = ref viewPhysics.GetTriggerSettings();
@@ -29,7 +29,7 @@ namespace StubbUnity.Editor
         {
             _CheckTriggerEnter(triggerSettings.Enter, gameObject);
             _CheckTriggerEnter2D(triggerSettings.Enter2D, gameObject);
-            
+
             _CheckTriggerStay(triggerSettings.Stay, gameObject);
             _CheckTriggerStay2D(triggerSettings.Stay2D, gameObject);
 
@@ -176,7 +176,7 @@ namespace StubbUnity.Editor
                 DestroyImmediate(gameObject.GetComponent<CollisionEnter2DDispatcher>());
             }
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckCollisionStay(bool isEnabled, GameObject gameObject)
         {
