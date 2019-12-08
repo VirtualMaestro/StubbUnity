@@ -19,9 +19,9 @@ namespace StubbUnity.View
 
         protected virtual void Awake()
         {
-            _InitEntity();
-            
             World = Stubb.GetContext().World;
+
+            _InitEntity();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
