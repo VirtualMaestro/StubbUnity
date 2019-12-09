@@ -3,5 +3,5 @@
  [StubbFramework](https://github.com/VirtualMaestro/StubbFramework) for
  the Unity game engine.
  
- For more information see wiki.
+ For more information [see wiki](https://github.com/VirtualMaestro/StubbUnity/wiki) .
 
