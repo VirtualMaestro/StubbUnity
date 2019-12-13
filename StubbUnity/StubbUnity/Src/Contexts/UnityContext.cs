@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
+using StubbFramework.Extensions;
 using UnityEngine;
 
 namespace StubbUnity.Contexts
@@ -37,9 +38,13 @@ namespace StubbUnity.Contexts
         protected virtual EcsSystems InitSystems()
         {
             var rootSystems = new EcsSystems(World, "RootSystems");
-            rootSystems.Add(new UnitySystemHeadFeature(World));
-            rootSystems.Add(InitUserSystems());
-            rootSystems.Add(new UnitySystemTailFeature(World));
+            rootSystems.AddFeature(new UnitySystemHeadFeature(World));
+           
+            var userSystems = InitUserSystems();
+            if (userSystems is EcsFeature feature) rootSystems.AddFeature(feature);
+            else rootSystems.Add(userSystems); 
+
+            rootSystems.AddFeature(new UnitySystemTailFeature(World));
 
             return rootSystems;
         }
