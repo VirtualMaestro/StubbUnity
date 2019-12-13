@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using StubbFramework.Common.Names;
 using StubbFramework.Logging;
 using StubbFramework.Scenes;
 using StubbFramework.Scenes.Configurations;
@@ -19,11 +20,26 @@ namespace StubbUnity.Services
 
             foreach (var sceneConfig in configs)
             {
+                if (_ScenePresenceValidation(sceneConfig.Name)) continue;
+                
                 var async = SceneManager.LoadSceneAsync(sceneConfig.Name.FullName, LoadSceneMode.Additive);
                 progresses.Add(new SceneLoadingProgress(sceneConfig, async));
             }
 
             return progresses;
+        }
+
+        public bool HasScene(in IAssetName sceneName)
+        {
+            for (var i = 0; i < SceneManager.sceneCount; i++)
+            {
+                if (SceneManager.GetSceneAt(i).GetController<ISceneController>().SceneName.Equals(sceneName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -87,6 +103,15 @@ namespace StubbUnity.Services
             }
 
             return result;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool _ScenePresenceValidation(IAssetName sceneName)
+        {
+            #if DEBUG
+            return HasScene(sceneName);
+            #endif
+            return false;
         }
         
         [Conditional("DEBUG")]
