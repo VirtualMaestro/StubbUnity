@@ -31,7 +31,7 @@ namespace StubbUnity.Services
 
         public bool HasScene(in IAssetName sceneName)
         {
-            for (var i = 0; i < SceneManager.sceneCount; i++)
+            for (var i = 1; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
                 _SceneVerification(scene);
