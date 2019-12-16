@@ -36,6 +36,7 @@ namespace StubbUnity.Services
                 var scene = SceneManager.GetSceneAt(i);
                 _SceneVerification(scene);
                 var controller = scene.GetController<ISceneController>();
+                
                 if (controller.SceneName.Equals(sceneName))
                 {
                     return true;
