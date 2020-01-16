@@ -20,7 +20,7 @@ namespace StubbUnity.Services
 
             foreach (var sceneConfig in configs)
             {
-                if (_ScenePresenceValidation(sceneConfig.Name)) continue;
+                if (HasScene(sceneConfig.Name)) continue;
                 
                 var async = SceneManager.LoadSceneAsync(sceneConfig.Name.FullName, LoadSceneMode.Additive);
                 progresses.Add(new SceneLoadingProgress(sceneConfig, async));
@@ -34,13 +34,23 @@ namespace StubbUnity.Services
             for (var i = 1; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
-                _SceneVerification(scene);
-                var controller = scene.GetController<ISceneController>();
+
+                if (sceneName.FullName.Equals(scene.path)) return true;
+            }
+
+            return false;
+        }
+
+        public bool IsSceneReady(in IAssetName sceneName)
+        {
+            for (var i = 1; i < SceneManager.sceneCount; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+
+                if (!sceneName.FullName.Equals(scene.path) || !scene.isLoaded) continue;
                 
-                if (controller.SceneName.Equals(sceneName))
-                {
-                    return true;
-                }
+                _SceneVerification(scene);
+                return true;
             }
 
             return false;
@@ -109,26 +119,17 @@ namespace StubbUnity.Services
             return result;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool _ScenePresenceValidation(IAssetName sceneName)
-        {
-            #if DEBUG
-            return HasScene(sceneName);
-            #endif
-            return false;
-        }
-        
         [Conditional("DEBUG")]
         private void _SceneVerification(Scene scene)
         {
             if (!scene.HasController<ISceneController>())
             {
-                log.Warn($"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
+                log.Error($"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
             }
 
             if (!scene.HasContentController<ISceneContentController>())
             {
-                log.Warn($"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
+                log.Error($"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
             }
         }
     }
