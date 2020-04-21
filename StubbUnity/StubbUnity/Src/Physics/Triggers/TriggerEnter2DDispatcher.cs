@@ -8,7 +8,7 @@ namespace StubbUnity.Physics.Triggers
     {
         void OnTriggerEnter2D(Collider2D other)
         {
-            Dispatcher.World.DispatchTriggerEnter2D(Dispatcher, other.GetComponent<IViewPhysics>(), other);
+            Dispatcher.World.DispatchTriggerEnter2D(Dispatcher, other.GetComponent<IEcsViewPhysics>(), other);
         }
     }
 }

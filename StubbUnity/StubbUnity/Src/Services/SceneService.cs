@@ -64,7 +64,7 @@ namespace StubbUnity.Services
         public void Unload(in ISceneController controller)
         {}
 
-        public KeyValuePair<ISceneController, ILoadingSceneConfig>[] LoadingComplete(List<ISceneLoadingProgress> progresses)
+        public KeyValuePair<ISceneController, ILoadingSceneConfig>[] GetLoaded(List<ISceneLoadingProgress> progresses)
         {
             KeyValuePair<ISceneController, ILoadingSceneConfig>[] result = new KeyValuePair<ISceneController, ILoadingSceneConfig>[progresses.Count];
             int resultIndex = 0;

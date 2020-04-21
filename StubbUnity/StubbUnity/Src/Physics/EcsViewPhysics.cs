@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace StubbUnity.Physics
 {
-    public sealed class ViewPhysics : ViewObject, IViewPhysics
+    public sealed class EcsViewPhysics : EcsViewLink, IEcsViewPhysics
     {
         [SerializeField] private EditorCollisionDispatchSettings triggerSettings;
         [SerializeField] private EditorCollisionDispatchSettings collisionSettings;

@@ -40,7 +40,7 @@ namespace StubbUnity.Extensions
             
             foreach (var gObj in gObjects)
             {
-                ISceneContentController contentController = gObj.GetComponent<ISceneContentController>();
+                var contentController = gObj.GetComponent<ISceneContentController>();
                 
                 if (contentController == null) continue;
 

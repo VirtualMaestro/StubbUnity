@@ -9,14 +9,14 @@ using UnityEngine;
 
 namespace StubbUnity.Editor
 {
-    [CustomEditor(typeof(ViewPhysics))]
+    [CustomEditor(typeof(EcsViewPhysics))]
     public class ViewPhysicsEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
-            var viewPhysics = (ViewPhysics) target;
+            var viewPhysics = (EcsViewPhysics) target;
             var gameObject = viewPhysics.gameObject;
             ref var triggerSettings = ref viewPhysics.GetTriggerSettings();
             ref var collisionSettings = ref viewPhysics.GetCollisionSettings();

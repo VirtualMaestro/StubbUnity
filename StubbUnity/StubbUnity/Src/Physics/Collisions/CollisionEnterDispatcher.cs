@@ -8,7 +8,7 @@ namespace StubbUnity.Physics.Collisions
     {
         void OnCollisionEnter(Collision other)
         {
-            Dispatcher.World.DispatchCollisionEnter(Dispatcher, other.gameObject.GetComponent<IViewPhysics>(), other);
+            Dispatcher.World.DispatchCollisionEnter(Dispatcher, other.gameObject.GetComponent<IEcsViewPhysics>(), other);
         }
     }
 }

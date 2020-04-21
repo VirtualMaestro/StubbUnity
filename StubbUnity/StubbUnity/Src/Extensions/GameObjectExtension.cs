@@ -9,15 +9,15 @@ namespace StubbUnity.Extensions
         {
             return gameObject.GetComponent<T>() != null;
         }
-        
+
         /// <summary>
-        /// Returns true if GameObject contains component of IViewObject
+        /// Returns true if GameObject contains component of IEcsViewLink
         /// </summary>
         /// <param name="gameObject"></param>
         /// <returns></returns>
         public static bool HasView(this GameObject gameObject)
         {
-            return gameObject.GetComponent<IViewObject>() != null;
+            return gameObject.GetComponent<IEcsViewLink>() != null;
         }
     }
 }

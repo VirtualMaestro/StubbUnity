@@ -8,7 +8,7 @@ namespace StubbUnity.Physics.Triggers
     {
         void OnTriggerStay(Collider other)
         {
-            Dispatcher.World.DispatchTriggerStay(Dispatcher, other.GetComponent<IViewPhysics>(), other);
+            Dispatcher.World.DispatchTriggerStay(Dispatcher, other.GetComponent<IEcsViewPhysics>(), other);
         }
     }
 }

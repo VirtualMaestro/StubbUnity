@@ -8,7 +8,7 @@ namespace StubbUnity.Physics.Collisions
     {
         void OnCollisionExit(Collision other)
         {
-            Dispatcher.World.DispatchCollisionExit(Dispatcher, other.gameObject.GetComponent<IViewPhysics>(), other);
+            Dispatcher.World.DispatchCollisionExit(Dispatcher, other.gameObject.GetComponent<IEcsViewPhysics>(), other);
         }
     }
 }

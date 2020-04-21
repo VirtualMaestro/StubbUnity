@@ -2,7 +2,6 @@ using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
 using StubbFramework.Extensions;
-using StubbFramework.Scenes.Components;
 using UnityEngine;
 
 namespace StubbUnity.Contexts
@@ -17,19 +16,19 @@ namespace StubbUnity.Contexts
 
         public EcsWorld World
         {
-            [MethodImpl (MethodImplOptions.AggressiveInlining)]
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => _world;
         }
-        
+
         public virtual void Init(EcsWorld world, IStubbDebug debug = null)
         {
             Stubb.AddContext(this);
 
             _world = world;
             _debugInfo = debug;
-            
+
             _rootSystems = InitSystems();
-            
+
             _debugInfo?.Debug(_rootSystems, _world);
 
             _rootSystems.ProcessInjects();
@@ -40,20 +39,16 @@ namespace StubbUnity.Contexts
         {
             var rootSystems = new EcsSystems(World, "RootSystems");
             rootSystems.AddFeature(new UnitySystemHeadFeature(World));
-           
+
             var userSystems = InitUserSystems();
             if (userSystems is EcsFeature feature) rootSystems.AddFeature(feature);
-            else rootSystems.Add(userSystems); 
+            else rootSystems.Add(userSystems);
 
             rootSystems.AddFeature(new UnitySystemTailFeature(World));
 
-            rootSystems.OneFrame<ActivateSceneComponent>();
-            rootSystems.OneFrame<NewSceneMarkerComponent>();
-            rootSystems.OneFrame<UnloadNonNewScenesComponent>();
-            
             return rootSystems;
         }
-        
+
         protected virtual IEcsSystem InitUserSystems()
         {
             return new EcsSystems(World, "UserSystems");
