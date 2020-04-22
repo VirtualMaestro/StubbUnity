@@ -3,7 +3,7 @@ using System;
 namespace StubbUnity.Physics.Settings
 {
     [Serializable]
-    public struct EditorCollisionDispatchSettings
+    public class CollisionDispatchProperties
     {
         public bool Enter;
         public bool Stay;

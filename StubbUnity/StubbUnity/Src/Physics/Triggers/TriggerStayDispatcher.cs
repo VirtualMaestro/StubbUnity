@@ -1,5 +1,5 @@
 using StubbFramework.Extensions;
-using StubbFramework.Physics;
+using StubbFramework.View;
 using UnityEngine;
 
 namespace StubbUnity.Physics.Triggers
@@ -8,7 +8,7 @@ namespace StubbUnity.Physics.Triggers
     {
         void OnTriggerStay(Collider other)
         {
-            Dispatcher.World.DispatchTriggerStay(Dispatcher, other.GetComponent<IEcsViewPhysics>(), other);
+            Dispatcher.World.DispatchTriggerStay(Dispatcher, other.GetComponent<IEcsViewLink>(), other);
         }
     }
 }

@@ -1,52 +1,52 @@
 using System.Runtime.CompilerServices;
 using StubbUnity.Extensions;
-using StubbUnity.Physics;
 using StubbUnity.Physics.Collisions;
 using StubbUnity.Physics.Settings;
 using StubbUnity.Physics.Triggers;
+using StubbUnity.View;
 using UnityEditor;
 using UnityEngine;
 
 namespace StubbUnity.Editor
 {
-    [CustomEditor(typeof(EcsViewPhysics))]
-    public class ViewPhysicsEditor : UnityEditor.Editor
+    [CustomEditor(typeof(EcsViewLink))]
+    public class CollisionDispatchSettingsEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
-            var viewPhysics = (EcsViewPhysics) target;
+            var viewPhysics = (EcsViewLink) target;
             var gameObject = viewPhysics.gameObject;
-            ref var triggerSettings = ref viewPhysics.GetTriggerSettings();
-            ref var collisionSettings = ref viewPhysics.GetCollisionSettings();
+            var triggerSettings = viewPhysics.GetTriggerProperties();
+            var collisionSettings = viewPhysics.GetCollisionProperties();
 
-            _CheckTriggerSettings(ref triggerSettings, gameObject);
-            _CheckCollisionSettings(ref collisionSettings, gameObject);
+            _CheckTriggerSettings(triggerSettings, gameObject);
+            _CheckCollisionSettings(collisionSettings, gameObject);
         }
 
-        private void _CheckTriggerSettings(ref EditorCollisionDispatchSettings triggerSettings, GameObject gameObject)
+        private void _CheckTriggerSettings(CollisionDispatchProperties triggerProperties, GameObject gameObject)
         {
-            _CheckTriggerEnter(triggerSettings.Enter, gameObject);
-            _CheckTriggerEnter2D(triggerSettings.Enter2D, gameObject);
+            _CheckTriggerEnter(triggerProperties.Enter, gameObject);
+            _CheckTriggerEnter2D(triggerProperties.Enter2D, gameObject);
 
-            _CheckTriggerStay(triggerSettings.Stay, gameObject);
-            _CheckTriggerStay2D(triggerSettings.Stay2D, gameObject);
+            _CheckTriggerStay(triggerProperties.Stay, gameObject);
+            _CheckTriggerStay2D(triggerProperties.Stay2D, gameObject);
 
-            _CheckTriggerExit(triggerSettings.Exit, gameObject);
-            _CheckTriggerExit2D(triggerSettings.Exit2D, gameObject);
+            _CheckTriggerExit(triggerProperties.Exit, gameObject);
+            _CheckTriggerExit2D(triggerProperties.Exit2D, gameObject);
         }
 
-        private void _CheckCollisionSettings(ref EditorCollisionDispatchSettings collisionSettings, GameObject gameObject)
+        private void _CheckCollisionSettings(CollisionDispatchProperties collisionProperties, GameObject gameObject)
         {
-            _CheckCollisionEnter(collisionSettings.Enter, gameObject);
-            _CheckCollisionEnter2D(collisionSettings.Enter2D, gameObject);
+            _CheckCollisionEnter(collisionProperties.Enter, gameObject);
+            _CheckCollisionEnter2D(collisionProperties.Enter2D, gameObject);
 
-            _CheckCollisionStay(collisionSettings.Stay, gameObject);
-            _CheckCollisionStay2D(collisionSettings.Stay2D, gameObject);
+            _CheckCollisionStay(collisionProperties.Stay, gameObject);
+            _CheckCollisionStay2D(collisionProperties.Stay2D, gameObject);
 
-            _CheckCollisionExit(collisionSettings.Exit, gameObject);
-            _CheckCollisionExit2D(collisionSettings.Exit2D, gameObject);
+            _CheckCollisionExit(collisionProperties.Exit, gameObject);
+            _CheckCollisionExit2D(collisionProperties.Exit2D, gameObject);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

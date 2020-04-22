@@ -1,5 +1,5 @@
 using StubbFramework.Extensions;
-using StubbFramework.Physics;
+using StubbFramework.View;
 using UnityEngine;
 
 namespace StubbUnity.Physics.Triggers
@@ -8,7 +8,7 @@ namespace StubbUnity.Physics.Triggers
     {
         void OnTriggerExit2D(Collider2D other)
         {
-            Dispatcher.World.DispatchTriggerExit2D(Dispatcher, other.GetComponent<IEcsViewPhysics>(), other);
+            Dispatcher.World.DispatchTriggerExit2D(Dispatcher, other.GetComponent<IEcsViewLink>(), other);
         }
     }
 }

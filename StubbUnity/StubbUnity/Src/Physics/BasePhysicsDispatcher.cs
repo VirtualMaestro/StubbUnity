@@ -1,14 +1,15 @@
+using StubbUnity.View;
 using UnityEngine;
 
 namespace StubbUnity.Physics
 {
     public class BasePhysicsDispatcher : MonoBehaviour
     {
-        protected EcsViewPhysics Dispatcher;
+        protected EcsViewLink Dispatcher;
         
         private void Start()
         {
-            Dispatcher = GetComponent<EcsViewPhysics>();
+            Dispatcher = GetComponent<EcsViewLink>();
         }
     }
 }
