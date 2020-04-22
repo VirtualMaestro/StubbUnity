@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
+using System.Management.Instrumentation;
 using StubbFramework.Common.Names;
 using StubbFramework.Logging;
 using StubbFramework.Scenes;
@@ -65,64 +65,28 @@ namespace StubbUnity.Services
         public void Unload(in ISceneController controller)
         {}
 
-        public KeyValuePair<ISceneController, ILoadingSceneConfig>[] GetLoaded(List<ISceneLoadingProgress> progresses)
+        public ISceneController GetLoadedSceneController(ISceneLoadingProgress progress)
         {
-            KeyValuePair<ISceneController, ILoadingSceneConfig>[] result = new KeyValuePair<ISceneController, ILoadingSceneConfig>[progresses.Count];
-            int resultIndex = 0;
-            
             // start from 1, skip first scene which is root
             for (var i = 1; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
                 _SceneVerification(scene);
 
-                var controller = scene.GetController<ISceneController>();
+                var controller = scene.GetController();
 
                 // is this scene new loaded
-                if (controller != null && controller.HasEntity == false)
-                {
-                    var res = _MarkProgress(controller, progresses);
-                    if (res != null)
-                    {
-                        result[resultIndex++] = (KeyValuePair<ISceneController, ILoadingSceneConfig>) res;
-                    }
-                }
-
-                if (progresses.Count == 0) break;
+                if (controller == null || controller.HasEntity) continue;
+                if (progress.Config.Name.Equals(controller.SceneName)) return controller;
             }
 
-            return result;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private KeyValuePair<ISceneController, ILoadingSceneConfig>? _MarkProgress(ISceneController controller, List<ISceneLoadingProgress> progresses)
-        {
-            KeyValuePair<ISceneController, ILoadingSceneConfig>? result = null;
-            int index;
-            int progressesCount = progresses.Count;
-            
-            for (index = 0; index < progressesCount; index++)
-            {
-                var progress = progresses[index];
-                if (progress.Config.Name.Equals(controller.SceneName))
-                {
-                    result = new KeyValuePair<ISceneController, ILoadingSceneConfig>(controller, progress.Config);
-                    break;
-                }
-            }
-
-            if (index < progressesCount)
-            {
-                progresses.RemoveAt(index);
-            }
-
-            return result;
+            throw new InstanceNotFoundException($"Scene '{progress.Config.Name}' wasn't found between loaded scenes!");
         }
 
         [Conditional("DEBUG")]
         private void _SceneVerification(Scene scene)
         {
-            if (!scene.HasController<ISceneController>())
+            if (!scene.HasController())
             {
                 log.Error($"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
             }

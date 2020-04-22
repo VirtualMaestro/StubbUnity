@@ -6,19 +6,16 @@ namespace StubbUnity.Extensions
 {
     public static class SceneExtension
     {
-        public static bool HasController<T>(this Scene scene) where T : ISceneController
-        {
-            return GetController<T>(scene) != null;
-        }
+        public static bool HasController(this Scene scene) => GetController(scene) != null;
         
         [CanBeNull]
-        public static ISceneController GetController<T>(this Scene scene) where T : ISceneController
+        public static ISceneController GetController(this Scene scene)
         {
-            var gObjects = scene.GetRootGameObjects();
+            var gos = scene.GetRootGameObjects();
             
-            foreach (var gObj in gObjects)
+            foreach (var go in gos)
             {
-                ISceneController controller = gObj.GetComponent<ISceneController>();
+                var controller = go.GetComponent<ISceneController>();
                 
                 if (controller == null) continue;
 
