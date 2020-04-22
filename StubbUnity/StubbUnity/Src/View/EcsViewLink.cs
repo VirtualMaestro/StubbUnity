@@ -9,17 +9,18 @@ namespace StubbUnity.View
 {
     public class EcsViewLink : MonoBehaviour, IEcsViewLink
     {
-        public int worldId;
         private EcsEntity _entity = EcsEntity.Null;
-
+        private bool _isDisposed;
+        
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public string Name => gameObject.name;
-        public bool IsDisposed => gameObject == null;
+        public bool IsDisposed => _isDisposed;
         public EcsWorld World { get; private set; }
 
         private void Awake()
         {
-            World = Stubb.GetContext(worldId).World;
+            _isDisposed = false;
+            World = Stubb.World;
 
             _InitEntity();
             Ready();
@@ -50,19 +51,25 @@ namespace StubbUnity.View
             _entity = entity;
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Dispose entity and GameObject.
+        /// Here should be user's custom dispose logic.
+        /// IMPORTANT: in inherited classes should be base.Dispose() invoked. 
+        /// </summary>
+        public virtual void Dispose()
         {
-            if (IsDisposed == false)
-            {
-                Destroy(gameObject);                    
-            }
+            if (IsDisposed) return;
+            _isDisposed = true;
+
+            if (HasEntity) _entity.Destroy();
+            if (gameObject != null) Destroy(gameObject);
         }
 
-        protected virtual void OnDestroy()
+        private void OnDestroy()
         {
             if (IsDisposed) return;
 
-            if (HasEntity) _entity.Destroy();
+            Dispose();
         }
     }
 }

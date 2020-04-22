@@ -272,9 +272,9 @@ namespace StubbUnity.Physics
             return ref collisionSettings;
         }
 
-        protected override void OnDestroy()
+        public override void Dispose()
         {
-            base.OnDestroy();
+            base.Dispose();
 
             EnableTriggerEnter = false;
             EnableTriggerEnter2D = false;
