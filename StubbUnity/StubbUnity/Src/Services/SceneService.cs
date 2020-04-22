@@ -16,10 +16,11 @@ namespace StubbUnity.Services
     {
         public List<ISceneLoadingProgress> Load(in List<ILoadingSceneConfig> configs)
         {
-            List<ISceneLoadingProgress> progresses = new List<ISceneLoadingProgress>(configs.Count);
+            var progresses = new List<ISceneLoadingProgress>(configs.Count);
 
             foreach (var sceneConfig in configs)
             {
+                // don't allow to load the same scene more than 1 time
                 if (HasScene(sceneConfig.Name)) continue;
                 
                 var async = SceneManager.LoadSceneAsync(sceneConfig.Name.FullName, LoadSceneMode.Additive);
@@ -72,11 +73,12 @@ namespace StubbUnity.Services
             // start from 1, skip first scene which is root
             for (var i = 1; i < SceneManager.sceneCount; i++)
             {
-                Scene scene = SceneManager.GetSceneAt(i);
+                var scene = SceneManager.GetSceneAt(i);
                 _SceneVerification(scene);
 
                 var controller = scene.GetController<ISceneController>();
 
+                // is this scene new loaded
                 if (controller != null && controller.HasEntity == false)
                 {
                     var res = _MarkProgress(controller, progresses);
@@ -107,8 +109,6 @@ namespace StubbUnity.Services
                     result = new KeyValuePair<ISceneController, ILoadingSceneConfig>(controller, progress.Config);
                     break;
                 }
-
-                ++index;
             }
 
             if (index < progressesCount)
