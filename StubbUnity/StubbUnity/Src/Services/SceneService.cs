@@ -20,8 +20,8 @@ namespace StubbUnity.Services
 
             foreach (var sceneConfig in configs)
             {
-                // don't allow to load the same scene more than 1 time
-                if (HasScene(sceneConfig.Name)) continue;
+                // don't allow to load the same scene more than 1 time if multiple is false
+                if (!sceneConfig.IsMultiple && HasScene(sceneConfig.Name)) continue;
                 
                 var async = SceneManager.LoadSceneAsync(sceneConfig.Name.FullName, LoadSceneMode.Additive);
                 progresses.Add(new SceneLoadingProgress(sceneConfig, async));
