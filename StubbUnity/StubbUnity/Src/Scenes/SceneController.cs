@@ -1,4 +1,4 @@
-﻿using System.Management.Instrumentation;
+﻿using System;
 using Leopotam.Ecs;
 using StubbFramework;
 using StubbFramework.Common.Names;
@@ -30,7 +30,7 @@ namespace StubbUnity.Scenes
             SceneName = new SceneName(_scene.name, _scene.path);
 
             if (content == null)
-                throw new InstanceNotFoundException($"Content wasn't set for the controller of the scene '{SceneName}'!");
+                throw new Exception($"Content wasn't set for the controller of the scene '{SceneName}'!");
 
             Initialize();
         }

@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Management.Instrumentation;
 using StubbFramework.Common.Names;
 using StubbFramework.Logging;
 using StubbFramework.Scenes;
@@ -80,7 +80,7 @@ namespace StubbUnity.Services
                 if (progress.Config.Name.Equals(controller.SceneName)) return controller;
             }
 
-            throw new InstanceNotFoundException($"Scene '{progress.Config.Name}' wasn't found between loaded scenes!");
+            throw new Exception($"Scene '{progress.Config.Name}' wasn't found between loaded scenes!");
         }
 
         [Conditional("DEBUG")]
