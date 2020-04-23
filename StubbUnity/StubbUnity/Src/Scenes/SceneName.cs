@@ -40,5 +40,10 @@ namespace StubbUnity.Scenes
         {
             return "Assets/" + path + name + ".unity";
         }
+        
+        public override IAssetName Clone()
+        {
+            return new SceneName(Name, Path);
+        }
     }
 }
