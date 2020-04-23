@@ -83,8 +83,6 @@ namespace StubbUnity.Scenes
             }
 
             IsDisposed = true;
-            HideContent();
-            content = null;
 
             if (HasEntity) _entity.Destroy();
             _entity = EcsEntity.Null;
