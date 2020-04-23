@@ -1,4 +1,5 @@
 ﻿using Leopotam.Ecs;
+using StubbFramework;
 using StubbFramework.Common.Names;
 using StubbFramework.Logging;
 using StubbFramework.Scenes;
@@ -10,27 +11,35 @@ namespace StubbUnity.Scenes
 {
     public class SceneController : MonoBehaviour, ISceneController
     {
+        [SerializeField] private GameObject content;
         private Scene _scene;
-        private IAssetName _sceneName;
-        private ISceneContentController _content;
         private EcsEntity _entity = EcsEntity.Null;
 
-        public bool IsDestroyed => _content == null;
-        public IAssetName SceneName => _sceneName;
-        public bool IsContentActive => _content.IsActive;
+        public IAssetName SceneName { get; private set; }
+        public bool IsContentActive => content.activeSelf;
         public bool IsMain => SceneManager.GetActiveScene() == _scene;
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
+        public bool IsDisposed { get; private set; }
+        public EcsWorld World { get; private set; }
 
-        void Start()
+        private void Start()
         {
+            IsDisposed = false;
+            World = Stubb.World;
+            _scene = gameObject.scene;
+            SceneName = new SceneName(_scene.name, _scene.path);
+
+            if (content == null)
+                content = _scene.GetContent();
+
             Initialize();
         }
 
-        public void Initialize()
+        /// <summary>
+        /// Init user's code here.
+        /// </summary>
+        public virtual void Initialize()
         {
-            _scene = gameObject.scene;
-            _sceneName = new SceneName(_scene.name, _scene.path);
-            _content = _scene.GetContentController<SceneContentController>();
         }
 
         public void SetAsMain()
@@ -40,12 +49,18 @@ namespace StubbUnity.Scenes
 
         public void ShowContent()
         {
-            _content.Show();
+            if (IsContentActive == false)
+            {
+                content.SetActive(true);
+            }
         }
 
         public void HideContent()
         {
-            _content.Hide();
+            if (IsContentActive)
+            {
+                content.SetActive(false);
+            }
         }
 
         public void SetEntity(ref EcsEntity entity)
@@ -58,19 +73,30 @@ namespace StubbUnity.Scenes
             return ref _entity;
         }
 
-        public void Destroy()
+        public virtual void Dispose()
         {
-            if (IsDestroyed)
+            if (IsDisposed)
             {
-                log.Warn($"SceneController.Destroy. Controller with scene '{SceneName.FullName}' is already destroyed!");
+                log.Warn(
+                    $"SceneController.Destroy. Controller with scene '{SceneName.FullName}' is already destroyed!");
                 return;
             }
 
-            _content.Hide();
-            _content.Destroy();
-            _content = null;
+            IsDisposed = true;
+            HideContent();
+            content = null;
+
+            if (HasEntity) _entity.Destroy();
             _entity = EcsEntity.Null;
+
             SceneManager.UnloadSceneAsync(_scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
+        }
+
+        private void OnDestroy()
+        {
+            if (IsDisposed) return;
+            
+            Dispose();
         }
     }
 }

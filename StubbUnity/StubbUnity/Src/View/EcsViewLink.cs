@@ -15,8 +15,7 @@ namespace StubbUnity.View
 
         private EcsEntity _entity = EcsEntity.Null;
         private CollisionDispatchSettings _collisionDispatchSettings;
-        private bool _isDisposed;
-        
+
         /// <summary>
         /// int number which represents type for an object.
         /// This type will be used for determination which object it is and for setting up collision pair.
@@ -26,25 +25,24 @@ namespace StubbUnity.View
         public int TypeId { get; set; }
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public string Name => gameObject.name;
-        public bool IsDisposed => _isDisposed;
+        public bool IsDisposed { get; private set; }
         public EcsWorld World { get; private set; }
 
-        private void Awake()
+        private void Start()
         {
-            _isDisposed = false;
+            IsDisposed = false;
             World = Stubb.World;
             _collisionDispatchSettings = new CollisionDispatchSettings(this);
             _InitEntity();
-            
-            Ready();
+
+            Initialize();
         }
 
         /// <summary>
-        /// Init user's here.
+        /// Init user's code here.
         /// </summary>
-        protected virtual void Ready()
+        public virtual void Initialize()
         {
-            
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -63,7 +61,7 @@ namespace StubbUnity.View
         {
             _entity = entity;
         }
-        
+
         public CollisionDispatchProperties GetTriggerProperties()
         {
             return triggerProperties;
@@ -82,10 +80,10 @@ namespace StubbUnity.View
         public virtual void Dispose()
         {
             if (IsDisposed) return;
-            _isDisposed = true;
+            IsDisposed = true;
             _collisionDispatchSettings.Dispose();
             _collisionDispatchSettings = null;
-            
+
             if (HasEntity) _entity.Destroy();
             if (gameObject != null) Destroy(gameObject);
         }
@@ -93,7 +91,7 @@ namespace StubbUnity.View
         private void OnDestroy()
         {
             if (IsDisposed) return;
-
+            
             Dispose();
         }
     }

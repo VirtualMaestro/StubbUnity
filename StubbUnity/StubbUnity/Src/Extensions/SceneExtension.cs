@@ -1,5 +1,8 @@
+using System.Management.Instrumentation;
 using JetBrains.Annotations;
+using StubbFramework.Logging;
 using StubbFramework.Scenes;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace StubbUnity.Extensions
@@ -25,26 +28,25 @@ namespace StubbUnity.Extensions
             return null;
         }
 
-        public static bool HasContentController<T>(this Scene scene) where T : ISceneContentController
-        {
-            return GetContentController<T>(scene) != null;
-        }
-        
+        /// <summary>
+        /// Returns GameObject which represents a Content of the scene.
+        /// If root of the scene contains more than two GameObjects it is possible to return wrong container.
+        /// In this case use direct drag-n-drop set to the SceneController. 
+        /// </summary>
         [CanBeNull]
-        public static ISceneContentController GetContentController<T>(this Scene scene) where T : ISceneContentController
+        public static GameObject GetContent(this Scene scene)
         {
-            var gObjects = scene.GetRootGameObjects();
+            var gos = scene.GetRootGameObjects();
             
-            foreach (var gObj in gObjects)
+            foreach (var go in gos)
             {
-                var contentController = gObj.GetComponent<ISceneContentController>();
+                if (go.HasComponent<ISceneController>()) continue;
+                if (gos.Length > 2) log.Warn($"WARNING: Scene '{scene.name}' contains more than 2 root containers!");
                 
-                if (contentController == null) continue;
-
-                return contentController;
+                return go;
             }
             
-            return null;
+            throw new InstanceNotFoundException($"Content of the scene '{scene.name}' wasn't found!");
         }
     }
 }

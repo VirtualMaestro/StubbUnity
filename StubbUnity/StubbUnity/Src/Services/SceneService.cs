@@ -90,11 +90,6 @@ namespace StubbUnity.Services
             {
                 log.Error($"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
             }
-
-            if (!scene.HasContentController<ISceneContentController>())
-            {
-                log.Error($"SceneVerification: scene '{scene.path}' doesn't contain SceneContentController!'");
-            }
         }
     }
 }
