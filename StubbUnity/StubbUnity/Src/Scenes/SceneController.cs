@@ -49,7 +49,7 @@ namespace StubbUnity.Scenes
 
         public void ShowContent()
         {
-            if (IsContentActive == false)
+            if (!IsDisposed && IsContentActive == false)
             {
                 content.SetActive(true);
             }
@@ -57,7 +57,7 @@ namespace StubbUnity.Scenes
 
         public void HideContent()
         {
-            if (IsContentActive)
+            if (!IsDisposed && IsContentActive)
             {
                 content.SetActive(false);
             }
