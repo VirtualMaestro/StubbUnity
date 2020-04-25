@@ -12,8 +12,15 @@ using UnityEngine.SceneManagement;
 
 namespace StubbUnity.Services
 {
+    /// <summary>
+    /// This service mostly for internal use.
+    /// It is action point which should be implemented for specific engine.
+    /// </summary>
     public class SceneService : ISceneService
     {
+        /// <summary>
+        /// Use World.LoadScene(s) if a scene needs to be loaded.
+        /// </summary>
         public List<ISceneLoadingProgress> Load(in List<ILoadingSceneConfig> configs)
         {
             var progresses = new List<ISceneLoadingProgress>(configs.Count);
@@ -58,12 +65,13 @@ namespace StubbUnity.Services
         }
 
         /// <summary>
-        /// Unity implementation doesn't require this method.
-        /// Use World extension if you want to unload scenes.
+        /// Use World.UnloadScene(s) if a scene needs to be unloaded.
         /// </summary>
-        /// <param name="controller"></param>
         public void Unload(in ISceneController controller)
-        {}
+        {
+            var scene = ((SceneController) controller).Scene;
+            SceneManager.UnloadSceneAsync(scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
+        }
 
         public ISceneController GetLoadedSceneController(ISceneLoadingProgress progress)
         {

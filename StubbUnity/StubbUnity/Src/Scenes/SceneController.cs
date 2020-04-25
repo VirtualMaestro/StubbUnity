@@ -15,12 +15,14 @@ namespace StubbUnity.Scenes
         private Scene _scene;
         private EcsEntity _entity = EcsEntity.Null;
 
+        protected EcsWorld World { get; private set; }
+
+        public Scene Scene => _scene;
         public IAssetName SceneName { get; private set; }
         public bool IsContentActive => content.activeSelf;
         public bool IsMain => SceneManager.GetActiveScene() == _scene;
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public bool IsDisposed { get; private set; }
-        public EcsWorld World { get; private set; }
 
         private void Start()
         {
@@ -73,6 +75,10 @@ namespace StubbUnity.Scenes
             return ref _entity;
         }
 
+        /// <summary>
+        /// Custom user's code should be here. Invoke also base.Dispose().
+        /// For unloading scene use World.UnloadScene(s).
+        /// </summary>
         public virtual void Dispose()
         {
             if (IsDisposed)
@@ -83,11 +89,6 @@ namespace StubbUnity.Scenes
             }
 
             IsDisposed = true;
-
-            if (HasEntity) _entity.Destroy();
-            _entity = EcsEntity.Null;
-
-            SceneManager.UnloadSceneAsync(_scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
         }
 
         private void OnDestroy()
