@@ -1,16 +1,18 @@
 using Leopotam.Ecs;
-using StubbFramework;
+using StubbFramework.Debugging;
 
 namespace StubbUnity.Debugging
 {
-    public class UnityEcsDebug : IStubbDebug
+    public class UnityEcsDebug : StubbDebug
     {
-        public void Debug(EcsSystems rootSystems, EcsWorld world)
+        public override void Init(EcsSystems rootSystems, EcsWorld world)
         {
-        #if UNITY_EDITOR
+            base.Init(rootSystems, world);
+            
+#if UNITY_EDITOR
             Leopotam.Ecs.UnityIntegration.EcsWorldObserver.Create (world);
             Leopotam.Ecs.UnityIntegration.EcsSystemsObserver.Create (rootSystems);
-        #endif
+#endif
         }
     }
 }

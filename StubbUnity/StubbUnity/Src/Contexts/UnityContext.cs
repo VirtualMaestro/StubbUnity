@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
+using StubbFramework.Debugging;
 using StubbFramework.Extensions;
 using UnityEngine;
 
@@ -29,7 +30,7 @@ namespace StubbUnity.Contexts
 
             _rootSystems = InitSystems();
 
-            _debugInfo?.Debug(_rootSystems, _world);
+            _debugInfo?.Init(_rootSystems, _world);
 
             _rootSystems.ProcessInjects();
             _rootSystems.Init();
@@ -57,6 +58,7 @@ namespace StubbUnity.Contexts
         public void Run()
         {
             _rootSystems.Run();
+            _debugInfo?.Debug();
         }
 
         public void Dispose()

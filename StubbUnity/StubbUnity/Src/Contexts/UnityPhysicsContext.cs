@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbFramework;
+using StubbFramework.Debugging;
 using StubbFramework.Physics;
 using StubbFramework.Physics.Systems;
 using UnityEngine;
