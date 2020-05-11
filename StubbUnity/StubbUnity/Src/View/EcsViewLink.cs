@@ -49,7 +49,7 @@ namespace StubbUnity.View
         private void _InitEntity()
         {
             _entity = World.NewEntity();
-            _entity.Set<EcsViewLinkComponent>().Value = this;
+            _entity.Get<EcsViewLinkComponent>().Value = this;
         }
 
         public ref EcsEntity GetEntity()
