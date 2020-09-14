@@ -353,5 +353,7 @@ MigrationBackup/
 *.DotSettings
 *.idea/
 *.sln
+.gradle/
+StubbUnity.zip
 Properties/
 StubbFramework
