@@ -1,4 +1,4 @@
-### StubbUnity - game framework based on the ECS paradigm.
+### StubbUnity - game framework for Unity based on the ECS paradigm.
  It implements specific functionality of
  [StubbFramework](https://github.com/VirtualMaestro/StubbFramework) for
  the Unity game engine.
