@@ -16,6 +16,7 @@ task copySrc (type: Copy) {
     include "ecs-unityintegration/"
     include "leoecs/"
     include "remotedebug/"
+    include "ecs-ui/"
     include "StubbUnity/StubbUnity/Src/"
     
     exclude '**/*.gradle'

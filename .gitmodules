@@ -7,3 +7,6 @@
 [submodule "remotedebug"]
 	path = remotedebug
 	url = git@github.com:Leopotam/ecs-remotedebug.git
+[submodule "ecs-ui"]
+	path = ecs-ui
+	url = git@github.com:VirtualMaestro/ecs-ui.git
