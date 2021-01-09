@@ -10,6 +10,5 @@ Dependencies:
 
 [ecs-ui](git@github.com:VirtualMaestro/ecs-ui.git)
 
- 
 For more information [see wiki](https://github.com/VirtualMaestro/StubbUnity/wiki) .
 
