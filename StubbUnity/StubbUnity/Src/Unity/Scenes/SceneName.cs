@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
-using StubbFramework.Common.Names;
+using StubbUnity.StubbFramework.Common.Names;
 
-namespace StubbUnity.Scenes
+namespace StubbUnity.Unity.Scenes
 {
     public class SceneName : BaseAssetName
     {

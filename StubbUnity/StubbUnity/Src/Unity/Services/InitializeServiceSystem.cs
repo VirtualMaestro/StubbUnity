@@ -1,7 +1,7 @@
 using Leopotam.Ecs;
-using StubbFramework.Extensions;
+using StubbUnity.StubbFramework.Extensions;
 
-namespace StubbUnity.Services
+namespace StubbUnity.Unity.Services
 {
 #if ENABLE_IL2CPP
     [Unity.IL2CPP.CompilerServices.Il2CppSetOption (Unity.IL2CPP.CompilerServices.Option.NullChecks, false)]

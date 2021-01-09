@@ -1,7 +1,7 @@
 using Leopotam.Ecs;
-using StubbFramework;
+using StubbUnity.StubbFramework;
 
-namespace StubbUnity
+namespace StubbUnity.Unity
 {
     public class UnitySystemTailFeature : SystemTailFeature
     {

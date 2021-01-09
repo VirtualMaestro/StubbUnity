@@ -1,7 +1,7 @@
 using Leopotam.Ecs;
-using StubbFramework.Debugging;
+using StubbUnity.StubbFramework.Debugging;
 
-namespace StubbUnity.Debugging
+namespace StubbUnity.Unity.Debugging
 {
     public class UnityEcsDebug : StubbDebug
     {

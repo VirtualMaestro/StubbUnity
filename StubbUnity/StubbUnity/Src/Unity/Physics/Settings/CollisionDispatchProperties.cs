@@ -1,6 +1,6 @@
 using System;
 
-namespace StubbUnity.Physics.Settings
+namespace StubbUnity.Unity.Physics.Settings
 {
     [Serializable]
     public class CollisionDispatchProperties

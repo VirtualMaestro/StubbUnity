@@ -1,8 +1,8 @@
 using Leopotam.Ecs;
-using StubbFramework.Common.Names;
+using StubbUnity.StubbFramework.Common.Names;
 using UnityEngine.SceneManagement;
 
-namespace StubbUnity.Extensions
+namespace StubbUnity.Unity.Extensions
 {
     public static class WorldExtension
     {

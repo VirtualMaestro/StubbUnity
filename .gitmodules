@@ -4,3 +4,6 @@
 [submodule "leoecs"]
 	path = leoecs
 	url = git@github.com:Leopotam/ecs.git
+[submodule "remotedebug"]
+	path = remotedebug
+	url = git@github.com:Leopotam/ecs-remotedebug.git

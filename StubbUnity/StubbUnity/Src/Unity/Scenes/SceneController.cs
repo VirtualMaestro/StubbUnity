@@ -1,13 +1,13 @@
 ﻿using System;
 using Leopotam.Ecs;
-using StubbFramework;
-using StubbFramework.Common.Names;
-using StubbFramework.Logging;
-using StubbFramework.Scenes;
+using StubbUnity.StubbFramework;
+using StubbUnity.StubbFramework.Common.Names;
+using StubbUnity.StubbFramework.Logging;
+using StubbUnity.StubbFramework.Scenes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace StubbUnity.Scenes
+namespace StubbUnity.Unity.Scenes
 {
     public class SceneController : MonoBehaviour, ISceneController
     {

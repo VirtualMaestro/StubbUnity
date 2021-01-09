@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using StubbFramework.Common.Names;
-using StubbFramework.Logging;
-using StubbFramework.Scenes;
-using StubbFramework.Scenes.Configurations;
-using StubbFramework.Scenes.Services;
-using StubbUnity.Extensions;
-using StubbUnity.Scenes;
+using StubbUnity.StubbFramework.Common.Names;
+using StubbUnity.StubbFramework.Logging;
+using StubbUnity.StubbFramework.Scenes;
+using StubbUnity.StubbFramework.Scenes.Configurations;
+using StubbUnity.StubbFramework.Scenes.Services;
+using StubbUnity.Unity.Extensions;
+using StubbUnity.Unity.Scenes;
 using UnityEngine.SceneManagement;
 
-namespace StubbUnity.Services
+namespace StubbUnity.Unity.Services
 {
     /// <summary>
     /// This service mostly for internal use.

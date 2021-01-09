@@ -1,13 +1,13 @@
 using System.Runtime.CompilerServices;
-using StubbUnity.Extensions;
-using StubbUnity.Physics.Collisions;
-using StubbUnity.Physics.Settings;
-using StubbUnity.Physics.Triggers;
-using StubbUnity.View;
+using StubbUnity.Unity.Extensions;
+using StubbUnity.Unity.Physics.Collisions;
+using StubbUnity.Unity.Physics.Settings;
+using StubbUnity.Unity.Physics.Triggers;
+using StubbUnity.Unity.View;
 using UnityEditor;
 using UnityEngine;
 
-namespace StubbUnity.Editor
+namespace StubbUnity.Unity.Editor
 {
     [CustomEditor(typeof(EcsViewLink))]
     public class CollisionDispatchSettingsEditor : UnityEditor.Editor

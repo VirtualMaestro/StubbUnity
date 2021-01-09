@@ -1,12 +1,12 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
-using StubbFramework;
-using StubbFramework.View;
-using StubbFramework.View.Components;
-using StubbUnity.Physics.Settings;
+using StubbUnity.StubbFramework;
+using StubbUnity.StubbFramework.View;
+using StubbUnity.StubbFramework.View.Components;
+using StubbUnity.Unity.Physics.Settings;
 using UnityEngine;
 
-namespace StubbUnity.View
+namespace StubbUnity.Unity.View
 {
     public class EcsViewLink : MonoBehaviour, IEcsViewLink
     {

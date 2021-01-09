@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using StubbFramework.Logging;
+using StubbUnity.StubbFramework.Logging;
 using UnityEngine;
-using Logger = StubbFramework.Logging.Logger;
+using Logger = StubbUnity.StubbFramework.Logging.Logger;
 
-namespace StubbUnity.Logging
+namespace StubbUnity.Unity.Logging
 {
     public static class UnityLogAppender 
     {

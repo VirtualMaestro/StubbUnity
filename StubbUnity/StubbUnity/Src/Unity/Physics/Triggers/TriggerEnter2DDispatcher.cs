@@ -1,8 +1,8 @@
-using StubbFramework.Extensions;
-using StubbFramework.View;
+using StubbUnity.StubbFramework.Extensions;
+using StubbUnity.StubbFramework.View;
 using UnityEngine;
 
-namespace StubbUnity.Physics.Triggers
+namespace StubbUnity.Unity.Physics.Triggers
 {
     public sealed class TriggerEnter2DDispatcher : BasePhysicsDispatcher
     {

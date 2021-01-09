@@ -1,8 +1,8 @@
 using JetBrains.Annotations;
-using StubbFramework.Scenes;
+using StubbUnity.StubbFramework.Scenes;
 using UnityEngine.SceneManagement;
 
-namespace StubbUnity.Extensions
+namespace StubbUnity.Unity.Extensions
 {
     public static class SceneExtension
     {

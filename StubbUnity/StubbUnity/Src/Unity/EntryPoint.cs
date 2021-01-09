@@ -1,12 +1,12 @@
 using Leopotam.Ecs;
-using StubbFramework;
-using StubbFramework.Logging;
-using StubbFramework.Physics;
-using StubbUnity.Debugging;
-using StubbUnity.Logging;
+using StubbUnity.StubbFramework;
+using StubbUnity.StubbFramework.Logging;
+using StubbUnity.StubbFramework.Physics;
+using StubbUnity.Unity.Debugging;
+using StubbUnity.Unity.Logging;
 using UnityEngine;
 
-namespace StubbUnity
+namespace StubbUnity.Unity
 {
     public class EntryPoint : MonoBehaviour
     {

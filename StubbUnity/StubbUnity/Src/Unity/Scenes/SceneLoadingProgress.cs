@@ -1,8 +1,8 @@
-using StubbFramework.Scenes;
-using StubbFramework.Scenes.Configurations;
+using StubbUnity.StubbFramework.Scenes;
+using StubbUnity.StubbFramework.Scenes.Configurations;
 using UnityEngine;
 
-namespace StubbUnity.Scenes
+namespace StubbUnity.Unity.Scenes
 {
     public class SceneLoadingProgress : ISceneLoadingProgress
     {

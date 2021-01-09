@@ -1,7 +1,7 @@
-using StubbUnity.View;
+using StubbUnity.Unity.View;
 using UnityEngine;
 
-namespace StubbUnity.Physics
+namespace StubbUnity.Unity.Physics
 {
     public class BasePhysicsDispatcher : MonoBehaviour
     {

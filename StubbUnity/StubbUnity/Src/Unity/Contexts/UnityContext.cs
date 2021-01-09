@@ -1,11 +1,11 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
-using StubbFramework;
-using StubbFramework.Debugging;
-using StubbFramework.Extensions;
+using StubbUnity.StubbFramework;
+using StubbUnity.StubbFramework.Debugging;
+using StubbUnity.StubbFramework.Extensions;
 using UnityEngine;
 
-namespace StubbUnity.Contexts
+namespace StubbUnity.Unity.Contexts
 {
     public class UnityContext : MonoBehaviour, IStubbContext
     {

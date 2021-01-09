@@ -1,9 +1,9 @@
-using StubbUnity.Physics.Collisions;
-using StubbUnity.Physics.Triggers;
-using StubbUnity.View;
+using StubbUnity.Unity.Physics.Collisions;
+using StubbUnity.Unity.Physics.Triggers;
+using StubbUnity.Unity.View;
 using UnityEngine;
 
-namespace StubbUnity.Physics.Settings
+namespace StubbUnity.Unity.Physics.Settings
 {
     public class CollisionDispatchSettings
     {

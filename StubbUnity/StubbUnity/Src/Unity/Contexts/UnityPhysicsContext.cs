@@ -1,12 +1,12 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
-using StubbFramework;
-using StubbFramework.Debugging;
-using StubbFramework.Physics;
-using StubbFramework.Physics.Systems;
+using StubbUnity.StubbFramework;
+using StubbUnity.StubbFramework.Debugging;
+using StubbUnity.StubbFramework.Physics;
+using StubbUnity.StubbFramework.Physics.Systems;
 using UnityEngine;
 
-namespace StubbUnity.Contexts
+namespace StubbUnity.Unity.Contexts
 {
     public class UnityPhysicsContext : MonoBehaviour, IPhysicsContext
     {

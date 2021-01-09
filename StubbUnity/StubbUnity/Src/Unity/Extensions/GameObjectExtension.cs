@@ -1,7 +1,7 @@
-using StubbFramework.View;
+using StubbUnity.StubbFramework.View;
 using UnityEngine;
 
-namespace StubbUnity.Extensions
+namespace StubbUnity.Unity.Extensions
 {
     public static class GameObjectExtension
     {
