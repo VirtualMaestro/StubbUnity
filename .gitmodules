@@ -1,6 +1,12 @@
-[submodule "StubbFramework"]
-	path = StubbFramework
-	url = git@github.com:VirtualMaestro/StubbFramework.git
 [submodule "ecs-unityintegration"]
 	path = ecs-unityintegration
 	url = https://github.com/Leopotam/ecs-unityintegration.git
+[submodule "leoecs"]
+	path = leoecs
+	url = git@github.com:Leopotam/ecs.git
+[submodule "remotedebug"]
+	path = remotedebug
+	url = git@github.com:Leopotam/ecs-remotedebug.git
+[submodule "ecs-ui"]
+	path = ecs-ui
+	url = git@github.com:VirtualMaestro/ecs-ui.git

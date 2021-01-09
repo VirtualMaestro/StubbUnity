@@ -1,0 +1,49 @@
+task cleanBefore (type: Delete) {
+    println 'Cleanup before build'
+    delete 'build', 'StubbUnity.zip'
+}
+
+task cleanAfter (type: Delete) {
+    println 'Cleanup after build'
+    delete 'build'
+}
+
+task copySrc (type: Copy) {
+    println 'Create Stubb package'
+    
+    from "."
+    
+    include "ecs-unityintegration/"
+    include "leoecs/"
+    include "remotedebug/"
+    include "ecs-ui/"
+    include "StubbUnity/StubbUnity/Src/"
+    
+    exclude '**/*.gradle'
+    exclude 'build'
+    exclude '**/*.git'
+
+    into "build"
+}
+
+task createZip (type: Zip) {
+    println 'Create ZIP package'
+
+    archiveFileName = "StubbUnity.zip"
+    destinationDirectory = file(".")
+
+    from "build"
+}
+
+task build () {
+    dependsOn 'cleanBefore'
+    dependsOn 'copySrc'
+    dependsOn 'createZip'
+    dependsOn 'cleanAfter'
+
+    tasks.findByName('copySrc').mustRunAfter 'cleanBefore'
+    tasks.findByName('createZip').mustRunAfter 'copySrc'
+    tasks.findByName('cleanAfter').mustRunAfter 'createZip'
+
+    println 'Package StubbUnity.zip has been created!'
+}
