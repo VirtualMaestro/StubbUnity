@@ -42,8 +42,11 @@ namespace StubbUnity.Unity.Contexts
             rootSystems.AddFeature(new UnitySystemHeadFeature(World));
 
             var userSystems = InitUserSystems();
-            if (userSystems is EcsFeature feature) rootSystems.AddFeature(feature);
-            else rootSystems.Add(userSystems);
+            
+            if (userSystems is EcsFeature feature) 
+                rootSystems.AddFeature(feature);
+            else 
+                rootSystems.Add(userSystems);
 
             rootSystems.AddFeature(new UnitySystemTailFeature(World));
 

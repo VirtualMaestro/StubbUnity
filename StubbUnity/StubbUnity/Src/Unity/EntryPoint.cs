@@ -23,6 +23,8 @@ namespace StubbUnity.Unity
 
             _physicsContext = GetComponent<IPhysicsContext>();
             _physicsContext?.Init(_context.World);
+            
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Update()
