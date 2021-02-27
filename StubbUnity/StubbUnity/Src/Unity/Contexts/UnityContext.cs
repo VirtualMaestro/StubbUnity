@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 using StubbUnity.StubbFramework;
@@ -39,16 +40,16 @@ namespace StubbUnity.Unity.Contexts
         protected virtual EcsSystems InitSystems()
         {
             var rootSystems = new EcsSystems(World, "RootSystems");
-            rootSystems.AddFeature(new UnitySystemHeadFeature(World));
+            rootSystems.AddFeature(new UnityHeadFeature(World));
 
             var userSystems = InitUserSystems();
-            
-            if (userSystems is EcsFeature feature) 
+
+            if (userSystems is EcsFeature feature)
                 rootSystems.AddFeature(feature);
-            else 
+            else
                 rootSystems.Add(userSystems);
 
-            rootSystems.AddFeature(new UnitySystemTailFeature(World));
+            rootSystems.AddFeature(new UnityTailFeature(World));
 
             return rootSystems;
         }
@@ -56,6 +57,14 @@ namespace StubbUnity.Unity.Contexts
         protected virtual IEcsSystem InitUserSystems()
         {
             return new EcsSystems(World, "UserSystems");
+        }
+
+        /// <summary>
+        ///  Global injection for all systems.
+        /// </summary>
+        protected void Inject(object obj, Type overridenType = null)
+        {
+            _rootSystems.Inject(obj, overridenType);
         }
 
         public void Run()
