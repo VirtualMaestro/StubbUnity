@@ -1,4 +1,3 @@
-using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Scenes.Components;
 using StubbUnity.StubbFramework.Scenes.Events;
 using StubbUnity.StubbFramework.Scenes.Systems;
@@ -7,7 +6,7 @@ namespace StubbUnity.StubbFramework.Scenes
 {
     public class SceneFeature : EcsFeature
     {
-        public SceneFeature(EcsWorld world, string name = null, bool isEnable = true) : base(world, name, isEnable)
+        public SceneFeature(string name = null, bool isEnable = true) : base(name, isEnable)
         {
         }
 
@@ -20,13 +19,13 @@ namespace StubbUnity.StubbFramework.Scenes
             Add(new UnloadAllScenesSystem());
             Add(new UnloadNonNewScenesSystem());
             Add(new UnloadSceneSystem());
-            
+
             OneFrame<SceneChangedStateComponent>();
-            
+
             Add(new ChangeSceneStateByNameSystem());
             Add(new ActivateSceneSystem());
             Add(new DeactivateSceneSystem());
-                        
+
             OneFrame<ActivateSceneComponent>();
             OneFrame<DeactivateSceneComponent>();
             OneFrame<SceneLoadedComponent>();

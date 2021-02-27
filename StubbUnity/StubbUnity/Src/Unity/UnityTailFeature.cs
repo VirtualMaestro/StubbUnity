@@ -1,17 +1,19 @@
+using Leopotam.Ecs;
 using StubbUnity.StubbFramework;
+using StubbUnity.StubbFramework.Scenes.Components;
+using StubbUnity.Unity.Services;
 
 namespace StubbUnity.Unity
 {
-    public class UnityTailFeature : SystemTailFeature
+    public class UnityTailFeature : SystemTailFeature, IEcsInitSystem
     {
         public UnityTailFeature(string name = null) : base(name)
         {
         }
 
-        protected override void SetupSystems()
+        public void Init()
         {
-            base.SetupSystems();
-            // InjectGlobal(new SceneService());
+            World.NewEntity().Get<SceneServiceComponent>().SceneService = new SceneService();
         }
     }
 }
