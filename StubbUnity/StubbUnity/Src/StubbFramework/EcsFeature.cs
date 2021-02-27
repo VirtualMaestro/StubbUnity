@@ -1,6 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
-using StubbUnity.StubbFramework.Extensions;
 
 namespace StubbUnity.StubbFramework
 {
@@ -8,30 +8,34 @@ namespace StubbUnity.StubbFramework
     {
         private bool _isEnable;
         private EcsSystems _parentSystems;
-        
-        internal EcsSystems InternalSystems { get; private set; }
+        private EcsSystems _rootSystems;
+        private EcsSystems _internalSystems;
+
+        private EcsWorld _world;
         
         public string Name { get; }
-        public EcsWorld World { get; }
+        public EcsWorld World => _world;
 
-        public EcsFeature(EcsWorld world, string name = null, bool isEnable = true)
+        public EcsFeature(string name = null, bool isEnable = true)
         {
-            World = world;
             Name = name ?? GetType().Name;
             _isEnable = isEnable;
-            
-            _InitSystems();
         }
-        
-        internal EcsSystems Parent
+
+        public void Init(EcsWorld world, EcsSystems parentSystems, EcsSystems rootSystems)
         {
-            set
-            {
-                _parentSystems = value;
-                if (_isEnable == false)
-                    _EnableSystems(InternalSystems.Name, _isEnable);
-            }
-            private get => _parentSystems;
+            _world = world;
+            _parentSystems = parentSystems;
+            _rootSystems = rootSystems;
+            
+            _internalSystems = new EcsSystems(World, $"{Name}Systems");    
+            _parentSystems.Add(this);
+            _parentSystems.Add(_internalSystems);
+            
+            SetupSystems();
+
+            if (!_isEnable)
+                Enable = _isEnable;
         }
 
         public bool Enable
@@ -39,28 +43,36 @@ namespace StubbUnity.StubbFramework
             get => _isEnable;
             set
             {
-                if (_isEnable == value) return;
-
                 _isEnable = value;
 
-                _EnableSystems(InternalSystems.Name, _isEnable);
+                _EnableSystems(_internalSystems.Name, _isEnable);
             }
         }
 
         protected void Add(IEcsSystem system)
         {
-            if (system is EcsFeature feature) InternalSystems.AddFeature(feature);
-            else InternalSystems.Add(system);
+            if (system is EcsFeature feature)
+                feature.Init(_world, _parentSystems, _rootSystems);                
+            else 
+                _internalSystems.Add(system);
         }
 
-        protected void Inject(object data)
+        /// <summary>
+        /// Injects only in scope of this feature (so all children systems).
+        /// </summary>
+        protected void Inject(object data, Type overridenType = null)
         {
-            InternalSystems.Inject(data);
+            _internalSystems.Inject(data, overridenType);
+        }
+
+        protected void InjectGlobal(object data, Type overridenType = null)
+        {
+            _rootSystems.Inject(data, overridenType);
         }
 
         protected void OneFrame<T>() where T : struct
         {
-            InternalSystems.OneFrame<T>();
+            _internalSystems.OneFrame<T>();
         }
 
         /// <summary>
@@ -68,19 +80,12 @@ namespace StubbUnity.StubbFramework
         /// </summary>
         protected virtual void SetupSystems()
         {}
-        
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void _InitSystems()
-        {
-            InternalSystems = new EcsSystems(World, $"{Name}Systems");    
-            SetupSystems();
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _EnableSystems(string systemsName, bool isEnable)
         {
-            var idx = Parent.GetNamedRunSystem(systemsName);
-            Parent.SetRunSystemState(idx, isEnable);
+            var idx = _parentSystems.GetNamedRunSystem(systemsName);
+            _parentSystems.SetRunSystemState(idx, isEnable);
         }
     }
 }
