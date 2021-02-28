@@ -1,6 +1,5 @@
 ﻿using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Common;
-using StubbUnity.StubbFramework.Debugging;
 
 namespace StubbUnity.StubbFramework
 {
@@ -8,7 +7,11 @@ namespace StubbUnity.StubbFramework
     {
         EcsWorld World { get; }
 
-        void Init(EcsWorld world, IStubbDebug debug = null);
+        void Init();
         void Run();
+
+        EcsFeature HeadFeature { get; set; }
+        EcsFeature UserFeature { get; set; }
+        EcsFeature TailFeature { get; set; }
     }
 }

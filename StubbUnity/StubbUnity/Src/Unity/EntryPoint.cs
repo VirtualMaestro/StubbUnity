@@ -20,11 +20,11 @@ namespace StubbUnity.Unity
             log.AddAppender(UnityLogAppender.LogDelegate);
 
             _world = CreateWorld();
-            _context = CreateContext();
-            _context.Init(_world, CreateDebug());
+            _context = CreateContext(_world, CreateDebug());
+            _context.Init();
 
             _physicsContext = CreatePhysicsContext();
-            _physicsContext?.Init(_world);
+            _physicsContext?.Init();
 
             DontDestroyOnLoad(gameObject);
         }
@@ -32,11 +32,11 @@ namespace StubbUnity.Unity
         /// <summary>
         /// Override if need custom context. 
         /// </summary>
-        protected virtual IStubbContext CreateContext()
+        protected virtual IStubbContext CreateContext(EcsWorld world, IStubbDebug debug)
         {
-            var context = new StubbContext();
-            context.HeadSystemFeature = new UnityHeadFeature();
-            context.TailSystemFeature = new UnityTailFeature();
+            var context = new StubbContext(world, debug);
+            context.HeadFeature = new UnityHeadFeature(world);
+            context.TailFeature = new UnityTailFeature(world);
             return context;
         }
 

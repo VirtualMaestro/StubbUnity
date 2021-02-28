@@ -6,53 +6,62 @@ namespace StubbUnity.StubbFramework
     public class StubbContext : IStubbContext
     {
         private EcsWorld _world;
-        private EcsSystems _rootSystems;
         private IStubbDebug _debugger;
+        
+        protected EcsSystems RootSystems;
 
-        public EcsFeature HeadSystemFeature { get; set; }
-        public EcsFeature UsersFeature { get; set; }
-        public EcsFeature TailSystemFeature { get; set; }
+        public EcsFeature HeadFeature { get; set; }
+        public EcsFeature UserFeature { get; set; }
+        public EcsFeature TailFeature { get; set; }
 
         public bool IsDisposed => _world == null;
         public EcsWorld World => _world;
 
-        public StubbContext()
+        public StubbContext(EcsWorld world, IStubbDebug debug = null)
         {
             Stubb.AddContext(this);
-
-            HeadSystemFeature = new SystemHeadFeature();
-            TailSystemFeature = new SystemTailFeature();
-        }
-
-        public void Init(EcsWorld world, IStubbDebug debug = null)
-        {
+            
             _world = world;
             _debugger = debug;
-            _rootSystems = new EcsSystems(World, "RootSystems");
+            RootSystems = new EcsSystems(_world,  $"{GetType()}Systems");
+            
+            InitFeatures();
+        }
 
-            HeadSystemFeature?.Init(_world, _rootSystems, _rootSystems);
-            UsersFeature?.Init(_world, _rootSystems, _rootSystems);
-            TailSystemFeature?.Init(_world, _rootSystems, _rootSystems);
+        protected virtual void InitFeatures()
+        {
+            HeadFeature = new SystemHeadFeature(World);
+            TailFeature = new SystemTailFeature(World);
+        }
 
-            _debugger?.Init(_rootSystems, _world);
+        public void Init()
+        {
+            HeadFeature?.Init(RootSystems, RootSystems);
+            UserFeature?.Init(RootSystems, RootSystems);
+            TailFeature?.Init(RootSystems, RootSystems);
 
-            _rootSystems.ProcessInjects();
-            _rootSystems.Init();
+            _debugger?.Init(RootSystems, World);
+
+            RootSystems.ProcessInjects();
+            RootSystems.Init();
         }
 
         public void Run()
         {
-            _rootSystems.Run();
+            RootSystems.Run();
             _debugger?.Debug();
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
-            _rootSystems.Destroy();
-            _world.Destroy();
-
-            _world = null;
-            _rootSystems = null;
+            RootSystems.Destroy();
+            RootSystems = null;
+            
+            if (_world != null && _world.IsAlive())
+            {
+                _world.Destroy();
+                _world = null;
+            }
         }
     }
 }

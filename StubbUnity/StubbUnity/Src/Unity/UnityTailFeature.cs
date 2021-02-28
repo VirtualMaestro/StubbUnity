@@ -7,7 +7,7 @@ namespace StubbUnity.Unity
 {
     public class UnityTailFeature : SystemTailFeature, IEcsInitSystem
     {
-        public UnityTailFeature(string name = null) : base(name)
+        public UnityTailFeature(EcsWorld world, string name = null) : base(world, name)
         {
         }
 

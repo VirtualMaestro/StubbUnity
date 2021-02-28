@@ -1,4 +1,5 @@
-﻿using StubbUnity.StubbFramework.Remove.Systems;
+﻿using Leopotam.Ecs;
+using StubbUnity.StubbFramework.Remove.Systems;
 using StubbUnity.StubbFramework.Scenes;
 using StubbUnity.StubbFramework.View.Systems;
 
@@ -6,13 +7,13 @@ namespace StubbUnity.StubbFramework
 {
     public class SystemTailFeature : EcsFeature
     {
-        public SystemTailFeature(string name = "TailSystems") : base(name)
+        public SystemTailFeature(EcsWorld world, string name = "TailSystems") : base(world, name)
         {
         }
 
         protected override void SetupSystems()
         {
-            Add(new SceneFeature());
+            Add(new SceneFeature(World));
             Add(new RemoveEcsViewLinkSystem());
             Add(new RemoveEntitySystem());
         }

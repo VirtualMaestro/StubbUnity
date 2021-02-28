@@ -9,26 +9,27 @@ namespace StubbUnity.StubbFramework
         private bool _isEnable;
         private EcsSystems _parentSystems;
         private EcsSystems _rootSystems;
-        private EcsSystems _internalSystems;
+        private readonly EcsSystems _internalSystems;
 
-        private EcsWorld _world;
+        private readonly EcsWorld _world;
         
         public string Name { get; }
         public EcsWorld World => _world;
 
-        public EcsFeature(string name = null, bool isEnable = true)
-        {
-            Name = name ?? GetType().Name;
-            _isEnable = isEnable;
-        }
-
-        public void Init(EcsWorld world, EcsSystems parentSystems, EcsSystems rootSystems)
+        public EcsFeature(EcsWorld world, string name = null, bool isEnable = true)
         {
             _world = world;
+            Name = name ?? GetType().Name;
+            _isEnable = isEnable;
+            
+            _internalSystems = new EcsSystems(_world, $"{Name}Systems");    
+        }
+
+        public void Init(EcsSystems parentSystems, EcsSystems rootSystems)
+        {
             _parentSystems = parentSystems;
             _rootSystems = rootSystems;
             
-            _internalSystems = new EcsSystems(World, $"{Name}Systems");    
             _parentSystems.Add(this);
             _parentSystems.Add(_internalSystems);
             
@@ -52,7 +53,7 @@ namespace StubbUnity.StubbFramework
         protected void Add(IEcsSystem system)
         {
             if (system is EcsFeature feature)
-                feature.Init(_world, _parentSystems, _rootSystems);                
+                feature.Init(_parentSystems, _rootSystems);                
             else 
                 _internalSystems.Add(system);
         }

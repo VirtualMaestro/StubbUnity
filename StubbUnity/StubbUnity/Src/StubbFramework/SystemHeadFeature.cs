@@ -1,11 +1,12 @@
-﻿using StubbUnity.StubbFramework.Delay.Systems;
+﻿using Leopotam.Ecs;
+using StubbUnity.StubbFramework.Delay.Systems;
 using StubbUnity.StubbFramework.Time.Systems;
 
 namespace StubbUnity.StubbFramework
 {
     public class SystemHeadFeature : EcsFeature
     {
-        public SystemHeadFeature(string name = "HeadSystems") : base(name)
+        public SystemHeadFeature(EcsWorld world, string name = "HeadSystems") : base(world, name)
         {
         }
 

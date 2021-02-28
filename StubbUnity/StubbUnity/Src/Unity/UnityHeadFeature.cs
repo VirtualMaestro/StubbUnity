@@ -1,10 +1,11 @@
+using Leopotam.Ecs;
 using StubbUnity.StubbFramework;
 
 namespace StubbUnity.Unity
 {
     public class UnityHeadFeature : SystemHeadFeature
     {
-        public UnityHeadFeature(string name = null) : base(name)
+        public UnityHeadFeature(EcsWorld world, string name = null) : base(world, name)
         {
         }
     }
