@@ -14,29 +14,38 @@ namespace StubbUnity.Unity
         private IStubbContext _context;
         private IPhysicsContext _physicsContext;
         private EcsWorld _world;
+        private IStubbDebug _debug;
+
+        public EcsWorld World => _world;
+        public IStubbDebug Debug => _debug;
 
         private void Awake()
         {
             log.AddAppender(UnityLogAppender.LogDelegate);
 
             _world = CreateWorld();
-            _context = CreateContext(_world, CreateDebug());
-            _context.Init();
+            _debug = CreateDebug();
+            _context = CreateContext();
 
             _physicsContext = CreatePhysicsContext();
-            _physicsContext?.Init();
 
             DontDestroyOnLoad(gameObject);
+        }
+
+        private void Start()
+        {
+            _context.Init();
+            _physicsContext?.Init();
         }
 
         /// <summary>
         /// Override if need custom context. 
         /// </summary>
-        protected virtual IStubbContext CreateContext(EcsWorld world, IStubbDebug debug)
+        protected virtual IStubbContext CreateContext()
         {
-            var context = new StubbContext(world, debug);
-            context.HeadFeature = new UnityHeadFeature(world);
-            context.TailFeature = new UnityTailFeature(world);
+            var context = new StubbContext(World, Debug);
+            context.HeadFeature = new UnityHeadFeature(World);
+            context.TailFeature = new UnityTailFeature(World);
             return context;
         }
 
