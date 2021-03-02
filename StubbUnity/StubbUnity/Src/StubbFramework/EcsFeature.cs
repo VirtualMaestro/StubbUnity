@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
 
 namespace StubbUnity.StubbFramework
@@ -12,7 +11,12 @@ namespace StubbUnity.StubbFramework
         private readonly EcsSystems _internalSystems;
 
         private readonly EcsWorld _world;
-        
+
+        /// <summary>
+        /// For internal use.
+        /// </summary>
+        public EcsSystems InternalSystems => _internalSystems;
+
         public string Name { get; }
         public EcsWorld World => _world;
 
@@ -21,18 +25,18 @@ namespace StubbUnity.StubbFramework
             _world = world;
             Name = name ?? GetType().Name;
             _isEnable = isEnable;
-            
-            _internalSystems = new EcsSystems(_world, $"{Name}Systems");    
+
+            _internalSystems = new EcsSystems(_world, $"{Name}Systems");
         }
 
         public void Init(EcsSystems parentSystems, EcsSystems rootSystems)
         {
             _parentSystems = parentSystems;
             _rootSystems = rootSystems;
-            
+
             _parentSystems.Add(this);
             _parentSystems.Add(_internalSystems);
-            
+
             SetupSystems();
 
             if (!_isEnable)
@@ -53,8 +57,8 @@ namespace StubbUnity.StubbFramework
         protected void Add(IEcsSystem system)
         {
             if (system is EcsFeature feature)
-                feature.Init(_parentSystems, _rootSystems);                
-            else 
+                feature.Init(_internalSystems, _rootSystems);
+            else
                 _internalSystems.Add(system);
         }
 
@@ -80,9 +84,9 @@ namespace StubbUnity.StubbFramework
         /// Method where all the systems should be created and added.
         /// </summary>
         protected virtual void SetupSystems()
-        {}
+        {
+        }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _EnableSystems(string systemsName, bool isEnable)
         {
             var idx = _parentSystems.GetNamedRunSystem(systemsName);
