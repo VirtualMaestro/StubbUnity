@@ -1,4 +1,6 @@
 using JetBrains.Annotations;
+using Leopotam.Ecs;
+using StubbUnity.StubbFramework.Common.Names;
 using StubbUnity.StubbFramework.Scenes;
 using UnityEngine.SceneManagement;
 
@@ -23,6 +25,22 @@ namespace StubbUnity.Unity.Extensions
             }
 
             return null;
+        }
+        
+        public static bool HasScene(this EcsWorld world, in IAssetName sceneName)
+        {
+            for (var i = 1; i < SceneManager.sceneCount; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+                var controller = scene.GetController();
+
+                if (controller != null && controller.SceneName.Equals(sceneName))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
