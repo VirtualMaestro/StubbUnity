@@ -2,7 +2,7 @@
 
 namespace StubbUnity.StubbFramework.Debugging
 {
-    public class StubbDebug : IStubbDebug
+    public class EcsDebug : IEcsDebug
     {
 #if DEBUG
         Leopotam.Ecs.RemoteDebug.RemoteDebugClient _debug;

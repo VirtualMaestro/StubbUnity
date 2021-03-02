@@ -9,10 +9,6 @@ namespace StubbUnity.StubbFramework
     {
         public SystemTailFeature(EcsWorld world, string name = "TailSystems") : base(world, name)
         {
-        }
-
-        protected override void SetupSystems()
-        {
             Add(new SceneFeature(World));
             Add(new RemoveEcsViewLinkSystem());
             Add(new RemoveEntitySystem());

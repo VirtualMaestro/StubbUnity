@@ -7,7 +7,6 @@ namespace StubbUnity.StubbFramework
     {
         private bool _isEnable;
         private EcsSystems _parentSystems;
-        private EcsSystems _rootSystems;
         private readonly EcsSystems _internalSystems;
 
         private readonly EcsWorld _world;
@@ -29,15 +28,11 @@ namespace StubbUnity.StubbFramework
             _internalSystems = new EcsSystems(_world, $"{Name}Systems");
         }
 
-        public void Init(EcsSystems parentSystems, EcsSystems rootSystems)
+        public void Init(EcsSystems parentSystems)
         {
             _parentSystems = parentSystems;
-            _rootSystems = rootSystems;
-
             _parentSystems.Add(this);
             _parentSystems.Add(_internalSystems);
-
-            SetupSystems();
 
             if (!_isEnable)
                 Enable = _isEnable;
@@ -57,7 +52,7 @@ namespace StubbUnity.StubbFramework
         protected void Add(IEcsSystem system)
         {
             if (system is EcsFeature feature)
-                feature.Init(_internalSystems, _rootSystems);
+                feature.Init(_internalSystems);
             else
                 _internalSystems.Add(system);
         }
@@ -70,21 +65,9 @@ namespace StubbUnity.StubbFramework
             _internalSystems.Inject(data, overridenType);
         }
 
-        protected void InjectGlobal(object data, Type overridenType = null)
-        {
-            _rootSystems.Inject(data, overridenType);
-        }
-
         protected void OneFrame<T>() where T : struct
         {
             _internalSystems.OneFrame<T>();
-        }
-
-        /// <summary>
-        /// Method where all the systems should be created and added.
-        /// </summary>
-        protected virtual void SetupSystems()
-        {
         }
 
         private void _EnableSystems(string systemsName, bool isEnable)

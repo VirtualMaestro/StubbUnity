@@ -7,10 +7,6 @@ namespace StubbUnity.StubbFramework.Physics
     {
         public PhysicsTailFeature(EcsWorld world, string name = null, bool isEnable = true) : base(world, name, isEnable)
         {
-        }
-
-        protected override void SetupSystems()
-        {
             Add(new CleanupCollisionSystem());
         }
     }

@@ -3,7 +3,7 @@ using StubbUnity.StubbFramework.Debugging;
 
 namespace StubbUnity.Unity.Debugging
 {
-    public class UnityEcsDebug : StubbDebug
+    public class UnityEcsDebug : EcsDebug
     {
         public override void Init(EcsSystems rootSystems, EcsWorld world)
         {

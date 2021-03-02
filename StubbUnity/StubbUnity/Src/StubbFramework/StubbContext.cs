@@ -6,7 +6,7 @@ namespace StubbUnity.StubbFramework
     public class StubbContext : IStubbContext
     {
         private EcsWorld _world;
-        private IStubbDebug _debugger;
+        private IEcsDebug _debugger;
         
         protected EcsSystems RootSystems;
 
@@ -17,7 +17,7 @@ namespace StubbUnity.StubbFramework
         public bool IsDisposed => _world == null;
         public EcsWorld World => _world;
 
-        public StubbContext(EcsWorld world, IStubbDebug debug = null)
+        public StubbContext(EcsWorld world, IEcsDebug debug = null)
         {
             Stubb.AddContext(this);
             
@@ -36,9 +36,9 @@ namespace StubbUnity.StubbFramework
 
         public void Init()
         {
-            HeadFeature?.Init(RootSystems, RootSystems);
-            UserFeature?.Init(RootSystems, RootSystems);
-            TailFeature?.Init(RootSystems, RootSystems);
+            HeadFeature?.Init(RootSystems);
+            UserFeature?.Init(RootSystems);
+            TailFeature?.Init(RootSystems);
 
             _debugger?.Init(RootSystems, World);
 
@@ -56,6 +56,7 @@ namespace StubbUnity.StubbFramework
         {
             RootSystems.Destroy();
             RootSystems = null;
+            _debugger = null;
             
             if (_world != null && _world.IsAlive())
             {

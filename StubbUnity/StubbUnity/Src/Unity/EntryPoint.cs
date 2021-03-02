@@ -1,4 +1,5 @@
 using Leopotam.Ecs;
+using Leopotam.Ecs.Ui.Systems;
 using StubbUnity.StubbFramework;
 using StubbUnity.StubbFramework.Debugging;
 using StubbUnity.StubbFramework.Logging;
@@ -14,10 +15,12 @@ namespace StubbUnity.Unity
         private IStubbContext _context;
         private IPhysicsContext _physicsContext;
         private EcsWorld _world;
-        private IStubbDebug _debug;
+        private IEcsDebug _debug;
 
+        // TODO: add possibility turn on/off in editor
+        public bool injectUi;
         public EcsWorld World => _world;
-        public IStubbDebug Debug => _debug;
+        public IEcsDebug Debug => _debug;
 
         private void Awake()
         {
@@ -34,6 +37,14 @@ namespace StubbUnity.Unity
 
         private void Start()
         {
+            if (injectUi)
+            {
+                var emitter = gameObject.GetComponent<EcsUiEmitter>();
+            
+                if (emitter != null)
+                    _context.UserFeature.InternalSystems.InjectUi(emitter);
+            }
+            
             _context.Init();
             _physicsContext?.Init();
         }
@@ -68,7 +79,7 @@ namespace StubbUnity.Unity
         /// <summary>
         /// Override if need custom Debug. 
         /// </summary>
-        protected virtual IStubbDebug CreateDebug()
+        protected virtual IEcsDebug CreateDebug()
         {
             return new UnityEcsDebug();
         }

@@ -8,10 +8,6 @@ namespace StubbUnity.StubbFramework
     {
         public SystemHeadFeature(EcsWorld world, string name = "HeadSystems") : base(world, name)
         {
-        }
-
-        protected override void SetupSystems()
-        {
             Add(new TimeSystem());
             Add(new DelaySystem());
         }

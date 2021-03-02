@@ -9,10 +9,6 @@ namespace StubbUnity.StubbFramework.Scenes
     {
         public SceneFeature(EcsWorld world, string name = null, bool isEnable = true) : base(world, name, isEnable)
         {
-        }
-
-        protected override void SetupSystems()
-        {
             Add(new LoadScenesSystem());
             Add(new LoadingScenesProgressSystem());
 
