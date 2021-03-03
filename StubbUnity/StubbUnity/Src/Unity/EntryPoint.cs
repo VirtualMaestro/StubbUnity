@@ -16,8 +16,8 @@ namespace StubbUnity.Unity
         private IPhysicsContext _physicsContext;
         private IEcsDebug _debug;
 
-        // TODO: add possibility turn on/off in editor
-        public bool injectUi;
+        [Tooltip("Enable UI events emitter to provide ui events to ecs tier")]
+        public bool enableUiEmitter;
         public EcsWorld World => _context.World;
         public IEcsDebug Debug => _debug;
 
@@ -36,7 +36,7 @@ namespace StubbUnity.Unity
 
         private void Start()
         {
-            if (injectUi)
+            if (enableUiEmitter)
             {
                 var emitter = gameObject.GetComponent<EcsUiEmitter>();
             

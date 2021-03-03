@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using StubbUnity.Unity.Extensions;
 using StubbUnity.Unity.Physics.Collisions;
 using StubbUnity.Unity.Physics.Settings;
@@ -49,7 +48,6 @@ namespace StubbUnity.Unity.Editor
             _CheckCollisionExit2D(collisionProperties.Exit2D, gameObject);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckTriggerEnter(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -65,7 +63,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckTriggerEnter2D(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -81,7 +78,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckTriggerStay(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -97,7 +93,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckTriggerStay2D(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -113,7 +108,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckTriggerExit(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -129,7 +123,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckTriggerExit2D(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -145,7 +138,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckCollisionEnter(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -161,7 +153,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckCollisionEnter2D(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -177,7 +168,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckCollisionStay(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -193,7 +183,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckCollisionStay2D(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -209,7 +198,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckCollisionExit(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
@@ -225,7 +213,6 @@ namespace StubbUnity.Unity.Editor
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _CheckCollisionExit2D(bool isEnabled, GameObject gameObject)
         {
             if (isEnabled)
