@@ -1,7 +1,7 @@
 ﻿using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Common;
 
-namespace StubbUnity.StubbFramework
+namespace StubbUnity.StubbFramework.Core
 {
     public interface IStubbContext : IDispose
     {

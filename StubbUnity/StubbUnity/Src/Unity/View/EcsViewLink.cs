@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
-using StubbUnity.StubbFramework;
+using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.View;
 using StubbUnity.StubbFramework.View.Components;
 using StubbUnity.Unity.Physics.Settings;

@@ -1,7 +1,7 @@
 using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Debugging;
 
-namespace StubbUnity.StubbFramework
+namespace StubbUnity.StubbFramework.Core
 {
     public class StubbContext : IStubbContext
     {

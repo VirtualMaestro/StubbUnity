@@ -1,4 +1,5 @@
 using Leopotam.Ecs;
+using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Scenes.Components;
 using StubbUnity.StubbFramework.Scenes.Events;
 using StubbUnity.StubbFramework.Scenes.Systems;

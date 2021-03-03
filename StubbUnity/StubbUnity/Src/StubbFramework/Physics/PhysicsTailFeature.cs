@@ -1,4 +1,5 @@
 using Leopotam.Ecs;
+using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Physics.Systems;
 
 namespace StubbUnity.StubbFramework.Physics

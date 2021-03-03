@@ -3,7 +3,7 @@ using StubbUnity.StubbFramework.Remove.Systems;
 using StubbUnity.StubbFramework.Scenes;
 using StubbUnity.StubbFramework.View.Systems;
 
-namespace StubbUnity.StubbFramework
+namespace StubbUnity.StubbFramework.Core
 {
     public class SystemTailFeature : EcsFeature
     {

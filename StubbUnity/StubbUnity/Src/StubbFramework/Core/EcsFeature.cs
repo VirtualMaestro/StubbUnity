@@ -1,7 +1,7 @@
 ﻿using System;
 using Leopotam.Ecs;
 
-namespace StubbUnity.StubbFramework
+namespace StubbUnity.StubbFramework.Core
 {
     public class EcsFeature : IEcsSystem
     {

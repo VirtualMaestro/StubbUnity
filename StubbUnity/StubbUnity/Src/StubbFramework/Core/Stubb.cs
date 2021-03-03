@@ -2,7 +2,7 @@
 using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Physics;
 
-namespace StubbUnity.StubbFramework
+namespace StubbUnity.StubbFramework.Core
 {
     public static class Stubb
     {

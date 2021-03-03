@@ -2,7 +2,7 @@
 using StubbUnity.StubbFramework.Delay.Systems;
 using StubbUnity.StubbFramework.Time.Systems;
 
-namespace StubbUnity.StubbFramework
+namespace StubbUnity.StubbFramework.Core
 {
     public class SystemHeadFeature : EcsFeature
     {

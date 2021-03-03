@@ -1,5 +1,5 @@
 using Leopotam.Ecs;
-using StubbUnity.StubbFramework;
+using StubbUnity.StubbFramework.Core;
 
 namespace StubbUnity.Unity
 {
