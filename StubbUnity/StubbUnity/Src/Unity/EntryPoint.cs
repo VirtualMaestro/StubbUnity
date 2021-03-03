@@ -31,11 +31,6 @@ namespace StubbUnity.Unity
             
             SetupFeatures(_context);
             
-            DontDestroyOnLoad(gameObject);
-        }
-
-        private void Start()
-        {
             if (enableUiEmitter)
             {
                 var emitter = gameObject.GetComponent<EcsUiEmitter>();
@@ -46,6 +41,8 @@ namespace StubbUnity.Unity
             
             _context.Init();
             _physicsContext?.Init();
+            
+            DontDestroyOnLoad(gameObject);
         }
 
         /// <summary>
