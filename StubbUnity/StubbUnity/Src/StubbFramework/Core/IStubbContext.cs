@@ -11,7 +11,7 @@ namespace StubbUnity.StubbFramework.Core
         void Run();
 
         EcsFeature HeadFeature { get; set; }
-        EcsFeature UserFeature { get; set; }
+        EcsFeature MainFeature { get; set; }
         EcsFeature TailFeature { get; set; }
     }
 }

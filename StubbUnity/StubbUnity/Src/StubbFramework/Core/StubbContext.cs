@@ -11,11 +11,17 @@ namespace StubbUnity.StubbFramework.Core
         protected EcsSystems RootSystems;
 
         public EcsFeature HeadFeature { get; set; }
-        public EcsFeature UserFeature { get; set; }
+        public EcsFeature MainFeature { get; set; }
         public EcsFeature TailFeature { get; set; }
 
         public bool IsDisposed => _world == null;
         public EcsWorld World => _world;
+
+        public StubbContext() : this(new EcsWorld())
+        { }
+
+        public StubbContext(IEcsDebug debug) : this(new EcsWorld(), debug)
+        { }
 
         public StubbContext(EcsWorld world, IEcsDebug debug = null)
         {
@@ -37,7 +43,7 @@ namespace StubbUnity.StubbFramework.Core
         public void Init()
         {
             HeadFeature?.Init(RootSystems);
-            UserFeature?.Init(RootSystems);
+            MainFeature?.Init(RootSystems);
             TailFeature?.Init(RootSystems);
 
             _debugger?.Init(RootSystems, World);

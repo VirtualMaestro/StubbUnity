@@ -19,9 +19,21 @@ namespace StubbUnity.StubbFramework.Core
         public string Name { get; }
         public EcsWorld World => _world;
 
+        public EcsFeature() : this(null)
+        { }
+
+        public EcsFeature(bool isEnable) : this(null, null, isEnable)
+        { }
+        
+        public EcsFeature(EcsWorld world, bool isEnable) : this(world, null, isEnable)
+        { }
+        
+        public EcsFeature(string name, bool isEnable) : this(null, name, isEnable)
+        { }
+        
         public EcsFeature(EcsWorld world, string name = null, bool isEnable = true)
         {
-            _world = world;
+            _world = world ?? Stubb.World;
             Name = name ?? GetType().Name;
             _isEnable = isEnable;
 

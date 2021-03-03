@@ -1,6 +1,5 @@
 using Leopotam.Ecs;
 using Leopotam.Ecs.Ui.Systems;
-using StubbUnity.StubbFramework;
 using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Debugging;
 using StubbUnity.StubbFramework.Logging;
@@ -15,24 +14,23 @@ namespace StubbUnity.Unity
     {
         private IStubbContext _context;
         private IPhysicsContext _physicsContext;
-        private EcsWorld _world;
         private IEcsDebug _debug;
 
         // TODO: add possibility turn on/off in editor
         public bool injectUi;
-        public EcsWorld World => _world;
+        public EcsWorld World => _context.World;
         public IEcsDebug Debug => _debug;
 
         private void Awake()
         {
             log.AddAppender(UnityLogAppender.LogDelegate);
 
-            _world = CreateWorld();
             _debug = CreateDebug();
             _context = CreateContext();
-
             _physicsContext = CreatePhysicsContext();
-
+            
+            SetupFeatures(_context);
+            
             DontDestroyOnLoad(gameObject);
         }
 
@@ -43,7 +41,7 @@ namespace StubbUnity.Unity
                 var emitter = gameObject.GetComponent<EcsUiEmitter>();
             
                 if (emitter != null)
-                    _context.UserFeature.InternalSystems.InjectUi(emitter);
+                    _context.MainFeature.InternalSystems.InjectUi(emitter);
             }
             
             _context.Init();
@@ -55,26 +53,16 @@ namespace StubbUnity.Unity
         /// </summary>
         protected virtual IStubbContext CreateContext()
         {
-            var context = new StubbContext(World, Debug);
+            return new StubbContext(Debug);
+        }
+
+        /// <summary>
+        /// Have to be overriden by user for main feature or for all (Head, Main, Tail).
+        /// </summary>
+        protected virtual void SetupFeatures(IStubbContext context)
+        {
             context.HeadFeature = new UnityHeadFeature(World);
             context.TailFeature = new UnityTailFeature(World);
-            return context;
-        }
-
-        /// <summary>
-        /// Override if need custom World. 
-        /// </summary>
-        protected virtual EcsWorld CreateWorld()
-        {
-            return new EcsWorld(CreateWorldConfig());
-        }
-
-        /// <summary>
-        /// Override if need custom WorldConfig. 
-        /// </summary>
-        protected virtual EcsWorldConfig CreateWorldConfig()
-        {
-            return default;
         }
 
         /// <summary>
