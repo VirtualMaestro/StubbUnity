@@ -23,7 +23,7 @@ task copySrc (type: Copy) {
     exclude 'build'
     exclude '**/*.git'
 
-    into "build"
+    into "build/Stubb"
 }
 
 task createZip (type: Zip) {
