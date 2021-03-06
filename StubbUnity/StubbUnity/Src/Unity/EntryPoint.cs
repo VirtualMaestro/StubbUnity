@@ -5,6 +5,7 @@ using StubbUnity.StubbFramework.Debugging;
 using StubbUnity.StubbFramework.Logging;
 using StubbUnity.StubbFramework.Physics;
 using StubbUnity.Unity.Debugging;
+using StubbUnity.Unity.Features;
 using StubbUnity.Unity.Logging;
 using UnityEngine;
 

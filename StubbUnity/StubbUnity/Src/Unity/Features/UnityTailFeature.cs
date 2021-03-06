@@ -3,7 +3,7 @@ using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Scenes.Components;
 using StubbUnity.Unity.Services;
 
-namespace StubbUnity.Unity
+namespace StubbUnity.Unity.Features
 {
     public class UnityTailFeature : SystemTailFeature, IEcsInitSystem
     {

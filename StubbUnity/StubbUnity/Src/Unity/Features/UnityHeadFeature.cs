@@ -1,7 +1,7 @@
 using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Core;
 
-namespace StubbUnity.Unity
+namespace StubbUnity.Unity.Features
 {
     public class UnityHeadFeature : SystemHeadFeature
     {
