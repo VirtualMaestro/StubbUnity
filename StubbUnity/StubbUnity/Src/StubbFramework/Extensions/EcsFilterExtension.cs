@@ -7,14 +7,13 @@ namespace StubbUnity.StubbFramework.Extensions
     public static class EcsFilterExtension
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T Single<T>(this EcsFilter<T> filter) where T : struct
+        public static ref T Single<T>(this EcsFilter<T> filter, in int idx = 0) where T : struct
         {
 #if DEBUG
             if (filter.IsEmpty()) throw new System.Exception($"EcsFilterExtension.Single. Filter with type {typeof(T)} is empty!");
             if (filter.GetEntitiesCount() > 1) throw new System.Exception($"EcsFilterExtension.Single. Filter with type {typeof(T)} is used as single but contains more than one entity!");
 #endif
-            
-            return filter.Get1(0);
+            return ref filter.Get1(idx);
         }
 
         /// <summary>

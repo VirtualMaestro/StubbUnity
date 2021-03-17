@@ -18,7 +18,7 @@ namespace StubbUnity.StubbFramework.Delay.Systems
         {
             if (_filterDelay.IsEmpty()) return;
             
-            var time = _filterTime.Single();
+            ref var time = ref _filterTime.Single();
 
             foreach (var index in _filterDelay)
             {
