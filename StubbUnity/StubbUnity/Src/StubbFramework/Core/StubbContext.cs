@@ -1,3 +1,4 @@
+using System;
 using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Debugging;
 
@@ -38,6 +39,14 @@ namespace StubbUnity.StubbFramework.Core
         {
             HeadFeature = new SystemHeadFeature(World);
             TailFeature = new SystemTailFeature(World);
+        }
+                
+        /// <summary>
+        /// Injects data globally (for root system and all child systems).
+        /// </summary>
+        public void Inject(object data, Type overridenType = null)
+        {
+            RootSystems.Inject(data, overridenType);
         }
 
         public void Init()
