@@ -30,37 +30,62 @@ namespace StubbUnity.Unity
             _context = CreateContext();
             _physicsContext = CreatePhysicsContext();
             
-            SetupFeatures(_context);
+            Construct(_context);
+
+            if (!enableUiEmitter) return;
             
-            if (enableUiEmitter)
-            {
-                var emitter = gameObject.GetComponent<EcsUiEmitter>();
+            var emitter = gameObject.GetComponent<EcsUiEmitter>();
             
-                if (emitter != null)
-                    _context.MainFeature.InternalSystems.InjectUi(emitter);
-            }
+            if (emitter != null)
+                _context.MainFeature.InternalSystems.InjectUi(emitter);
+        }
+
+        private void Start()
+        {
+            Initialize(_context);
             
             _context.Init();
             _physicsContext?.Init();
             
             DontDestroyOnLoad(gameObject);
+            
+            PostInitialize(_context);
         }
 
+        /// <summary>
+        /// Have to be overriden by user for main feature or for all (Head, Main, Tail).
+        /// It is called in the Awake phase before context and systems were initialized.
+        /// </summary>
+        protected virtual void Construct(IStubbContext context)
+        {
+            context.HeadFeature = new UnityHeadFeature(World);
+            context.TailFeature = new UnityTailFeature(World);
+        }
+
+        /// <summary>
+        /// It is called in the Start phase before context and system were initialized and share data injected.
+        /// It is used if some data should be injected or any other initializations.
+        /// </summary>
+        protected virtual void Initialize(IStubbContext context)
+        {
+            
+        }
+        
+        /// <summary>
+        /// It is called in the Start phase after context and all systems were initialized and share data injected,
+        /// but before the first update invocation.
+        /// </summary>
+        protected virtual void PostInitialize(IStubbContext context)
+        {
+            
+        }
+        
         /// <summary>
         /// Override if need custom context. 
         /// </summary>
         protected virtual IStubbContext CreateContext()
         {
             return new StubbContext(Debug);
-        }
-
-        /// <summary>
-        /// Have to be overriden by user for main feature or for all (Head, Main, Tail).
-        /// </summary>
-        protected virtual void SetupFeatures(IStubbContext context)
-        {
-            context.HeadFeature = new UnityHeadFeature(World);
-            context.TailFeature = new UnityTailFeature(World);
         }
 
         /// <summary>

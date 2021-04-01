@@ -1,5 +1,7 @@
+using System;
 using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Debugging;
+using StubbUnity.StubbFramework.Time;
 
 namespace StubbUnity.StubbFramework.Core
 {
@@ -39,6 +41,14 @@ namespace StubbUnity.StubbFramework.Core
             HeadFeature = new SystemHeadFeature(World);
             TailFeature = new SystemTailFeature(World);
         }
+                
+        /// <summary>
+        /// Injects data globally (for root system and all child systems).
+        /// </summary>
+        public void Inject(object data, Type overridenType = null)
+        {
+            RootSystems.Inject(data, overridenType);
+        }
 
         public void Init()
         {
@@ -47,6 +57,8 @@ namespace StubbUnity.StubbFramework.Core
             TailFeature?.Init(RootSystems);
 
             _debugger?.Init(RootSystems, World);
+
+            _InjectServices();
 
             RootSystems.ProcessInjects();
             RootSystems.Init();
@@ -69,6 +81,11 @@ namespace StubbUnity.StubbFramework.Core
                 _world.Destroy();
                 _world = null;
             }
+        }
+        
+        private void _InjectServices()
+        {
+            Inject(ServiceMapper<ITimeService>.Get());
         }
     }
 }

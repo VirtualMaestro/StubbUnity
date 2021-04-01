@@ -1,7 +1,6 @@
 ﻿using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Delay.Components;
-using StubbUnity.StubbFramework.Extensions;
-using StubbUnity.StubbFramework.Time.Components;
+using StubbUnity.StubbFramework.Time;
 
 namespace StubbUnity.StubbFramework.Delay.Systems
 {
@@ -12,19 +11,17 @@ namespace StubbUnity.StubbFramework.Delay.Systems
     public sealed class DelaySystem : IEcsRunSystem
     {
         private EcsFilter<DelayComponent> _filterDelay;
-        private EcsFilter<TimeComponent> _filterTime;
+        private ITimeService _timeService;
 
         public void Run()
         {
             if (_filterDelay.IsEmpty()) return;
-            
-            ref var time = ref _filterTime.Single();
 
             foreach (var index in _filterDelay)
             {
-                var delay = _filterDelay.Get1(index);
+                ref var delay = ref _filterDelay.Get1(index);
                 delay.Frames--;
-                delay.Milliseconds -= time.TimeStep;
+                delay.Milliseconds -= _timeService.TimeStep;
 
                 if (delay.Frames <= 0 && delay.Milliseconds <= 0)
                 {
