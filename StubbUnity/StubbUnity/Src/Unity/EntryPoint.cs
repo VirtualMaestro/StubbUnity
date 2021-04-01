@@ -1,6 +1,7 @@
 using Leopotam.Ecs;
 using Leopotam.Ecs.Ui.Systems;
 using StubbUnity.StubbFramework.Core;
+using StubbUnity.StubbFramework.Core.Events;
 using StubbUnity.StubbFramework.Debugging;
 using StubbUnity.StubbFramework.Logging;
 using StubbUnity.StubbFramework.Physics;
@@ -127,6 +128,36 @@ namespace StubbUnity.Unity
         private void _MapServices()
         {
             ServiceMapper<ISceneService>.Map(typeof(SceneService));
+        }
+
+        private bool _hasFocus = true;
+        private bool _isPaused = false;
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (hasFocus == _hasFocus) return;
+
+            _hasFocus = hasFocus;
+            if (_hasFocus)
+                World.NewEntity().Get<ApplicationFocusOnEvent>();
+            else
+                World.NewEntity().Get<ApplicationFocusOffEvent>();
+        }
+
+        private void OnApplicationPause(bool isPaused)
+        {
+            if (isPaused == _isPaused) return;
+
+            _isPaused = isPaused;
+            if (_isPaused)
+                World.NewEntity().Get<ApplicationPauseOnEvent>();
+            else
+                World.NewEntity().Get<ApplicationPauseOffEvent>();
+        }
+
+        private void OnApplicationQuit()
+        {
+            World.NewEntity().Get<ApplicationQuitEvent>();
         }
     }
 }
