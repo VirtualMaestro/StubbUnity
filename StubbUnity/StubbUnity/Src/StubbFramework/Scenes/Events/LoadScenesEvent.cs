@@ -8,10 +8,6 @@ namespace StubbUnity.StubbFramework.Scenes.Events
     /// Event-component is sent when need to load one or bunch scenes. Will be removed at the end of the loop
     /// For convenience use World.LoadScenes().
     /// </summary>
-#if ENABLE_IL2CPP
-    [Unity.IL2CPP.CompilerServices.Il2CppSetOption (Unity.IL2CPP.CompilerServices.Option.NullChecks, false)]
-    [Unity.IL2CPP.CompilerServices.Il2CppSetOption (Unity.IL2CPP.CompilerServices.Option.ArrayBoundsChecks, false)]
-#endif
     public struct LoadScenesEvent
     {
         /// <summary>
