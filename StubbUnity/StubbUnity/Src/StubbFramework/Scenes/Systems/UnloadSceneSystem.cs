@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
-using StubbUnity.StubbFramework.Extensions;
 using StubbUnity.StubbFramework.Remove.Components;
 using StubbUnity.StubbFramework.Scenes.Components;
+using StubbUnity.StubbFramework.Scenes.Services;
 
 namespace StubbUnity.StubbFramework.Scenes.Systems
 {
@@ -14,8 +14,8 @@ namespace StubbUnity.StubbFramework.Scenes.Systems
     {
         private EcsFilter<SceneComponent, SceneUnloadingComponent> _unloadingScenesFilter;
         private EcsFilter<SceneComponent, RemoveEntityComponent>.Exclude<SceneUnloadingComponent> _unloadScenesFilter;
-        private EcsFilter<SceneServiceComponent> _serviceFilter;
         private EcsWorld _world;
+        private ISceneService _sceneService;
 
         public void Run()
         {
@@ -27,14 +27,13 @@ namespace StubbUnity.StubbFramework.Scenes.Systems
         private void _MarkRemoved()
         {
             if (_unloadingScenesFilter.IsEmpty()) return;
-            var service = _serviceFilter.Single().SceneService;
 
             foreach (var idx in _unloadingScenesFilter)
             {
                 _unloadingScenesFilter.GetEntity(idx).Get<RemoveEntityComponent>();
 
                 var controller = _unloadingScenesFilter.Get1(idx).Scene;
-                service.Unload(controller);
+                _sceneService.Unload(controller);
                 controller.Dispose();
             }
         }

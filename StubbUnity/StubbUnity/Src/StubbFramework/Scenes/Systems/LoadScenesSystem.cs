@@ -1,7 +1,7 @@
 ﻿using Leopotam.Ecs;
-using StubbUnity.StubbFramework.Extensions;
 using StubbUnity.StubbFramework.Scenes.Components;
 using StubbUnity.StubbFramework.Scenes.Events;
+using StubbUnity.StubbFramework.Scenes.Services;
 
 namespace StubbUnity.StubbFramework.Scenes.Systems
 {
@@ -13,18 +13,17 @@ namespace StubbUnity.StubbFramework.Scenes.Systems
     {
         private EcsWorld World;
         private EcsFilter<LoadScenesEvent> _loadScenesFilter;
-        private EcsFilter<SceneServiceComponent> _sceneServiceFilter;
+        private ISceneService _sceneService;
 
         public void Run()
         {
             if (_loadScenesFilter.IsEmpty()) return;
-            var sceneService = _sceneServiceFilter.Single().SceneService;
 
             foreach (var idx in _loadScenesFilter)
             {
                 ref var loadScenes = ref _loadScenesFilter.Get1(idx);
                 ref var activeLoadingScenes = ref World.NewEntity().Get<ActiveLoadingScenesComponent>();
-                activeLoadingScenes.Progresses = sceneService.Load(loadScenes.LoadingScenes);
+                activeLoadingScenes.Progresses = _sceneService.Load(loadScenes.LoadingScenes);
                 activeLoadingScenes.UnloadScenes = loadScenes.UnloadingScenes;
                 activeLoadingScenes.UnloadOthers = loadScenes.UnloadOthers;
             }

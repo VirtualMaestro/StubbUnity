@@ -5,6 +5,7 @@ using StubbUnity.StubbFramework.Extensions;
 using StubbUnity.StubbFramework.Remove.Components;
 using StubbUnity.StubbFramework.Scenes.Components;
 using StubbUnity.StubbFramework.Scenes.Configurations;
+using StubbUnity.StubbFramework.Scenes.Services;
 
 namespace StubbUnity.StubbFramework.Scenes.Systems
 {
@@ -16,7 +17,7 @@ namespace StubbUnity.StubbFramework.Scenes.Systems
     {
         private readonly EcsWorld World = null;
         private readonly EcsFilter<ActiveLoadingScenesComponent> _loadingFilter = null;
-        private readonly EcsFilter<SceneServiceComponent> _sceneServiceFilter = null;
+        private ISceneService _sceneService;
 
         public void Run()
         {
@@ -46,11 +47,9 @@ namespace StubbUnity.StubbFramework.Scenes.Systems
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _ProcessScenes(List<ISceneLoadingProgress> progresses)
         {
-            var service = _sceneServiceFilter.Single().SceneService;
-
             foreach (var progress in progresses)
             {
-                var controller = service.GetLoadedSceneController(progress);
+                var controller = _sceneService.GetLoadedSceneController(progress);
                 _InitSceneController(controller, progress.Config);
             }
         }
