@@ -4,9 +4,10 @@ using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Debugging;
 using StubbUnity.StubbFramework.Logging;
 using StubbUnity.StubbFramework.Physics;
+using StubbUnity.StubbFramework.Scenes.Services;
 using StubbUnity.Unity.Debugging;
-using StubbUnity.Unity.Features;
 using StubbUnity.Unity.Logging;
+using StubbUnity.Unity.Services;
 using UnityEngine;
 
 namespace StubbUnity.Unity
@@ -29,7 +30,8 @@ namespace StubbUnity.Unity
             _debug = CreateDebug();
             _context = CreateContext();
             _physicsContext = CreatePhysicsContext();
-            
+
+            _MapServices();
             Construct(_context);
 
             if (!enableUiEmitter) return;
@@ -58,8 +60,7 @@ namespace StubbUnity.Unity
         /// </summary>
         protected virtual void Construct(IStubbContext context)
         {
-            context.HeadFeature = new UnityHeadFeature(World);
-            context.TailFeature = new UnityTailFeature(World);
+            
         }
 
         /// <summary>
@@ -118,6 +119,14 @@ namespace StubbUnity.Unity
         {
             _context.Dispose();
             _physicsContext?.Dispose();
+        }
+
+        /// <summary>
+        /// Maps Unity specific services.
+        /// </summary>
+        private void _MapServices()
+        {
+            ServiceMapper<ISceneService>.Map(typeof(SceneService));
         }
     }
 }
