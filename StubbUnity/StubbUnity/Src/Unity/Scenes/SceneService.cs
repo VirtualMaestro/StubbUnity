@@ -7,10 +7,9 @@ using StubbUnity.StubbFramework.Scenes;
 using StubbUnity.StubbFramework.Scenes.Configurations;
 using StubbUnity.StubbFramework.Scenes.Services;
 using StubbUnity.Unity.Extensions;
-using StubbUnity.Unity.Scenes;
 using UnityEngine.SceneManagement;
 
-namespace StubbUnity.Unity.Services
+namespace StubbUnity.Unity.Scenes
 {
     /// <summary>
     /// This service mostly for internal use.

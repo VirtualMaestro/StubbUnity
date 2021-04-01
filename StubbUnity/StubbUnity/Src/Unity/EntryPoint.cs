@@ -7,7 +7,7 @@ using StubbUnity.StubbFramework.Physics;
 using StubbUnity.StubbFramework.Scenes.Services;
 using StubbUnity.Unity.Debugging;
 using StubbUnity.Unity.Logging;
-using StubbUnity.Unity.Services;
+using StubbUnity.Unity.Scenes;
 using UnityEngine;
 
 namespace StubbUnity.Unity
