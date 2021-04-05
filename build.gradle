@@ -1,4 +1,4 @@
-def testFolder = "c:\\workspace\\Work\\Projects\\StubbExample\\StubbExample\\Assets\\Libs\\"
+def testFolder = "..\\StubbExample\\StubbExample\\Assets\\Libs\\"
 
 task cleanBefore (type: Delete) {
     println 'Cleanup before build'
