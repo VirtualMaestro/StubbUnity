@@ -4,6 +4,7 @@ using StubbUnity.StubbFramework.Common.Names;
 using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Logging;
 using StubbUnity.StubbFramework.Scenes;
+using StubbUnity.StubbFramework.Scenes.Components;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,7 +15,8 @@ namespace StubbUnity.Unity.Scenes
         [SerializeField] private GameObject content;
         private Scene _scene;
         private EcsEntity _entity = EcsEntity.Null;
-
+        private bool _shouldBeShown = true;
+        
         protected EcsWorld World { get; private set; }
 
         public Scene Scene => _scene;
@@ -24,17 +26,30 @@ namespace StubbUnity.Unity.Scenes
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public bool IsDisposed { get; private set; }
 
-        private void Start()
+        private void Awake()
         {
-            IsDisposed = false;
             World = Stubb.World;
+            IsDisposed = false;
             _scene = gameObject.scene;
             SceneName = new SceneName(_scene.name, _scene.path);
+        }
 
+        private void Start()
+        {
             if (content == null)
                 throw new Exception($"Content wasn't set for the controller of the scene '{SceneName}'!");
 
             Initialize();
+
+            // create ECS binding
+            _entity = World.NewEntity();
+            _entity.Get<SceneComponent>().Scene = this;
+            _entity.Get<SceneReadyComponent>();
+
+            if (_shouldBeShown)
+                _Show();
+            else
+                _Hide();
         }
 
         /// <summary>
@@ -51,18 +66,41 @@ namespace StubbUnity.Unity.Scenes
 
         public void ShowContent()
         {
-            if (!IsDisposed && IsContentActive == false)
-            {
-                content.SetActive(true);
-            }
+            _shouldBeShown = true;
+            if (IsDisposed || IsContentActive || !HasEntity) return;
+
+            _Show();
+        }
+
+        private void _Show()
+        {
+            content.SetActive(true);
+            
+            if (_entity.Has<IsSceneInactiveComponent>())
+                _entity.Del<IsSceneInactiveComponent>();
+
+            _entity.Get<IsSceneActiveComponent>();
+            _entity.Get<SceneBecomeActiveComponent>();
         }
 
         public void HideContent()
         {
-            if (!IsDisposed && IsContentActive)
-            {
-                content.SetActive(false);
-            }
+            _shouldBeShown = false;
+            
+            if (IsDisposed || !IsContentActive || !HasEntity) return;
+            
+            _Hide();
+        }
+
+        private void _Hide()
+        {
+            content.SetActive(false);
+            
+            if (_entity.Has<IsSceneActiveComponent>())
+                _entity.Del<IsSceneActiveComponent>();
+                
+            _entity.Get<IsSceneInactiveComponent>();
+            _entity.Get<SceneBecomeInactiveComponent>();
         }
 
         public void SetEntity(ref EcsEntity entity)
@@ -87,6 +125,9 @@ namespace StubbUnity.Unity.Scenes
                     $"SceneController.Destroy. Controller with scene '{SceneName.FullName}' is already destroyed!");
                 return;
             }
+            
+            if (HasEntity)
+                _entity.Destroy();
 
             IsDisposed = true;
         }

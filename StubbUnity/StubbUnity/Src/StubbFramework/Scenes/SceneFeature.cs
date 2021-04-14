@@ -10,30 +10,22 @@ namespace StubbUnity.StubbFramework.Scenes
     {
         public SceneFeature(EcsWorld world, string name = null, bool isEnable = true) : base(world, name, isEnable)
         {
-            Add(new LoadScenesSystem());
-            Add(new LoadingScenesProgressSystem());
+            Add(new ProcessScenesSystem());
 
-            Add(new UnloadScenesByNamesSystem());
-            Add(new UnloadAllScenesSystem());
-            Add(new UnloadNonNewScenesSystem());
-            Add(new UnloadSceneSystem());
+            OneFrame<SceneBecomeActiveComponent>();
+            OneFrame<SceneBecomeInactiveComponent>();
 
-            OneFrame<SceneChangedStateComponent>();
-
-            Add(new ChangeSceneStateByNameSystem());
             Add(new ActivateSceneSystem());
             Add(new DeactivateSceneSystem());
 
-            OneFrame<ActivateSceneComponent>();
-            OneFrame<DeactivateSceneComponent>();
-            OneFrame<SceneLoadedComponent>();
-
-            OneFrame<LoadScenesEvent>();
-            OneFrame<ActivateSceneByNameEvent>();
-            OneFrame<DeactivateSceneByNameEvent>();
-            OneFrame<UnloadNonNewScenesEvent>();
-            OneFrame<UnloadAllScenesEvent>();
-            OneFrame<UnloadScenesByNamesEvent>();
+            OneFrame<ScenesSetLoadingCompleteEvent>();
+            OneFrame<ScenesSetUnloadingCompleteEvent>();
+            OneFrame<SceneUnloadingCompleteEvent>();
+            OneFrame<SceneReadyComponent>();
+            
+            OneFrame<ProcessScenesEvent>();
+            OneFrame<ActivateSceneEvent>();
+            OneFrame<DeactivateSceneEvent>();
         }
     }
 }

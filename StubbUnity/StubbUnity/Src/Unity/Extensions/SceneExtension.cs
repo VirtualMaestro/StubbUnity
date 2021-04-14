@@ -26,6 +26,11 @@ namespace StubbUnity.Unity.Extensions
 
             return null;
         }
+
+        public static bool IsNameEqual(this Scene scene, IAssetName name)
+        {
+            return scene.path.Equals(name.FullName);
+        }
         
         public static bool HasScene(this EcsWorld world, in IAssetName sceneName)
         {

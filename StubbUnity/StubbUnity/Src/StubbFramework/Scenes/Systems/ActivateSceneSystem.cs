@@ -1,5 +1,6 @@
 ﻿using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Scenes.Components;
+using StubbUnity.StubbFramework.Scenes.Events;
 
 namespace StubbUnity.StubbFramework.Scenes.Systems
 {
@@ -9,25 +10,29 @@ namespace StubbUnity.StubbFramework.Scenes.Systems
 #endif
     public sealed class ActivateSceneSystem : IEcsRunSystem
     {
-        private EcsFilter<SceneComponent, IsSceneInactiveComponent, ActivateSceneComponent> _activateFilter;
+        private EcsFilter<ActivateSceneEvent> _activateEventFilter;
+        private EcsFilter<SceneComponent, IsSceneInactiveComponent> _inactiveScenesFilter;
 
         public void Run()
         {
-            if (_activateFilter.IsEmpty()) return;
+            if (_activateEventFilter.IsEmpty() || _inactiveScenesFilter.IsEmpty()) return;
 
-            foreach (var idx in _activateFilter)
+            foreach (var idx in _activateEventFilter)
             {
-                ref var entity = ref _activateFilter.GetEntity(idx);
-                var sceneController = _activateFilter.Get1(idx).Scene;
-                var isMain = _activateFilter.Get3(idx).IsMain;
+                ref var activateEvent = ref _activateEventFilter.Get1(idx);
 
-                entity.Del<IsSceneInactiveComponent>();
-                entity.Get<IsSceneActiveComponent>();
-                entity.Get<SceneChangedStateComponent>();
+                foreach (var idx1 in _inactiveScenesFilter)
+                {
+                    var sceneController = _inactiveScenesFilter.Get1(idx1).Scene;
 
-                sceneController.ShowContent();
+                    if (sceneController.SceneName.Equals(activateEvent.SceneName))
+                    {
+                        sceneController.ShowContent();
 
-                if (isMain) sceneController.SetAsMain();
+                        if (activateEvent.IsMain)
+                            sceneController.SetAsMain();
+                    }
+                }
             }
         }
     }

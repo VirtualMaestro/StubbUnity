@@ -15,7 +15,7 @@ namespace StubbUnity.Unity.Extensions
         /// </summary>
         /// <param name="gameObject"></param>
         /// <returns></returns>
-        public static bool HasView(this GameObject gameObject)
+        public static bool HasViewLink(this GameObject gameObject)
         {
             return gameObject.GetComponent<IEcsViewLink>() != null;
         }
