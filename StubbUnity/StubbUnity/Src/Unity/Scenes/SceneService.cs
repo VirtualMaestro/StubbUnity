@@ -1,102 +1,169 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Common.Names;
-using StubbUnity.StubbFramework.Logging;
-using StubbUnity.StubbFramework.Scenes;
+using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Scenes.Configurations;
+using StubbUnity.StubbFramework.Scenes.Events;
 using StubbUnity.StubbFramework.Scenes.Services;
 using StubbUnity.Unity.Extensions;
 using UnityEngine.SceneManagement;
 
 namespace StubbUnity.Unity.Scenes
 {
-    /// <summary>
-    /// This service mostly for internal use.
-    /// It is action point which should be implemented for specific engine.
-    /// </summary>
     public class SceneService : ISceneService
     {
-        /// <summary>
-        /// Use World.LoadScene(s) if a scene needs to be loaded.
-        /// </summary>
-        public List<ISceneLoadingProgress> Load(in List<ILoadingSceneConfig> configs)
-        {
-            var progresses = new List<ISceneLoadingProgress>(configs.Count);
+        private int _numScenesToUnload;
+        private List<Scene> _activeScenes = new List<Scene>();
 
-            foreach (var sceneConfig in configs)
+        private List<KeyValuePair<ILoadingSceneConfig, Scene>> _loadedConfigs =
+            new List<KeyValuePair<ILoadingSceneConfig, Scene>>();
+
+        private Queue<ProcessSetScenesConfig> _loadingConfigsQueue = new Queue<ProcessSetScenesConfig>();
+        private ProcessSetScenesConfig _currentConfig;
+
+        public void Process(ProcessSetScenesConfig config)
+        {
+            _loadingConfigsQueue.Enqueue(config);
+            if (_currentConfig != null) return;
+
+            _ProcessNextConfig();
+        }
+
+        private void _ProcessNextConfig()
+        {
+            if (_loadingConfigsQueue.Count == 0) return;
+
+            SceneManager.sceneLoaded += _SceneLoaded;
+            SceneManager.sceneUnloaded += _SceneUnloaded;
+
+            _currentConfig = _loadingConfigsQueue.Dequeue();
+            _CollectAllScenesOnStage();
+
+            if (_currentConfig.LoadingList.Count > 0)
+                _Load();
+            else
+                _Unload();
+        }
+
+        private void _CollectAllScenesOnStage()
+        {
+            for (var i = 0; i < SceneManager.sceneCount; i++)
             {
-                // don't allow to load the same scene more than 1 time if multiple is false
-                if (!sceneConfig.IsMultiple && HasScene(sceneConfig.Name)) continue;
-                
-                var async = SceneManager.LoadSceneAsync(sceneConfig.Name.FullName, LoadSceneMode.Additive);
-                progresses.Add(new SceneLoadingProgress(sceneConfig, async));
+                _activeScenes.Add(SceneManager.GetSceneAt(i));
+            }
+        }
+
+        private void _Load()
+        {
+            var loadingScenes = _currentConfig.LoadingList;
+
+            foreach (var config in loadingScenes)
+                SceneManager.LoadSceneAsync(config.Name.FullName, LoadSceneMode.Additive);
+        }
+
+        private void _Unload()
+        {
+            if (_currentConfig.UnloadOthers)
+                _UnloadOthers();
+            else if (_currentConfig.UnloadingList.Count > 0)
+                _UnloadList();
+        }
+
+        private void _SceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            var loadedConfig = _currentConfig.RemoveFromLoadingList(scene.path);
+            _loadedConfigs.Add(new KeyValuePair<ILoadingSceneConfig, Scene>(loadedConfig, scene));
+
+            if (_currentConfig.IsEmpty)
+            {
+                _AllScenesLoaded();
+
+                if (_currentConfig.HasUnloading)
+                    _Unload();
+                else
+                    _SceneSetProcessingComplete();
+            }
+        }
+
+        private void _UnloadOthers()
+        {
+            _numScenesToUnload = _activeScenes.Count;
+
+            foreach (var scene in _activeScenes)
+                SceneManager.UnloadSceneAsync(scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
+        }
+
+        private void _UnloadList()
+        {
+            var sceneNames = _currentConfig.UnloadingList;
+            _numScenesToUnload = sceneNames.Count;
+
+            foreach (var sceneName in sceneNames)
+            {
+                var sceneIndex = _activeScenes.FindIndex(activeScene => activeScene.IsNameEqual(sceneName));
+                var scene = _activeScenes[sceneIndex];
+                SceneManager.UnloadSceneAsync(scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
+                _activeScenes.RemoveAt(sceneIndex);
+            }
+        }
+
+        private void _SceneUnloaded(Scene scene)
+        {
+            --_numScenesToUnload;
+
+            Stubb.World.NewEntity().Get<SceneUnloadingCompleteEvent>().SceneName = scene.path;
+
+            if (_numScenesToUnload == 0)
+            {
+                Stubb.World.NewEntity().Get<ScenesSetUnloadingCompleteEvent>().ScenesSetName = _currentConfig.Name;
+                _SceneSetProcessingComplete();
+            }
+        }
+
+        private void _AllScenesLoaded()
+        {
+            foreach (var scenes in _loadedConfigs)
+            {
+                var config = scenes.Key;
+                var scene = scenes.Value;
+                var sceneController = scene.GetController();
+
+                if (config.IsMain)
+                    sceneController?.SetAsMain();
+
+                if (config.IsActive)
+                    sceneController?.ShowContent();
             }
 
-            return progresses;
+            Stubb.World.NewEntity().Get<ScenesSetLoadingCompleteEvent>().ScenesSetName = _currentConfig.Name;
+        }
+
+        private void _SceneSetProcessingComplete()
+        {
+            SceneManager.sceneLoaded -= _SceneLoaded;
+            SceneManager.sceneUnloaded -= _SceneUnloaded;
+
+            _loadedConfigs.Clear();
+            _loadingConfigsQueue.Clear();
+            _activeScenes.Clear();
+
+            _numScenesToUnload = 0;
+            _currentConfig = null;
+
+            _ProcessNextConfig();
         }
 
         public bool HasScene(in IAssetName sceneName)
         {
-            for (var i = 1; i < SceneManager.sceneCount; i++)
+            for (var i = 0; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
 
-                if (sceneName.FullName.Equals(scene.path)) return true;
+                if (sceneName.FullName.Equals(scene.path))
+                    return true;
             }
 
             return false;
-        }
-
-        public bool IsSceneReady(in IAssetName sceneName)
-        {
-            for (var i = 1; i < SceneManager.sceneCount; i++)
-            {
-                var scene = SceneManager.GetSceneAt(i);
-
-                if (!sceneName.FullName.Equals(scene.path) || !scene.isLoaded) continue;
-                
-                _SceneVerification(scene);
-                return true;
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Use World.UnloadScene(s) if a scene needs to be unloaded.
-        /// </summary>
-        public void Unload(in ISceneController controller)
-        {
-            var scene = ((SceneController) controller).Scene;
-            SceneManager.UnloadSceneAsync(scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
-        }
-
-        public ISceneController GetLoadedSceneController(ISceneLoadingProgress progress)
-        {
-            // start from 1, skip first scene which is root
-            for (var i = 1; i < SceneManager.sceneCount; i++)
-            {
-                var scene = SceneManager.GetSceneAt(i);
-                _SceneVerification(scene);
-
-                var controller = scene.GetController();
-
-                // is this scene new loaded
-                if (controller == null || controller.HasEntity) continue;
-                if (progress.Config.Name.Equals(controller.SceneName)) return controller;
-            }
-
-            throw new Exception($"Scene '{progress.Config.Name}' wasn't found between loaded scenes!");
-        }
-
-        [Conditional("DEBUG")]
-        private void _SceneVerification(Scene scene)
-        {
-            if (!scene.HasController())
-            {
-                log.Error($"SceneVerification: scene '{scene.path}' doesn't contain SceneController!'");
-            }
         }
     }
 }

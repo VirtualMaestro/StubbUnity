@@ -26,6 +26,7 @@ namespace StubbUnity.StubbFramework.Pooling
 
         public Func<T> CreateMethod
         {
+            get => _createMethod;
             set
             {
                 if (_creator != null)
@@ -40,6 +41,7 @@ namespace StubbUnity.StubbFramework.Pooling
 
         public ICreator<T> Creator
         {
+            get => _creator;
             set
             {
                 _createMethod = null;
@@ -47,16 +49,16 @@ namespace StubbUnity.StubbFramework.Pooling
             }
         }
 
-        public Pool(int initialCapacity = 10)
+        public Pool(int initialCapacity = 5)
         {
-            _initialCapacity = initialCapacity < 10 ? 10 : initialCapacity;
+            _initialCapacity = initialCapacity < 5 ? 5 : initialCapacity;
             _storage = new T[_initialCapacity];
         }
 
         public Pool(int initialCapacity, Func<T> createMethod, bool preWarm = false) : this(initialCapacity)
         {
             _createMethod = createMethod;
-            
+
             if (preWarm)
                 PreWarm(_initialCapacity);
         }
@@ -64,7 +66,7 @@ namespace StubbUnity.StubbFramework.Pooling
         public Pool(int initialCapacity, ICreator<T> creator, bool preWarm = false) : this(initialCapacity)
         {
             _creator = creator;
-            
+
             if (preWarm)
                 PreWarm(_initialCapacity);
         }
@@ -73,7 +75,7 @@ namespace StubbUnity.StubbFramework.Pooling
         {
             T instance;
 
-            if (IsEmpty) 
+            if (IsEmpty)
                 instance = _CreateInstance();
             else
             {
@@ -81,7 +83,7 @@ namespace StubbUnity.StubbFramework.Pooling
                 _creator?.AfterRestore(instance);
                 _storage[_freeToPutIndex] = default;
             }
-            
+
             return instance;
         }
 
@@ -101,7 +103,7 @@ namespace StubbUnity.StubbFramework.Pooling
 
         public void PreWarm(int count)
         {
-            if (count > Available) 
+            if (count > Available)
                 _ResizePool(count - Available);
 
             for (; count > 0; count--)
@@ -113,7 +115,7 @@ namespace StubbUnity.StubbFramework.Pooling
         public void Clear(bool shrink = false)
         {
             _freeToPutIndex = 0;
-            
+
             if (shrink)
             {
                 _storage = new T[_initialCapacity];

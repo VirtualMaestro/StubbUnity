@@ -47,7 +47,7 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
 
         public SceneConfigsBuilder<T, S> IsMultiple(bool value = true)
         {
-            _currentConfig.IsMultiple = value;
+            _currentConfig.IsSingle = value;
             return this;
         }
 

@@ -17,7 +17,7 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
         /// <summary>
         /// Allow this scene to be more than one instance.
         /// </summary>
-        bool IsMultiple { set; get; }
+        bool IsSingle { set; get; }
         
         object Payload { set; get; }
         

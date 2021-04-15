@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Common.Names;
-using StubbUnity.StubbFramework.Remove.Components;
-using StubbUnity.StubbFramework.Scenes;
-using StubbUnity.StubbFramework.Scenes.Components;
 using StubbUnity.StubbFramework.Scenes.Configurations;
 using StubbUnity.StubbFramework.Scenes.Events;
 
@@ -15,38 +11,41 @@ namespace StubbUnity.StubbFramework.Extensions
         /// <summary>
         /// Loads a scene by a config.  
         /// </summary>
-        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config)
+        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, string configName = null)
         {
             var list = new List<ILoadingSceneConfig> {config};
-            LoadScenes(world, list);
+            LoadScenes(world, list, configName);
         }
 
         /// <summary>
         /// Loads a scene by a config and unload scene with a given name.  
         /// </summary>
-        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, IAssetName unloadScene)
+        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, IAssetName unloadScene,
+            string configName = null)
         {
             var loadList = new List<ILoadingSceneConfig> {config};
             var unloadList = new List<IAssetName> {unloadScene};
-            LoadScenes(world, loadList, unloadList);
+            LoadScenes(world, loadList, unloadList, configName);
         }
 
         /// <summary>
         /// Loads a scene by a config and unload scene with a given names.  
         /// </summary>
-        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, List<IAssetName> unloadScenes)
+        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, List<IAssetName> unloadScenes,
+            string configName = null)
         {
             var list = new List<ILoadingSceneConfig> {config};
-            LoadScenes(world, list, unloadScenes);
+            LoadScenes(world, list, unloadScenes, configName);
         }
 
         /// <summary>
         /// Loads a scene by a config and unload others scenes.  
         /// </summary>
-        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, bool unloadOthers)
+        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, bool unloadOthers,
+            string configName = null)
         {
             var list = new List<ILoadingSceneConfig> {config};
-            LoadScenes(world, list, unloadOthers);
+            LoadScenes(world, list, unloadOthers, configName);
         }
 
         /// <summary>
@@ -55,9 +54,11 @@ namespace StubbUnity.StubbFramework.Extensions
         /// </summary>
         /// <param name="world"> Extension to the EcsWorld</param>
         /// <param name="configs">List of the ILoadingSceneConfig to load</param>
-        public static void LoadScenes(this EcsWorld world, List<ILoadingSceneConfig> configs)
+        /// <param name="configName">When bunch of the scenes will be loaded, system will be notified with 'ScenesLoadComplete' component and the only field inside is this configName param, so it is possible to identify which set of scenes was loaded.</param>
+        public static void LoadScenes(this EcsWorld world, List<ILoadingSceneConfig> configs, string configName = null)
         {
-            ref var loadScenes = ref world.NewEntity().Get<LoadScenesEvent>();
+            ref var loadScenes = ref world.NewEntity().Get<ProcessScenesEvent>();
+            loadScenes.Name = configName;
             loadScenes.LoadingScenes = configs;
             loadScenes.UnloadingScenes = null;
             loadScenes.UnloadOthers = false;
@@ -70,10 +71,12 @@ namespace StubbUnity.StubbFramework.Extensions
         /// <param name="world"> Extension to the EcsWorld</param>
         /// <param name="configs">List of the ILoadingSceneConfig to load</param>
         /// <param name="unloadScenes">scenes names which have to unload after given list config of new scenes will be loaded.</param>
+        /// <param name="configName">When bunch of the scenes will be loaded, system will be notified with 'ScenesLoadComplete' component and the only field inside is this configName param, so it is possible to identify which set of scenes was loaded.</param>
         public static void LoadScenes(this EcsWorld world, List<ILoadingSceneConfig> configs,
-            List<IAssetName> unloadScenes)
+            List<IAssetName> unloadScenes, string configName = null)
         {
-            ref var loadScenes = ref world.NewEntity().Get<LoadScenesEvent>();
+            ref var loadScenes = ref world.NewEntity().Get<ProcessScenesEvent>();
+            loadScenes.Name = configName;
             loadScenes.LoadingScenes = configs;
             loadScenes.UnloadingScenes = unloadScenes;
             loadScenes.UnloadOthers = false;
@@ -86,36 +89,23 @@ namespace StubbUnity.StubbFramework.Extensions
         /// <param name="world"> Extension to the EcsWorld</param>
         /// <param name="configs">List of the ILoadingSceneConfig to load</param>
         /// <param name="unloadOthers">if true all current non new scenes will be unloaded</param>
-        public static void LoadScenes(this EcsWorld world, List<ILoadingSceneConfig> configs, bool unloadOthers)
+        /// <param name="configName">When bunch of the scenes will be loaded, system will be notified with 'ScenesLoadComplete' component and the only field inside is this configName param, so it is possible to identify which set of scenes was loaded.</param>
+        public static void LoadScenes(this EcsWorld world, List<ILoadingSceneConfig> configs, bool unloadOthers,
+            string configName = null)
         {
-            ref var loadScenes = ref world.NewEntity().Get<LoadScenesEvent>();
+            ref var loadScenes = ref world.NewEntity().Get<ProcessScenesEvent>();
+            loadScenes.Name = configName;
             loadScenes.LoadingScenes = configs;
-            loadScenes.UnloadingScenes = null;
             loadScenes.UnloadOthers = unloadOthers;
         }
 
         /// <summary>
         /// Unload scene by the given name.
         /// </summary>
-        public static void UnloadScene(this EcsWorld world, IAssetName sceneName)
+        public static void UnloadScene(this EcsWorld world, IAssetName sceneName, string configName = null)
         {
             var list = new List<IAssetName> {sceneName};
-            UnloadScenes(world, list);
-        }
-
-        /// <summary>
-        /// Unload a scene by given ISceneController.
-        /// Throws exception in DEBUG mode if scene is in the unloading process or was already removed.
-        /// </summary>
-        public static void UnloadScene(this EcsWorld world, ISceneController controller)
-        {
-            ref var entity = ref controller.GetEntity();
-#if DEBUG
-            if (controller.IsDisposed || entity.Has<SceneUnloadingComponent>() || entity.Has<RemoveEntityComponent>())
-                throw new Exception(
-                    $"Try to unload scene with name '{controller.SceneName}' which is already in unloading process or was unloaded!");
-#endif
-            entity.Get<RemoveEntityComponent>();
+            UnloadScenes(world, list, configName);
         }
 
         /// <summary>
@@ -123,27 +113,21 @@ namespace StubbUnity.StubbFramework.Extensions
         /// Names of scenes should be specified in full name format (path+name).
         /// UnloadScenesComponent will be sent.
         /// </summary>
-        public static void UnloadScenes(this EcsWorld world, List<IAssetName> sceneNames)
+        public static void UnloadScenes(this EcsWorld world, List<IAssetName> sceneNames, string configName = null)
         {
-            ref var scenes = ref world.NewEntity().Get<UnloadScenesByNamesEvent>();
-            scenes.SceneNames = sceneNames;
+            ref var processScenesEvent = ref world.NewEntity().Get<ProcessScenesEvent>();
+            processScenesEvent.Name = configName;
+            processScenesEvent.UnloadingScenes = sceneNames;
         }
 
         /// <summary>
         /// Removes all current scenes.
         /// </summary>
-        public static void UnloadAllScenes(this EcsWorld world)
+        public static void UnloadAllScenes(this EcsWorld world, string configName = null)
         {
-            world.NewEntity().Get<UnloadAllScenesEvent>();
-        }
-
-        /// <summary>
-        /// Remove all scenes which wasn't mark as new (with NewSceneMarkerComponent).
-        /// </summary>
-        /// <param name="world"></param>
-        public static void UnloadNonNewScenes(this EcsWorld world)
-        {
-            world.NewEntity().Get<UnloadNonNewScenesEvent>();
+            ref var processScenesEvent = ref world.NewEntity().Get<ProcessScenesEvent>();
+            processScenesEvent.Name = configName;
+            processScenesEvent.UnloadOthers = true;
         }
 
         /// <summary>
@@ -151,23 +135,8 @@ namespace StubbUnity.StubbFramework.Extensions
         /// </summary>
         public static void ActivateScene(this EcsWorld world, IAssetName sceneName, bool isMain = false)
         {
-            ref var activateScene = ref world.NewEntity().Get<ActivateSceneByNameEvent>();
-            activateScene.Name = sceneName;
-            activateScene.IsMain = isMain;
-        }
-
-        /// <summary>
-        /// Activate scene by its ISceneController.
-        /// </summary>
-        public static void ActivateScene(this EcsWorld world, ISceneController controller, bool isMain = false)
-        {
-            ref var entity = ref controller.GetEntity();
-#if DEBUG
-            if (entity.Has<IsSceneActiveComponent>())
-                throw new Exception(
-                    $"Try to activate scene with name '{controller.SceneName}' which is already activated!");
-#endif
-            ref var activateScene = ref entity.Get<ActivateSceneComponent>();
+            ref var activateScene = ref world.NewEntity().Get<ActivateSceneEvent>();
+            activateScene.SceneName = sceneName;
             activateScene.IsMain = isMain;
         }
 
@@ -176,20 +145,7 @@ namespace StubbUnity.StubbFramework.Extensions
         /// </summary>
         public static void DeactivateScene(this EcsWorld world, IAssetName sceneName)
         {
-            world.NewEntity().Get<DeactivateSceneByNameEvent>().Name = sceneName;
-        }
-
-        /// <summary>
-        /// Deactivate a scene by its controller.
-        /// </summary>
-        public static void DeactivateScene(this EcsWorld world, ISceneController controller)
-        {
-#if DEBUG
-            if (controller.GetEntity().Has<IsSceneInactiveComponent>())
-                throw new Exception(
-                    $"Try to deactivate scene with name '{controller.SceneName}' which is already deactivated!");
-#endif
-            controller.GetEntity().Get<DeactivateSceneComponent>();
+            world.NewEntity().Get<DeactivateSceneEvent>().SceneName = sceneName;
         }
     }
 }

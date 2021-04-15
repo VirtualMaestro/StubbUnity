@@ -1,5 +1,6 @@
 ﻿using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Scenes.Components;
+using StubbUnity.StubbFramework.Scenes.Events;
 
 namespace StubbUnity.StubbFramework.Scenes.Systems
 {
@@ -9,20 +10,24 @@ namespace StubbUnity.StubbFramework.Scenes.Systems
 #endif
     public sealed class DeactivateSceneSystem : IEcsRunSystem
     {
-        private EcsFilter<SceneComponent, IsSceneActiveComponent, DeactivateSceneComponent> _deactivateFilter;
+        private EcsFilter<DeactivateSceneEvent> _deactivateEventFilter;
+        private EcsFilter<SceneComponent, IsSceneActiveComponent> _inactiveScenesFilter;
 
         public void Run()
         {
-            if (_deactivateFilter.IsEmpty()) return;
+            if (_deactivateEventFilter.IsEmpty() || _inactiveScenesFilter.IsEmpty()) return;
 
-            foreach (var idx in _deactivateFilter)
+            foreach (var idx in _deactivateEventFilter)
             {
-                _deactivateFilter.Get1(idx).Scene.HideContent();
+                var sceneName = _deactivateEventFilter.Get1(idx).SceneName;
 
-                ref var entity = ref _deactivateFilter.GetEntity(idx);
-                entity.Del<IsSceneActiveComponent>();
-                entity.Get<IsSceneInactiveComponent>();
-                entity.Get<SceneChangedStateComponent>();
+                foreach (var idx1 in _inactiveScenesFilter)
+                {
+                    var scene = _inactiveScenesFilter.Get1(idx1).Scene;
+
+                    if (scene.SceneName.Equals(sceneName))
+                        scene.HideContent();
+                }
             }
         }
     }

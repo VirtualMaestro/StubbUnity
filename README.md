@@ -1,6 +1,6 @@
 ### StubbUnity - game framework based on the ECS paradigm.
 
-Dependencies:
+Used libs:
 
 [LeoEcs](https://github.com/Leopotam/ecs)
 

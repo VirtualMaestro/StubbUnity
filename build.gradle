@@ -1,3 +1,5 @@
+def testFolder = "..\\StubbExample\\StubbExample\\Assets\\Libs\\"
+
 task cleanBefore (type: Delete) {
     println 'Cleanup before build'
     delete 'build', 'StubbUnity.zip'
@@ -26,6 +28,18 @@ task copySrc (type: Copy) {
     into "build/Stubb"
 }
 
+task cleanupTestFolder (type: Delete) {
+    println 'Cleanup test folder'
+    delete testFolder
+}
+
+task copyToTestFolder (type: Copy) {
+    println 'Copy Stubb to test folder'
+
+    from "build"
+    into testFolder
+}
+
 task createZip (type: Zip) {
     println 'Create ZIP package'
 
@@ -46,4 +60,19 @@ task build () {
     tasks.findByName('cleanAfter').mustRunAfter 'createZip'
 
     println 'Package StubbUnity.zip has been created!'
+}
+
+task testDeploy () {
+    dependsOn 'cleanBefore'
+    dependsOn 'copySrc'
+    dependsOn 'cleanupTestFolder'
+    dependsOn 'copyToTestFolder'
+    dependsOn 'cleanAfter'
+
+    tasks.findByName('copySrc').mustRunAfter 'cleanBefore'
+    tasks.findByName('cleanupTestFolder').mustRunAfter 'copySrc'
+    tasks.findByName('copyToTestFolder').mustRunAfter 'cleanupTestFolder'
+    tasks.findByName('cleanAfter').mustRunAfter 'copyToTestFolder'
+
+    println 'New Stubb has been copied to the test folder'
 }
