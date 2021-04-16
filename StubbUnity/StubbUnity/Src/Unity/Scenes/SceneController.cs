@@ -39,17 +39,22 @@ namespace StubbUnity.Unity.Scenes
             if (content == null)
                 throw new Exception($"Content wasn't set for the controller of the scene '{SceneName}'!");
 
-            Initialize();
-
             // create ECS binding
-            _entity = World.NewEntity();
-            _entity.Get<SceneComponent>().Scene = this;
-            _entity.Get<SceneReadyComponent>();
+            _InitEntity();
 
             if (_shouldBeShown)
                 _Show();
             else
                 _Hide();
+            
+            Initialize();
+        }
+
+        private void _InitEntity()
+        {
+            _entity = World.NewEntity();
+            _entity.Get<SceneComponent>().Scene = this;
+            _entity.Get<SceneReadyComponent>();
         }
 
         /// <summary>

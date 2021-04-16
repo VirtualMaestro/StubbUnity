@@ -28,11 +28,16 @@ namespace StubbUnity.Unity.View
         public bool IsDisposed { get; private set; }
         public EcsWorld World { get; private set; }
 
+        private void Awake()
+        {
+            World = Stubb.World;
+            IsDisposed = false;
+            _collisionDispatchSettings = new CollisionDispatchSettings(this);
+        }
+
         private void Start()
         {
-            IsDisposed = false;
-            World = Stubb.World;
-            _collisionDispatchSettings = new CollisionDispatchSettings(this);
+            // create ECS binding
             _InitEntity();
 
             Initialize();
