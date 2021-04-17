@@ -267,7 +267,7 @@ namespace StubbUnity.StubbFramework.Extensions
 
             if (typeIdA <= 0 || typeIdB <= 0) return false;
 
-            int hash = _GetHash(typeIdA, typeIdB, shift);
+            var hash = _GetHash(typeIdA, typeIdB, shift);
             if (CollisionTable.ContainsKey(hash))
             {
                 result = 0;
@@ -275,7 +275,7 @@ namespace StubbUnity.StubbFramework.Extensions
                 return RegisterCollisionTable.ContainsKey(hash) == false;
             }
 
-            int reverseHash = _GetHash(typeIdB, typeIdA, shift);
+            var reverseHash = _GetHash(typeIdB, typeIdA, shift);
             if (CollisionTable.ContainsKey(reverseHash))
             {
                 result = 1;

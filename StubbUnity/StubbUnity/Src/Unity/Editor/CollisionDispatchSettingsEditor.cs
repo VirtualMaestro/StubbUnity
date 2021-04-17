@@ -1,6 +1,5 @@
 using StubbUnity.Unity.Extensions;
 using StubbUnity.Unity.Physics.Collisions;
-using StubbUnity.Unity.Physics.Settings;
 using StubbUnity.Unity.Physics.Triggers;
 using StubbUnity.Unity.View;
 using UnityEditor;
@@ -20,212 +19,34 @@ namespace StubbUnity.Unity.Editor
             var triggerSettings = viewPhysics.GetTriggerProperties();
             var collisionSettings = viewPhysics.GetCollisionProperties();
 
-            _CheckTriggerSettings(triggerSettings, gameObject);
-            _CheckCollisionSettings(collisionSettings, gameObject);
+            _CheckExistingDispatcherComponent<TriggerEnterDispatcher>(triggerSettings.Enter, gameObject);
+            _CheckExistingDispatcherComponent<TriggerEnter2DDispatcher>(triggerSettings.Enter2D, gameObject);
+
+            _CheckExistingDispatcherComponent<TriggerStayDispatcher>(triggerSettings.Stay, gameObject);
+            _CheckExistingDispatcherComponent<TriggerStay2DDispatcher>(triggerSettings.Stay2D, gameObject);
+
+            _CheckExistingDispatcherComponent<TriggerExitDispatcher>(triggerSettings.Exit, gameObject);
+            _CheckExistingDispatcherComponent<TriggerExit2DDispatcher>(triggerSettings.Exit2D, gameObject);
+
+            _CheckExistingDispatcherComponent<CollisionEnterDispatcher>(collisionSettings.Enter, gameObject);
+            _CheckExistingDispatcherComponent<CollisionEnter2DDispatcher>(collisionSettings.Enter2D, gameObject);
+
+            _CheckExistingDispatcherComponent<CollisionStayDispatcher>(collisionSettings.Stay, gameObject);
+            _CheckExistingDispatcherComponent<CollisionStay2DDispatcher>(collisionSettings.Stay2D, gameObject);
+
+            _CheckExistingDispatcherComponent<CollisionExitDispatcher>(collisionSettings.Exit, gameObject);
+            _CheckExistingDispatcherComponent<CollisionExit2DDispatcher>(collisionSettings.Exit2D, gameObject);
         }
 
-        private void _CheckTriggerSettings(CollisionDispatchProperties triggerProperties, GameObject gameObject)
-        {
-            _CheckTriggerEnter(triggerProperties.Enter, gameObject);
-            _CheckTriggerEnter2D(triggerProperties.Enter2D, gameObject);
-
-            _CheckTriggerStay(triggerProperties.Stay, gameObject);
-            _CheckTriggerStay2D(triggerProperties.Stay2D, gameObject);
-
-            _CheckTriggerExit(triggerProperties.Exit, gameObject);
-            _CheckTriggerExit2D(triggerProperties.Exit2D, gameObject);
-        }
-
-        private void _CheckCollisionSettings(CollisionDispatchProperties collisionProperties, GameObject gameObject)
-        {
-            _CheckCollisionEnter(collisionProperties.Enter, gameObject);
-            _CheckCollisionEnter2D(collisionProperties.Enter2D, gameObject);
-
-            _CheckCollisionStay(collisionProperties.Stay, gameObject);
-            _CheckCollisionStay2D(collisionProperties.Stay2D, gameObject);
-
-            _CheckCollisionExit(collisionProperties.Exit, gameObject);
-            _CheckCollisionExit2D(collisionProperties.Exit2D, gameObject);
-        }
-
-        private void _CheckTriggerEnter(bool isEnabled, GameObject gameObject)
+        private void _CheckExistingDispatcherComponent<T>(bool isEnabled, GameObject gameObject) where T : MonoBehaviour
         {
             if (isEnabled)
             {
-                if (!gameObject.HasComponent<TriggerEnterDispatcher>())
-                {
-                    gameObject.AddComponent<TriggerEnterDispatcher>();
-                }
+                if (!gameObject.HasComponent<T>())
+                    gameObject.AddComponent<T>();
             }
-            else if (gameObject.HasComponent<TriggerEnterDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<TriggerEnterDispatcher>());
-            }
-        }
-
-        private void _CheckTriggerEnter2D(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<TriggerEnter2DDispatcher>())
-                {
-                    gameObject.AddComponent<TriggerEnter2DDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<TriggerEnter2DDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<TriggerEnter2DDispatcher>());
-            }
-        }
-
-        private void _CheckTriggerStay(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<TriggerStayDispatcher>())
-                {
-                    gameObject.AddComponent<TriggerStayDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<TriggerStayDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<TriggerStayDispatcher>());
-            }
-        }
-
-        private void _CheckTriggerStay2D(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<TriggerStay2DDispatcher>())
-                {
-                    gameObject.AddComponent<TriggerStay2DDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<TriggerStay2DDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<TriggerStay2DDispatcher>());
-            }
-        }
-
-        private void _CheckTriggerExit(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<TriggerExitDispatcher>())
-                {
-                    gameObject.AddComponent<TriggerExitDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<TriggerExitDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<TriggerExitDispatcher>());
-            }
-        }
-
-        private void _CheckTriggerExit2D(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<TriggerExit2DDispatcher>())
-                {
-                    gameObject.AddComponent<TriggerExit2DDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<TriggerExit2DDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<TriggerExit2DDispatcher>());
-            }
-        }
-
-        private void _CheckCollisionEnter(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<CollisionEnterDispatcher>())
-                {
-                    gameObject.AddComponent<CollisionEnterDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<CollisionEnterDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<CollisionEnterDispatcher>());
-            }
-        }
-
-        private void _CheckCollisionEnter2D(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<CollisionEnter2DDispatcher>())
-                {
-                    gameObject.AddComponent<CollisionEnter2DDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<CollisionEnter2DDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<CollisionEnter2DDispatcher>());
-            }
-        }
-
-        private void _CheckCollisionStay(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<CollisionStayDispatcher>())
-                {
-                    gameObject.AddComponent<CollisionStayDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<CollisionStayDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<CollisionStayDispatcher>());
-            }
-        }
-
-        private void _CheckCollisionStay2D(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<CollisionStay2DDispatcher>())
-                {
-                    gameObject.AddComponent<CollisionStay2DDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<CollisionStay2DDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<CollisionStay2DDispatcher>());
-            }
-        }
-
-        private void _CheckCollisionExit(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<CollisionExitDispatcher>())
-                {
-                    gameObject.AddComponent<CollisionExitDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<CollisionExitDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<CollisionExitDispatcher>());
-            }
-        }
-
-        private void _CheckCollisionExit2D(bool isEnabled, GameObject gameObject)
-        {
-            if (isEnabled)
-            {
-                if (!gameObject.HasComponent<CollisionExit2DDispatcher>())
-                {
-                    gameObject.AddComponent<CollisionExit2DDispatcher>();
-                }
-            }
-            else if (gameObject.HasComponent<CollisionExit2DDispatcher>())
-            {
-                DestroyImmediate(gameObject.GetComponent<CollisionExit2DDispatcher>());
-            }
+            else if (gameObject.HasComponent<T>())
+                DestroyImmediate(gameObject.GetComponent<T>());
         }
     }
 }
