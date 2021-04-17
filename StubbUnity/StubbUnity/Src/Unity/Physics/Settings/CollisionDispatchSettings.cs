@@ -1,5 +1,4 @@
-using StubbUnity.Unity.Physics.Collisions;
-using StubbUnity.Unity.Physics.Triggers;
+using StubbUnity.Unity.Physics.Dispatchers;
 using StubbUnity.Unity.View;
 using UnityEngine;
 
