@@ -10,6 +10,8 @@ namespace StubbUnity.Unity.View
     public class EcsViewLink : MonoBehaviour, IEcsViewLink
     {
         public bool hasPhysics;
+        [SerializeField] 
+        private int typeId;
         
         private EcsEntity _entity = EcsEntity.Null;
 
@@ -19,7 +21,12 @@ namespace StubbUnity.Unity.View
         /// It determines if collision event will be sent during a collision of two objects.
         /// Default value 0, which means no collision events will be sent.
         /// </summary>
-        public int TypeId { get; set; }
+        public int TypeId
+        {
+            get => typeId;
+            set => typeId = value;
+        }
+        
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public string Name => gameObject.name;
         public bool IsDisposed { get; private set; }
