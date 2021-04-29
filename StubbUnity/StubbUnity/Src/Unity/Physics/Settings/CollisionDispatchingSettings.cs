@@ -1,11 +1,9 @@
-using StubbUnity.Unity.Physics.Collisions;
-using StubbUnity.Unity.Physics.Triggers;
-using StubbUnity.Unity.View;
+using StubbUnity.Unity.Physics.Dispatchers;
 using UnityEngine;
 
 namespace StubbUnity.Unity.Physics.Settings
 {
-    public class CollisionDispatchSettings
+    public class CollisionDispatchingSettings
     {
         private CollisionDispatchProperties _triggerProperties;
         private CollisionDispatchProperties _collisionProperties;
@@ -25,11 +23,52 @@ namespace StubbUnity.Unity.Physics.Settings
         private CollisionExitDispatcher _collisionExit;
         private CollisionExit2DDispatcher _collisionExit2D;
 
-        public CollisionDispatchSettings(EcsViewLink viewLink)
+        public CollisionDispatchingSettings(CollisionDispatchProperties triggerProperties, CollisionDispatchProperties collisionProperties, GameObject gameObject)
         {
-            _gameObject = viewLink.gameObject;
-            _triggerProperties = viewLink.GetTriggerProperties();
-            _collisionProperties = viewLink.GetCollisionProperties();
+            _gameObject = gameObject;
+            _triggerProperties = triggerProperties;
+            _collisionProperties = collisionProperties;
+
+            _InitDispatchers();
+        }
+
+        private void _InitDispatchers()
+        {
+            if (_triggerProperties.Enter)
+                _gameObject.AddComponent<TriggerEnterDispatcher>();
+            
+            if (_triggerProperties.Enter2D)
+                _gameObject.AddComponent<TriggerEnter2DDispatcher>();
+
+            if (_triggerProperties.Stay)
+                _gameObject.AddComponent<TriggerStayDispatcher>();
+
+            if (_triggerProperties.Stay2D)
+                _gameObject.AddComponent<TriggerStay2DDispatcher>();
+
+            if (_triggerProperties.Exit)
+                _gameObject.AddComponent<TriggerExitDispatcher>();
+
+            if (_triggerProperties.Exit2D)
+                _gameObject.AddComponent<TriggerExit2DDispatcher>();
+
+            if (_collisionProperties.Enter)
+                _gameObject.AddComponent<CollisionEnterDispatcher>();
+
+            if (_collisionProperties.Enter2D)
+                _gameObject.AddComponent<CollisionEnter2DDispatcher>();
+
+            if (_collisionProperties.Stay)
+                _gameObject.AddComponent<CollisionStayDispatcher>();
+
+            if (_collisionProperties.Stay2D)
+                _gameObject.AddComponent<CollisionStay2DDispatcher>();
+
+            if (_collisionProperties.Exit)
+                _gameObject.AddComponent<CollisionExitDispatcher>();
+
+            if (_collisionProperties.Exit2D)
+                _gameObject.AddComponent<CollisionExit2DDispatcher>();
         }
 
         public bool EnableTriggerEnter
@@ -275,7 +314,7 @@ namespace StubbUnity.Unity.Physics.Settings
             EnableCollisionStay2D = false;
             EnableCollisionExit = false;
             EnableCollisionExit2D = false;
-
+            
             _triggerProperties = null;
             _collisionProperties = null;
         }

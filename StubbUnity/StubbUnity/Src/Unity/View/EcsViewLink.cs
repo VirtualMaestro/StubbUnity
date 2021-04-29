@@ -3,18 +3,17 @@ using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.View;
 using StubbUnity.StubbFramework.View.Components;
-using StubbUnity.Unity.Physics.Settings;
 using UnityEngine;
 
 namespace StubbUnity.Unity.View
 {
     public class EcsViewLink : MonoBehaviour, IEcsViewLink
     {
-        [SerializeField] private CollisionDispatchProperties triggerProperties;
-        [SerializeField] private CollisionDispatchProperties collisionProperties;
-
+        public bool hasPhysics;
+        [SerializeField] 
+        private int typeId;
+        
         private EcsEntity _entity = EcsEntity.Null;
-        private CollisionDispatchSettings _collisionDispatchSettings;
 
         /// <summary>
         /// int number which represents type for an object.
@@ -22,7 +21,12 @@ namespace StubbUnity.Unity.View
         /// It determines if collision event will be sent during a collision of two objects.
         /// Default value 0, which means no collision events will be sent.
         /// </summary>
-        public int TypeId { get; set; }
+        public int TypeId
+        {
+            get => typeId;
+            set => typeId = value;
+        }
+        
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public string Name => gameObject.name;
         public bool IsDisposed { get; private set; }
@@ -32,7 +36,6 @@ namespace StubbUnity.Unity.View
         {
             World = Stubb.World;
             IsDisposed = false;
-            _collisionDispatchSettings = new CollisionDispatchSettings(this);
         }
 
         private void Start()
@@ -67,16 +70,6 @@ namespace StubbUnity.Unity.View
             _entity = entity;
         }
 
-        public CollisionDispatchProperties GetTriggerProperties()
-        {
-            return triggerProperties;
-        }
-
-        public CollisionDispatchProperties GetCollisionProperties()
-        {
-            return collisionProperties;
-        }
-
         /// <summary>
         /// Dispose entity and GameObject.
         /// Here should be user's custom dispose logic.
@@ -86,8 +79,6 @@ namespace StubbUnity.Unity.View
         {
             if (IsDisposed) return;
             IsDisposed = true;
-            _collisionDispatchSettings.Dispose();
-            _collisionDispatchSettings = null;
 
             if (HasEntity) _entity.Destroy();
             if (gameObject != null) Destroy(gameObject);
