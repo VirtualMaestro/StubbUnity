@@ -13,12 +13,12 @@ namespace StubbUnity.Unity.Scenes
     public class SceneService : ISceneService
     {
         private int _numScenesToUnload;
-        private List<Scene> _activeScenes = new List<Scene>();
+        private readonly List<Scene> _activeScenes = new List<Scene>();
 
-        private List<KeyValuePair<ILoadingSceneConfig, Scene>> _loadedConfigs =
+        private readonly List<KeyValuePair<ILoadingSceneConfig, Scene>> _loadedConfigs =
             new List<KeyValuePair<ILoadingSceneConfig, Scene>>();
 
-        private Queue<ProcessSetScenesConfig> _loadingConfigsQueue = new Queue<ProcessSetScenesConfig>();
+        private readonly Queue<ProcessSetScenesConfig> _loadingConfigsQueue = new Queue<ProcessSetScenesConfig>();
         private ProcessSetScenesConfig _currentConfig;
 
         public void Process(ProcessSetScenesConfig config)
