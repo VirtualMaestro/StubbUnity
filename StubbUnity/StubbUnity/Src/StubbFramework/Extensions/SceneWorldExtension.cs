@@ -21,6 +21,18 @@ namespace StubbUnity.StubbFramework.Extensions
         }
 
         /// <summary>
+        /// Loads a scene by a name.
+        /// It implies that scene will be activated immediately, and will be main. 
+        /// </summary>
+        public static void LoadScene(this EcsWorld world, IAssetName sceneName, IAssetName unloadScene, object payload = null)
+        {
+            var loadingList = new List<ILoadingSceneConfig> {new LoadingSceneConfig {Name = sceneName, IsActive = true, IsMain = true, Payload = payload}};
+            var unloadingList = new List<IAssetName> {unloadScene};
+
+            LoadScenes(world, loadingList, unloadingList);
+        }
+
+        /// <summary>
         /// Loads a scene by a config.  
         /// </summary>
         public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, string configName = null)
@@ -109,6 +121,26 @@ namespace StubbUnity.StubbFramework.Extensions
             loadScenes.Name = configName;
             loadScenes.LoadingScenes = configs;
             loadScenes.UnloadOthers = unloadOthers;
+        }
+
+        /// <summary>
+        /// Loads list of scenes by their names and unload list scenes by their names.
+        /// </summary>
+        public static void LoadScenes(this EcsWorld world, List<IAssetName> loadSceneNames, List<IAssetName> unloadSceneNames,
+            string configName = null)
+        {
+            var configs = new List<ILoadingSceneConfig>();
+            
+            foreach (var sceneName in loadSceneNames)
+            {
+                var config = new LoadingSceneConfig {Name = sceneName, IsActive = true};
+                configs.Add(config);
+            }
+            
+            ref var loadScenes = ref world.NewEntity().Get<ProcessScenesEvent>();
+            loadScenes.Name = configName;
+            loadScenes.LoadingScenes = configs;
+            loadScenes.UnloadingScenes = unloadSceneNames;
         }
 
         /// <summary>
