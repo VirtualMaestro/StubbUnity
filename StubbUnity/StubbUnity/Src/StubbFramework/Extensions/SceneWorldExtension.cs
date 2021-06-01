@@ -9,6 +9,18 @@ namespace StubbUnity.StubbFramework.Extensions
     public static class SceneWorldExtension
     {
         /// <summary>
+        /// Loads a scene by a name.
+        /// It implies that scene will be activated immediately, and will be main. 
+        /// </summary>
+        public static void LoadScene(this EcsWorld world, IAssetName sceneName, object payload = null)
+        {
+            var config = new LoadingSceneConfig {Name = sceneName, IsActive = true, IsMain = true, Payload = payload};
+            var list = new List<ILoadingSceneConfig> {config};
+
+            LoadScenes(world, list);
+        }
+
+        /// <summary>
         /// Loads a scene by a config.  
         /// </summary>
         public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, string configName = null)
