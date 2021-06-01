@@ -18,12 +18,12 @@ namespace StubbUnity.Unity.Scenes
         private readonly List<KeyValuePair<ILoadingSceneConfig, Scene>> _loadedConfigs =
             new List<KeyValuePair<ILoadingSceneConfig, Scene>>();
 
-        private readonly Queue<ProcessSetScenesConfig> _loadingConfigsQueue = new Queue<ProcessSetScenesConfig>();
+        private readonly Queue<ProcessSetScenesConfig> _processingQueue = new Queue<ProcessSetScenesConfig>();
         private ProcessSetScenesConfig _currentConfig;
 
         public void Process(ProcessSetScenesConfig config)
         {
-            _loadingConfigsQueue.Enqueue(config);
+            _processingQueue.Enqueue(config);
             if (_currentConfig != null) return;
 
             _ProcessNextConfig();
@@ -31,12 +31,12 @@ namespace StubbUnity.Unity.Scenes
 
         private void _ProcessNextConfig()
         {
-            if (_loadingConfigsQueue.Count == 0) return;
+            if (_processingQueue.Count == 0) return;
 
             SceneManager.sceneLoaded += _SceneLoaded;
             SceneManager.sceneUnloaded += _SceneUnloaded;
 
-            _currentConfig = _loadingConfigsQueue.Dequeue();
+            _currentConfig = _processingQueue.Dequeue();
             _CollectAllScenesOnStage();
 
             if (_currentConfig.LoadingList.Count > 0)
@@ -144,7 +144,6 @@ namespace StubbUnity.Unity.Scenes
             SceneManager.sceneUnloaded -= _SceneUnloaded;
 
             _loadedConfigs.Clear();
-            _loadingConfigsQueue.Clear();
             _activeScenes.Clear();
 
             _numScenesToUnload = 0;
