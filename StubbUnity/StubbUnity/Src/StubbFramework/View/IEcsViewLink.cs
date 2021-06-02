@@ -11,5 +11,14 @@ namespace StubbUnity.StubbFramework.View
         /// An instance of the World where this IEcsViewLink belongs to.
         /// </summary>
         EcsWorld World { get; }
+
+        /// <summary>
+        /// Methods invokes when game paused (EcsWorld.PauseGame).
+        /// </summary>
+        void OnPause();
+        /// <summary>
+        /// Methods invokes when game resumes (EcsWorld.ResumeGame).
+        /// </summary>
+        void OnResume();
     }
 }

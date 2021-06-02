@@ -23,9 +23,7 @@ namespace StubbUnity.StubbFramework.Extensions
         public static void Clear<T> (this EcsFilter<T> filter) where T : struct
         {
             foreach (var idx in filter)
-            {
                 filter.GetEntity(idx).Destroy();
-            }
         }
 
         /// <summary>
@@ -34,9 +32,7 @@ namespace StubbUnity.StubbFramework.Extensions
         public static void MarkRemove (this EcsFilter filter)
         {
             foreach (var idx in filter)
-            {
                 filter.GetEntity(idx).Get<RemoveEntityComponent>();
-            }
         }
     }
 }

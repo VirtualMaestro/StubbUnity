@@ -1,5 +1,7 @@
 ﻿using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Core.Events;
+using StubbUnity.StubbFramework.Pause.Events;
+using StubbUnity.StubbFramework.Pause.Systems;
 using StubbUnity.StubbFramework.Remove.Systems;
 using StubbUnity.StubbFramework.Scenes;
 using StubbUnity.StubbFramework.View.Systems;
@@ -13,6 +15,11 @@ namespace StubbUnity.StubbFramework.Core
             Add(new SceneFeature(World));
             Add(new RemoveEcsViewLinkSystem());
             Add(new RemoveEntitySystem());
+            Add(new PauseGameSystem());
+            Add(new ResumeGameSystem());
+            
+            OneFrame<PauseGameEvent>();
+            OneFrame<ResumeGameEvent>();
             
             OneFrame<ApplicationFocusOnEvent>();
             OneFrame<ApplicationFocusOffEvent>();

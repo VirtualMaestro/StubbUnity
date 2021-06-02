@@ -71,6 +71,20 @@ namespace StubbUnity.Unity.View
         }
 
         /// <summary>
+        /// User code implements here a logic that should be applied when game has to be set on Pause.
+        /// </summary>
+        public void OnPause()
+        {
+        }
+
+        /// <summary>
+        /// User code implements here a logic that should be applied when game has to be resumed.
+        /// </summary>
+        public void OnResume()
+        {
+        }
+
+        /// <summary>
         /// Dispose entity and GameObject.
         /// Here should be user's custom dispose logic.
         /// IMPORTANT: in inherited classes should be base.Dispose() invoked. 
