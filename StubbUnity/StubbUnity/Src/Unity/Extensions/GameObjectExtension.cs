@@ -17,7 +17,7 @@ namespace StubbUnity.Unity.Extensions
         /// <returns></returns>
         public static bool HasViewLink(this GameObject gameObject)
         {
-            return gameObject.GetComponent<IEcsViewLink>() != null;
+            return gameObject.TryGetComponent<IEcsViewLink>(out _);
         }
 
 #if UNITY_EDITOR

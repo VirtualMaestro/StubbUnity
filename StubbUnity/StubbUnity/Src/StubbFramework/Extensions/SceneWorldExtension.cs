@@ -31,6 +31,17 @@ namespace StubbUnity.StubbFramework.Extensions
 
             LoadScenes(world, loadingList, unloadingList);
         }
+        
+        /// <summary>
+        /// Loads a scene by a name and unload all others scene if 'unloadOthers' is true.
+        /// It implies that scene will be activated immediately, and will be main. 
+        /// </summary>
+        public static void LoadScene(this EcsWorld world, IAssetName sceneName, bool unloadOthers, object payload = null)
+        {
+            var loadingList = new List<ILoadingSceneConfig> {new LoadingSceneConfig {Name = sceneName, IsActive = true, IsMain = true, Payload = payload}};
+
+            LoadScenes(world, loadingList, unloadOthers);
+        }
 
         /// <summary>
         /// Loads a scene by a config.  
