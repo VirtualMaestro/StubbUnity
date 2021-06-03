@@ -119,29 +119,27 @@ namespace StubbUnity.Unity.Scenes
         }
 
         /// <summary>
-        /// Custom user's code should be here. Invoke also base.Dispose().
+        /// Custom user's code should be here.
         /// For unloading scene use World.UnloadScene(s).
         /// </summary>
         public virtual void Dispose()
         {
-            if (IsDisposed)
-            {
-                log.Warn(
-                    $"SceneController.Destroy. Controller with scene '{SceneName.FullName}' is already destroyed!");
-                return;
-            }
-            
-            if (HasEntity)
-                _entity.Destroy();
-
-            IsDisposed = true;
         }
 
         private void OnDestroy()
         {
-            if (IsDisposed) return;
+            if (IsDisposed)
+            {
+                log.Warn($"SceneController.Destroy. Controller with scene '{SceneName.FullName}' is already destroyed!");
+                return;
+            }
+            
+            IsDisposed = true;
             
             Dispose();
+            
+            if (HasEntity)
+                _entity.Destroy();
         }
     }
 }

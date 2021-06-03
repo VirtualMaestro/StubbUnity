@@ -15,6 +15,14 @@ namespace StubbUnity.StubbFramework.Extensions
 #endif
             return ref filter.Get1(idx);
         }
+        
+        /// <summary>
+        /// Returns first entity in the filter. 
+        /// </summary>
+        public static ref EcsEntity First<T>(this EcsFilter<T> filter, in int idx = 0) where T : struct
+        {
+            return ref filter.GetEntity(idx);
+        }
 
         /// <summary>
         /// Immediately removes all entities in given filter.
