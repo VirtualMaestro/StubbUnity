@@ -36,6 +36,8 @@ namespace StubbUnity.Unity.View
         {
             World = Stubb.World;
             IsDisposed = false;
+            
+            Construct();
         }
 
         private void Start()
@@ -48,6 +50,15 @@ namespace StubbUnity.Unity.View
 
         /// <summary>
         /// Init user's code here.
+        /// Uses Awake phase: World is already created but entity not. 
+        /// </summary>
+        public virtual void Construct()
+        {
+        }
+
+        /// <summary>
+        /// Init user's code here.
+        /// Uses Start phase: everything has been initialized.
         /// </summary>
         public virtual void Initialize()
         {

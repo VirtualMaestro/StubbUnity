@@ -18,6 +18,7 @@ namespace StubbUnity.Unity.Scenes
         private bool _shouldBeShown = true;
         
         protected EcsWorld World { get; private set; }
+        protected GameObject Content => content;
 
         public Scene Scene => _scene;
         public IAssetName SceneName { get; private set; }
