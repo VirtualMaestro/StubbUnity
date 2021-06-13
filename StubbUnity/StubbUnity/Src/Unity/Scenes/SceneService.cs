@@ -103,6 +103,8 @@ namespace StubbUnity.Unity.Scenes
             foreach (var sceneName in sceneNames)
             {
                 var sceneIndex = _activeScenes.FindIndex(activeScene => activeScene.isLoaded && activeScene.IsNameEqual(sceneName));
+                if (sceneIndex < 0) continue;
+                
                 var scene = _activeScenes[sceneIndex];
                 SceneManager.UnloadSceneAsync(scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
                 _activeScenes.RemoveAt(sceneIndex);
