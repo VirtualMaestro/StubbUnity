@@ -83,6 +83,8 @@ namespace StubbUnity.Unity.Scenes
                 else
                     _SceneSetProcessingComplete();
             }
+            
+            Stubb.World.NewEntity().Get<SceneLoadingCompleteEvent>().SceneName = scene.path;
         }
 
         private void _UnloadOthers()
@@ -100,7 +102,9 @@ namespace StubbUnity.Unity.Scenes
 
             foreach (var sceneName in sceneNames)
             {
-                var sceneIndex = _activeScenes.FindIndex(activeScene => activeScene.IsNameEqual(sceneName));
+                var sceneIndex = _activeScenes.FindIndex(activeScene => activeScene.isLoaded && activeScene.IsNameEqual(sceneName));
+                if (sceneIndex < 0) continue;
+                
                 var scene = _activeScenes[sceneIndex];
                 SceneManager.UnloadSceneAsync(scene, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
                 _activeScenes.RemoveAt(sceneIndex);

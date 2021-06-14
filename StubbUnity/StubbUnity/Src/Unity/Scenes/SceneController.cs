@@ -5,6 +5,7 @@ using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Logging;
 using StubbUnity.StubbFramework.Scenes;
 using StubbUnity.StubbFramework.Scenes.Components;
+using StubbUnity.StubbFramework.Scenes.Events;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -55,7 +56,9 @@ namespace StubbUnity.Unity.Scenes
         {
             _entity = World.NewEntity();
             _entity.Get<SceneComponent>().Scene = this;
-            _entity.Get<SceneReadyComponent>();
+            
+            // sends create event 
+            World.NewEntity().Get<SceneCreatedEvent>().Scene = this;
         }
 
         /// <summary>
@@ -80,13 +83,16 @@ namespace StubbUnity.Unity.Scenes
 
         private void _Show()
         {
-            content.SetActive(true);
+            if (content != null)
+                content.SetActive(true);
             
             if (_entity.Has<IsSceneInactiveComponent>())
                 _entity.Del<IsSceneInactiveComponent>();
 
             _entity.Get<IsSceneActiveComponent>();
-            _entity.Get<SceneBecomeActiveComponent>();
+            
+            // sends event scene has been activated
+            World.NewEntity().Get<SceneActivatedEvent>().Scene = this;
         }
 
         public void HideContent()
@@ -100,13 +106,16 @@ namespace StubbUnity.Unity.Scenes
 
         private void _Hide()
         {
-            content.SetActive(false);
+            if (content != null)
+                content.SetActive(false);
             
             if (_entity.Has<IsSceneActiveComponent>())
                 _entity.Del<IsSceneActiveComponent>();
                 
             _entity.Get<IsSceneInactiveComponent>();
-            _entity.Get<SceneBecomeInactiveComponent>();
+            
+            // sends event scene has been deactivated
+            World.NewEntity().Get<SceneDeactivatedEvent>().Scene = this;
         }
 
         public void SetEntity(ref EcsEntity entity)
@@ -135,12 +144,17 @@ namespace StubbUnity.Unity.Scenes
                 return;
             }
             
-            IsDisposed = true;
+            _Hide();
             
             Dispose();
             
             if (HasEntity)
                 _entity.Destroy();
+            
+            // sends destroy event
+            World.NewEntity().Get<SceneDestroyedEvent>().SceneName = SceneName;
+            
+            IsDisposed = true;
         }
     }
 }
