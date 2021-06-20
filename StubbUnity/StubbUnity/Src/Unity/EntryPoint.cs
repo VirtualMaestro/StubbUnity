@@ -118,8 +118,8 @@ namespace StubbUnity.Unity
 
         private void OnDestroy()
         {
-            _context.Dispose();
-            _physicsContext?.Dispose();
+            _context.Destroy();
+            _physicsContext?.Destroy();
         }
 
         /// <summary>

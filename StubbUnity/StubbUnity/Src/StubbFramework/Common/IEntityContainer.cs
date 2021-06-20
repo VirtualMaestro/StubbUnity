@@ -2,7 +2,7 @@
 
 namespace StubbUnity.StubbFramework.Common
 {
-    public interface IEntityContainer : IDispose
+    public interface IEntityContainer : IDestroy
     {
         void Initialize();
         bool HasEntity { get; }

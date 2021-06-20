@@ -26,12 +26,12 @@ namespace StubbUnity.Unity.Scenes
         public bool IsContentActive => content.activeSelf;
         public bool IsMain => SceneManager.GetActiveScene() == _scene;
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
-        public bool IsDisposed { get; private set; }
+        public bool IsDestroyed { get; private set; }
 
         private void Awake()
         {
             World = Stubb.World;
-            IsDisposed = false;
+            IsDestroyed = false;
             _scene = gameObject.scene;
             SceneName = new SceneName(_scene.name, _scene.path);
         }
@@ -76,7 +76,7 @@ namespace StubbUnity.Unity.Scenes
         public void ShowContent()
         {
             _shouldBeShown = true;
-            if (IsDisposed || IsContentActive || !HasEntity) return;
+            if (IsDestroyed || IsContentActive || !HasEntity) return;
 
             _Show();
         }
@@ -99,7 +99,7 @@ namespace StubbUnity.Unity.Scenes
         {
             _shouldBeShown = false;
             
-            if (IsDisposed || !IsContentActive || !HasEntity) return;
+            if (IsDestroyed || !IsContentActive || !HasEntity) return;
             
             _Hide();
         }
@@ -132,13 +132,13 @@ namespace StubbUnity.Unity.Scenes
         /// Custom user's code should be here.
         /// For unloading scene use World.UnloadScene(s).
         /// </summary>
-        public virtual void Dispose()
+        public virtual void Destroy()
         {
         }
 
         private void OnDestroy()
         {
-            if (IsDisposed)
+            if (IsDestroyed)
             {
                 log.Warn($"SceneController.Destroy. Controller with scene '{SceneName.FullName}' is already destroyed!");
                 return;
@@ -146,7 +146,7 @@ namespace StubbUnity.Unity.Scenes
             
             _Hide();
             
-            Dispose();
+            Destroy();
             
             if (HasEntity)
                 _entity.Destroy();
@@ -154,7 +154,7 @@ namespace StubbUnity.Unity.Scenes
             // sends destroy event
             World.NewEntity().Get<SceneDestroyedEvent>().SceneName = SceneName;
             
-            IsDisposed = true;
+            IsDestroyed = true;
         }
     }
 }
