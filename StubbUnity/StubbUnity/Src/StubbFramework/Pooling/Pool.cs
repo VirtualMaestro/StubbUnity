@@ -49,10 +49,14 @@ namespace StubbUnity.StubbFramework.Pooling
             }
         }
 
-        public Pool(int initialCapacity = 5)
+        public Pool(int initialCapacity = 16, bool preWarm = false)
         {
-            _initialCapacity = initialCapacity < 5 ? 5 : initialCapacity;
+            _initialCapacity = initialCapacity < 4 ? 4 : initialCapacity;
             _storage = new T[_initialCapacity];
+            _createMethod = () => (T) Activator.CreateInstance(typeof(T), true);
+            
+            if (preWarm)
+                PreWarm(_initialCapacity);
         }
 
         public Pool(int initialCapacity, Func<T> createMethod, bool preWarm = false) : this(initialCapacity)
@@ -80,7 +84,7 @@ namespace StubbUnity.StubbFramework.Pooling
             else
             {
                 instance = _storage[--_freeToPutIndex];
-                _creator?.AfterRestore(instance);
+                _creator?.OnFromPool(instance);
                 _storage[_freeToPutIndex] = default;
             }
 
@@ -92,7 +96,7 @@ namespace StubbUnity.StubbFramework.Pooling
             if (IsFull)
                 _ResizePool(_storage.Length * 2);
 
-            _creator?.BeforeStore(item);
+            _creator?.OnToPool(item);
             _storage[_freeToPutIndex++] = item;
         }
 
@@ -112,18 +116,13 @@ namespace StubbUnity.StubbFramework.Pooling
             }
         }
 
-        public void Clear(bool shrink = false)
+        public void Clear()
         {
             _freeToPutIndex = 0;
 
-            if (shrink)
-            {
-                _storage = new T[_initialCapacity];
-                return;
-            }
-
             for (var i = 0; i < _storage.Length; i++)
             {
+                _creator?.OnDestroyInstance(_storage[i]);
                 _storage[i] = default;
             }
         }
@@ -132,7 +131,11 @@ namespace StubbUnity.StubbFramework.Pooling
         {
             OnRemove?.Invoke(this, typeof(T));
             OnRemove = null;
+            
+            Clear();
+            
             _storage = null;
+            _creator?.Dispose();
             _creator = null;
             _createMethod = null;
         }
@@ -146,7 +149,7 @@ namespace StubbUnity.StubbFramework.Pooling
         private T _CreateInstance()
         {
             _CheckIfCreatorsExist();
-            return _creator == null ? _createMethod() : _creator.Create();
+            return _creator == null ? _createMethod() : _creator.OnCreateInstance();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -161,9 +164,7 @@ namespace StubbUnity.StubbFramework.Pooling
         private void _CheckIfCreatorsExist()
         {
             if (_creator == null && _createMethod == null)
-            {
                 throw new Exception($"Can't create instance! Creators are not set!");
-            }
         }
     }
 }

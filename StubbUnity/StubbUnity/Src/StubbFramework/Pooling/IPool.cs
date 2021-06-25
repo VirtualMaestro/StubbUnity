@@ -34,15 +34,23 @@ namespace StubbUnity.StubbFramework.Pooling
         /// <summary>
         /// Invokes when instance of poolable item has to be created.
         /// </summary>
-        T Create();
+        T OnCreateInstance();
+        
         /// <summary>
         /// Invokes when item is going to be stored in the pool.
         /// </summary>
-        void BeforeStore(T t);
+        void OnToPool(T instance);
+
         /// <summary>
         /// Invokes when item is going to be got from the pool.
         /// </summary>
-        void AfterRestore(T t);
+        void OnFromPool(T instance);
+
+        /// <summary>
+        /// Invokes when instance of poolable item has to be destroyed.
+        /// </summary>
+        /// <param name="instance"></param>
+        void OnDestroyInstance(T instance);
     }
     
     public interface IPoolGeneric
@@ -81,8 +89,7 @@ namespace StubbUnity.StubbFramework.Pooling
         /// <summary>
         /// Clear all the pool.
         /// </summary>
-        /// <param name="shrink">if 'true' the pool will be shrunk to the 'initialCapacity'. </param>
-        void Clear(bool shrink = false);
+        void Clear();
         /// <summary>
         /// Dispose the pool. After this the pool can't be used anymore.
         /// </summary>
