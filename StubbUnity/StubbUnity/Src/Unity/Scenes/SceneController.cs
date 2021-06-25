@@ -49,7 +49,7 @@ namespace StubbUnity.Unity.Scenes
             else
                 _Hide();
             
-            Initialize();
+            OnInitialize();
         }
 
         private void _InitEntity()
@@ -64,7 +64,7 @@ namespace StubbUnity.Unity.Scenes
         /// <summary>
         /// Init user's code here.
         /// </summary>
-        public virtual void Initialize()
+        public virtual void OnInitialize()
         {
         }
 
@@ -129,10 +129,11 @@ namespace StubbUnity.Unity.Scenes
         }
 
         /// <summary>
+        /// Method is invoked when scene is unloading.
         /// Custom user's code should be here.
         /// For unloading scene use World.UnloadScene(s).
         /// </summary>
-        public virtual void Destroy()
+        protected virtual void OnDispose()
         {
         }
 
@@ -146,7 +147,7 @@ namespace StubbUnity.Unity.Scenes
             
             _Hide();
             
-            Destroy();
+            OnDispose();
             
             if (HasEntity)
                 _entity.Destroy();

@@ -33,7 +33,7 @@ namespace StubbUnity.Unity
             _physicsContext = CreatePhysicsContext();
 
             _MapServices();
-            Construct(_context);
+            OnConstruct(_context);
 
             if (!enableUiEmitter) return;
             
@@ -45,21 +45,21 @@ namespace StubbUnity.Unity
 
         private void Start()
         {
-            Initialize(_context);
+            OnInitialize(_context);
             
             _context.Init();
             _physicsContext?.Init();
             
             DontDestroyOnLoad(gameObject);
             
-            PostInitialize(_context);
+            OnPostInitialize(_context);
         }
 
         /// <summary>
         /// Have to be overriden by user for main feature or for all (Head, Main, Tail).
         /// It is called in the Awake phase before context and systems were initialized.
         /// </summary>
-        protected virtual void Construct(IStubbContext context)
+        protected virtual void OnConstruct(IStubbContext context)
         {
             
         }
@@ -68,7 +68,7 @@ namespace StubbUnity.Unity
         /// It is called in the Start phase before context and system were initialized and share data injected.
         /// It is used if some data should be injected or any other initializations.
         /// </summary>
-        protected virtual void Initialize(IStubbContext context)
+        protected virtual void OnInitialize(IStubbContext context)
         {
             
         }
@@ -77,7 +77,7 @@ namespace StubbUnity.Unity
         /// It is called in the Start phase after context and all systems were initialized and share data injected,
         /// but before the first update invocation.
         /// </summary>
-        protected virtual void PostInitialize(IStubbContext context)
+        protected virtual void OnPostInitialize(IStubbContext context)
         {
             
         }
