@@ -10,6 +10,3 @@
 [submodule "ecs-ui"]
 	path = ecs-ui
 	url = git@github.com:VirtualMaestro/ecs-ui.git
-[submodule "Object-Pooling-for-Unity"]
-	path = Object-Pooling-for-Unity
-	url = git@github.com:IntoTheDev/Object-Pooling-for-Unity.git
