@@ -127,7 +127,7 @@ namespace StubbUnity.StubbFramework.Pooling
             }
         }
 
-        public void Dispose()
+        public void Destroy()
         {
             OnRemove?.Invoke(this, typeof(T));
             OnRemove = null;

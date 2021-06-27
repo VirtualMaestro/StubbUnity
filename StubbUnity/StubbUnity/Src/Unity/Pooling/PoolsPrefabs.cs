@@ -24,7 +24,7 @@ namespace StubbUnity.StubbFramework.Pooling
             foreach (var pair in _prefabPools)
             {
                 pair.Value.OnRemove -= OnRemovePoolHandler;
-                pair.Value.Dispose();
+                pair.Value.Destroy();
             }
 
             _prefabPools.Clear();

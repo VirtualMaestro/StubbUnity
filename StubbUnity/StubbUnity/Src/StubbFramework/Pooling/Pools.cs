@@ -80,7 +80,7 @@ namespace StubbUnity.StubbFramework.Pooling
             foreach (var pair in _pools)
             {
                 pair.Value.OnRemove -= OnRemovePoolHandler;
-                pair.Value.Dispose();
+                pair.Value.Destroy();
             }
 
             _pools.Clear();

@@ -19,7 +19,7 @@ namespace StubbUnity.StubbFramework.Pooling
         /// <summary>
         /// Store item in the pool.
         /// </summary>
-        void Put(T t);
+        void Put(T instance);
     }
     
     /// <summary>
@@ -91,9 +91,9 @@ namespace StubbUnity.StubbFramework.Pooling
         /// </summary>
         void Clear();
         /// <summary>
-        /// Dispose the pool. After this the pool can't be used anymore.
+        /// Destroys the pool. After this the pool can't be used anymore.
         /// </summary>
-        void Dispose();
+        void Destroy();
         /// <summary>
         /// The event is sent before the pool is disposed of.
         /// </summary>

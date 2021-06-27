@@ -1,9 +1,11 @@
+using StubbUnity.StubbFramework.Pooling;
 using UnityEngine;
 
 namespace StubbUnity.Unity.Pooling
 {
     public sealed class PoolableMono : MonoBehaviour
     {
+        public IPool<GameObject> Pool;
         private IPoolable[] _poolingItems;
 
         private void Awake()
@@ -25,6 +27,12 @@ namespace StubbUnity.Unity.Pooling
 
             foreach (var poolingItem in _poolingItems)
                 poolingItem.OnFromPool();
+        }
+
+        private void OnDestroy()
+        {
+            Pool = null;
+            _poolingItems = null;
         }
     }
 }
