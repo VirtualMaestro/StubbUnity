@@ -13,7 +13,11 @@ namespace StubbUnity.Unity.Scenes
 {
     public class SceneController : MonoBehaviour, ISceneController
     {
-        [SerializeField] private GameObject content;
+        public bool hasPooling;
+        public bool dontUnload;
+        
+        [SerializeField] 
+        private GameObject content;
         private Scene _scene;
         private EcsEntity _entity = EcsEntity.Null;
         private bool _shouldBeShown = true;
