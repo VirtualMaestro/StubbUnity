@@ -19,7 +19,6 @@ task copySrc (type: Copy) {
     include "leoecs/"
     include "remotedebug/"
     include "ecs-ui/"
-    include "Object-Pooling-for-Unity/"
     include "StubbUnity/StubbUnity/Src/"
     
     exclude '**/*.gradle'
