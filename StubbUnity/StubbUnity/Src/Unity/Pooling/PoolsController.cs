@@ -43,7 +43,7 @@ namespace StubbUnity.Unity.Pooling
             if (_pools == null) return;
             
             foreach (var pool in _pools)
-                pool.Destroy();
+                pool.Dispose();
 
             _pools = null;
             poolPrefabs = null;

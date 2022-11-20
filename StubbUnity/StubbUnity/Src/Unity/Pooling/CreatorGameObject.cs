@@ -22,7 +22,7 @@ namespace StubbUnity.Unity.Pooling
             Object.DontDestroyOnLoad(_prefab);
         }
 
-        public GameObject OnCreateInstance()
+        public GameObject OnCreate()
         {
             var instance = Object.Instantiate(_prefab);
             instance.GetComponent<PoolableMono>().Pool = _pool;
@@ -53,7 +53,7 @@ namespace StubbUnity.Unity.Pooling
             instance.SetActive(true);
         }
 
-        public void OnDestroyInstance(GameObject instance)
+        public void OnDispose(GameObject instance)
         {
             if (instance != null)
                 Object.Destroy(instance);

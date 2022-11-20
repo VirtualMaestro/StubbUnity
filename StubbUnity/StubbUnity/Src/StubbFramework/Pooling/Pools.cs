@@ -21,42 +21,53 @@ namespace StubbUnity.StubbFramework.Pooling
         }
 
         /// <summary>
-        /// Get or creates and get a pool with given type.
+        /// Gets or creates and returns a pool with a given type.
         /// </summary>
-        /// <param name="capacity">Initial capacity of the pool.</param>
+        /// <param name="capacity">Initial capacity of a pool.</param>
         /// <param name="prewarm">If 'true' will be created the number of instances equal to the 'capacity' of the pool.</param>
-        public IPool<T> Get<T>(int capacity = 128, bool prewarm = false)
+        public IPool<T> Get<T>(int capacity = 5, bool prewarm = false)
         {
-            if (!_GetPool<T>(out var pool))
-                pool = _Register(new Pool<T>(capacity, prewarm));
+            var pool = _Create<T>(capacity);
+
+            if (pool.Creator == null && pool.CreateMethod == null)
+                pool.CreateMethod = () => (T) Activator.CreateInstance(typeof(T), true);
+
+            if (prewarm)
+                pool.PreWarm(pool.Size);
 
             return pool;
         }
 
         /// <summary>
-        /// Get or creates and get a pool with given type.
+        /// Gets or creates and returns a pool with a given type.
         /// </summary>
         /// <param name="capacity">Initial capacity of the pool.</param>
         /// <param name="creator">Instance of ICreator which will be used for creating an instance of pool's type.</param>
         /// <param name="prewarm">If 'true' will be created the number of instances equal to the 'capacity' of the pool.</param>
         public IPool<T> Get<T>(int capacity, ICreator<T> creator, bool prewarm = false)
         {
-            if (!_GetPool<T>(out var pool))
-                pool = _Register(new Pool<T>(capacity, creator, prewarm));
+            var pool = _Create<T>(capacity);
+            pool.Creator = creator;
+
+            if (prewarm)
+                pool.PreWarm(pool.Size);
 
             return pool;
         }
 
         /// <summary>
-        /// Get or creates and get a pool with given type.
+        /// Gets or creates and returns a pool with a given type.
         /// </summary>
         /// <param name="capacity">Initial capacity of the pool.</param>
         /// <param name="createMethod">Method which will be used for creating an instance of pool's type.</param>
         /// <param name="prewarm">If 'true' will be created the number of instances equal to the 'capacity' of the pool.</param>
         public IPool<T> Get<T>(int capacity, Func<T> createMethod, bool prewarm = false)
         {
-            if (!_GetPool<T>(out var pool))
-                pool = _Register(new Pool<T>(capacity, createMethod, prewarm));
+            var pool = _Create<T>(capacity);
+            pool.CreateMethod = createMethod;
+
+            if (prewarm)
+                pool.PreWarm(pool.Size);
 
             return pool;
         }
@@ -64,11 +75,12 @@ namespace StubbUnity.StubbFramework.Pooling
         /// <summary>
         /// Clears all pools.
         /// </summary>
-        public void ClearAll()
+        /// <param name="shrink">if 'true' the pools will be shrunk</param>
+        public void ClearAll(bool shrink = false)
         {
             foreach (var pair in _pools)
             {
-                pair.Value.Clear();
+                pair.Value.Clear(shrink);
             }
         }
 
@@ -79,8 +91,8 @@ namespace StubbUnity.StubbFramework.Pooling
         {
             foreach (var pair in _pools)
             {
-                pair.Value.OnRemove -= OnRemovePoolHandler;
-                pair.Value.Destroy();
+                pair.Value.OnRemove -= _OnRemovePoolHandler;
+                pair.Value.Dispose();
             }
 
             _pools.Clear();
@@ -88,38 +100,29 @@ namespace StubbUnity.StubbFramework.Pooling
 
         public bool Has<T>()
         {
-            return Has(typeof(T));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Has(Type type)
-        {
-            return _pools.ContainsKey(type);
-        }
-
-        private void OnRemovePoolHandler(IPoolGeneric sender, Type type)
-        {
-            _pools.Remove(type);
+            return _pools.ContainsKey(typeof(T));
         }
         
         /// <summary>
         /// Creates a pool with given type.
         /// </summary>
+        /// <param name="capacity">Initial capacity of the pool. Min value is 5.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private bool _GetPool<T>(out IPool<T> poolResult)
+        private IPool<T> _Create<T>(int capacity = 5)
         {
-            var isExist = _pools.TryGetValue(typeof(T), out var pool);
-            poolResult = isExist ? pool as IPool<T> : null;
-            return isExist;
-        }
+            if (Has<T>())
+                return (Pool<T>) _pools[typeof(T)];
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private IPool<T> _Register<T>(IPool<T> pool)
-        {
-            pool.OnRemove += OnRemovePoolHandler;
+            var pool = new Pool<T>(capacity);
+            pool.OnRemove += _OnRemovePoolHandler;
             _pools[typeof(T)] = pool;
-            
+
             return pool;
+        }
+        
+        private void _OnRemovePoolHandler(IPoolGeneric sender, Type type)
+        {
+            _pools.Remove(type);
         }
     }
 }
