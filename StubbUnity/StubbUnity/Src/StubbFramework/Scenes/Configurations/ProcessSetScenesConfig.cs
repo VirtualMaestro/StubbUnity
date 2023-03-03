@@ -6,8 +6,8 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
 {
     public class ProcessSetScenesConfig
     {
-        private List<ILoadingSceneConfig> _loadingList;
-        private List<IAssetName> _unloadingList;
+        private readonly List<ILoadingSceneConfig> _loadingList;
+        private readonly List<IAssetName> _unloadingList;
 
         public string Name;
         public bool UnloadOthers;

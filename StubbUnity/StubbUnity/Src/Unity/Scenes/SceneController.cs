@@ -13,7 +13,11 @@ namespace StubbUnity.Unity.Scenes
 {
     public class SceneController : MonoBehaviour, ISceneController
     {
-        [SerializeField] private GameObject content;
+        public bool hasPooling;
+        public bool dontUnload;
+        
+        [SerializeField] 
+        private GameObject content;
         private Scene _scene;
         private EcsEntity _entity = EcsEntity.Null;
         private bool _shouldBeShown = true;
@@ -26,12 +30,12 @@ namespace StubbUnity.Unity.Scenes
         public bool IsContentActive => content.activeSelf;
         public bool IsMain => SceneManager.GetActiveScene() == _scene;
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
-        public bool IsDisposed { get; private set; }
+        public bool IsDestroyed { get; private set; }
 
         private void Awake()
         {
             World = Stubb.World;
-            IsDisposed = false;
+            IsDestroyed = false;
             _scene = gameObject.scene;
             SceneName = new SceneName(_scene.name, _scene.path);
         }
@@ -49,7 +53,7 @@ namespace StubbUnity.Unity.Scenes
             else
                 _Hide();
             
-            Initialize();
+            OnInitialize();
         }
 
         private void _InitEntity()
@@ -64,7 +68,7 @@ namespace StubbUnity.Unity.Scenes
         /// <summary>
         /// Init user's code here.
         /// </summary>
-        public virtual void Initialize()
+        public virtual void OnInitialize()
         {
         }
 
@@ -76,7 +80,7 @@ namespace StubbUnity.Unity.Scenes
         public void ShowContent()
         {
             _shouldBeShown = true;
-            if (IsDisposed || IsContentActive || !HasEntity) return;
+            if (IsDestroyed || IsContentActive || !HasEntity) return;
 
             _Show();
         }
@@ -99,7 +103,7 @@ namespace StubbUnity.Unity.Scenes
         {
             _shouldBeShown = false;
             
-            if (IsDisposed || !IsContentActive || !HasEntity) return;
+            if (IsDestroyed || !IsContentActive || !HasEntity) return;
             
             _Hide();
         }
@@ -129,16 +133,17 @@ namespace StubbUnity.Unity.Scenes
         }
 
         /// <summary>
+        /// Method is invoked when scene is unloading.
         /// Custom user's code should be here.
         /// For unloading scene use World.UnloadScene(s).
         /// </summary>
-        public virtual void Dispose()
+        protected virtual void OnDispose()
         {
         }
 
         private void OnDestroy()
         {
-            if (IsDisposed)
+            if (IsDestroyed)
             {
                 log.Warn($"SceneController.Destroy. Controller with scene '{SceneName.FullName}' is already destroyed!");
                 return;
@@ -146,7 +151,7 @@ namespace StubbUnity.Unity.Scenes
             
             _Hide();
             
-            Dispose();
+            OnDispose();
             
             if (HasEntity)
                 _entity.Destroy();
@@ -154,7 +159,7 @@ namespace StubbUnity.Unity.Scenes
             // sends destroy event
             World.NewEntity().Get<SceneDestroyedEvent>().SceneName = SceneName;
             
-            IsDisposed = true;
+            IsDestroyed = true;
         }
     }
 }

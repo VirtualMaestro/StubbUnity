@@ -16,7 +16,7 @@ namespace StubbUnity.StubbFramework.View.Systems
             foreach (var idx in _destroyViewFilter)
             {
                 var view = _destroyViewFilter.Get1(idx).Value;
-                view.Dispose();
+                view.Destroy();
             }
         }
     }
