@@ -1,78 +1,97 @@
-def testFolder = "..\\StubbExample\\StubbExample\\Assets\\Libs\\"
+def sourceFolder = file("$rootDir")
+def templateProjectPath = file("../EcsProjectTemplate/ProjectFiles/Assets/Libs/")
+def exampleProjectPath = file("../StubbExample/StubbExample/Assets/Libs/")
+def frameworkFolderName = "Stubb"
+def zipFilename = "${frameworkFolderName}.zip"
+def buildDirName = "build"
 
-task cleanBefore (type: Delete) {
-    println 'Cleanup before build'
-    delete 'build', 'StubbUnity.zip'
+task cleanTemplateProjectFolder(type: Delete) {
+    println "Clean folder $templateProjectPath"
+
+    delete "$templateProjectPath/$frameworkFolderName"
 }
 
-task cleanAfter (type: Delete) {
-    println 'Cleanup after build'
-    delete 'build'
+task cleanExampleProjectFolder(type: Delete) {
+    println "Clean folder $exampleProjectPath"
+
+    delete "$exampleProjectPath/$frameworkFolderName"
 }
 
-task copySrc (type: Copy) {
-    println 'Create Stubb package'
-    
-    from "."
-    
-    include "ecs-unityintegration/"
-    include "leoecs/"
-    include "remotedebug/"
-    include "ecs-ui/"
-    include "StubbUnity/StubbUnity/Src/"
-    
+task copyToTemplate(type: Copy) {
+    println "Copy files from $buildDirName to $templateProjectPath"
+
+    from buildDirName
+    into templateProjectPath
+
+    include "$frameworkFolderName/"
+}
+
+task copyToExample(type: Copy) {
+    println "Copy files from $buildDirName to $exampleProjectPath"
+
+    from buildDirName
+    into exampleProjectPath
+
+    include "$frameworkFolderName/"
+}
+
+task collectSources(type: Copy) {
+    println "Filter and Copy source to the build folder!"
+
+    from sourceFolder
+
+    include 'ecs-unityintegration/'
+    include 'leoecs/'
+    include 'remotedebug/'
+    include 'ecs-ui/'
+    include 'StubbUnity/StubbUnity/Src/'
+
     exclude '**/*.gradle'
-    exclude 'build'
+    exclude buildDirName
     exclude '**/*.git'
 
-    into "build/Stubb"
+    if (!file(buildDirName).exists()) {
+        mkdir buildDirName
+    }
+
+    into "$buildDirName/$frameworkFolderName"
 }
 
-task cleanupTestFolder (type: Delete) {
-    println 'Cleanup test folder'
-    delete testFolder
+task createZip(type: Zip) {
+    println "Create ZIP file"
+
+    archiveFileName = zipFilename
+    destinationDirectory = file(sourceFolder)
+
+    from buildDirName
 }
 
-task copyToTestFolder (type: Copy) {
-    println 'Copy Stubb to test folder'
+task cleanBuild(type: Delete) {
+    println "Cleanup build folder!"
 
-    from "build"
-    into testFolder
+    def zipPath = "$sourceFolder/$zipFilename"
+    if (file(zipPath).exists()) {
+        delete zipPath
+    }
+
+    def buildDirPath = "$sourceFolder/$buildDirName/$frameworkFolderName"
+    if (file(buildDirPath).exists()) {
+        delete buildDirPath
+    }
 }
 
-task createZip (type: Zip) {
-    println 'Create ZIP package'
-
-    archiveFileName = "StubbUnity.zip"
-    destinationDirectory = file(".")
-
-    from "build"
+task cleanAll(dependsOn: [cleanBuild, cleanTemplateProjectFolder, cleanExampleProjectFolder]) {
+    println "All projects are cleaned!"
 }
 
-task build () {
-    dependsOn 'cleanBefore'
-    dependsOn 'copySrc'
-    dependsOn 'createZip'
-    dependsOn 'cleanAfter'
-
-    tasks.findByName('copySrc').mustRunAfter 'cleanBefore'
-    tasks.findByName('createZip').mustRunAfter 'copySrc'
-    tasks.findByName('cleanAfter').mustRunAfter 'createZip'
-
-    println 'Package StubbUnity.zip has been created!'
+task build(dependsOn: [cleanBuild, collectSources, createZip]) {
+    println "Stubb package has been created!"
 }
 
-task testDeploy () {
-    dependsOn 'cleanBefore'
-    dependsOn 'copySrc'
-    dependsOn 'cleanupTestFolder'
-    dependsOn 'copyToTestFolder'
-    dependsOn 'cleanAfter'
+task deployToTemplate(dependsOn: [cleanBuild, collectSources, cleanTemplateProjectFolder, copyToTemplate]) {
+    println "Deployed to the Template project!"
+}
 
-    tasks.findByName('copySrc').mustRunAfter 'cleanBefore'
-    tasks.findByName('cleanupTestFolder').mustRunAfter 'copySrc'
-    tasks.findByName('copyToTestFolder').mustRunAfter 'cleanupTestFolder'
-    tasks.findByName('cleanAfter').mustRunAfter 'copyToTestFolder'
-
-    println 'New Stubb has been copied to the test folder'
+task deployToExample(dependsOn: [cleanBuild, collectSources, cleanExampleProjectFolder, copyToExample]) {
+    println "Deployed to the Example project!"
 }
