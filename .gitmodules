@@ -1,6 +1,3 @@
-[submodule "ecs-unityintegration"]
-	path = ecs-unityintegration
-	url = https://github.com/Leopotam/ecs-unityintegration.git
 [submodule "leoecs"]
 	path = leoecs
 	url = git@github.com:Leopotam/ecs.git
