@@ -4,3 +4,6 @@
 [submodule "ecs-ui"]
 	path = ecs-ui
 	url = git@github.com:VirtualMaestro/ecs-ui.git
+[submodule "ecs-unityintegration"]
+	path = ecs-unityintegration
+	url = git@github.com:VirtualMaestro/ecs-unityintegration-community.git
