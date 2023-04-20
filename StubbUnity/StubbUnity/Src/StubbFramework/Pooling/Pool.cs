@@ -163,7 +163,7 @@ namespace StubbUnity.StubbFramework.Pooling
         {
             if (_creator == null && _createMethod == null)
             {
-                throw new Exception($"Can't create instance! Creators are not set!");
+                throw new Exception("Can't create instance! Creators are not set!");
             }
         }
     }

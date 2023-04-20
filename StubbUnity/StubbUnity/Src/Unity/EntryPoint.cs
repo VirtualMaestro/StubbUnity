@@ -17,18 +17,19 @@ namespace StubbUnity.Unity
     {
         private IStubbContext _context;
         private IPhysicsContext _physicsContext;
-        private IEcsDebug _debug;
+        private bool _hasFocus = true;
+        private bool _isPaused;
 
         [Tooltip("Enable UI events emitter to provide ui events to ecs tier")]
         public bool enableUiEmitter;
         public EcsWorld World => _context.World;
-        public IEcsDebug Debug => _debug;
+        public IEcsDebug Debug { get; private set; }
 
         private void Awake()
         {
             log.AddAppender(UnityLogAppender.LogDelegate);
 
-            _debug = CreateDebug();
+            Debug = CreateDebug();
             _context = CreateContext();
             _physicsContext = CreatePhysicsContext();
 
@@ -129,9 +130,6 @@ namespace StubbUnity.Unity
         {
             ServiceMapper<ISceneService>.Map(typeof(SceneService));
         }
-
-        private bool _hasFocus = true;
-        private bool _isPaused = false;
 
         private void OnApplicationFocus(bool hasFocus)
         {

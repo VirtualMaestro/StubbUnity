@@ -19,15 +19,15 @@ namespace StubbUnity.Unity.Editor
         {
             DrawDefaultInspector();
 
-            if (_hasPooling != _controller.hasPooling)
-            {
-                _hasPooling = _controller.hasPooling;
+            if (_hasPooling == _controller.hasPooling) 
+                return;
+            
+            _hasPooling = _controller.hasPooling;
                 
-                if (_hasPooling)
-                    _controller.gameObject.AddComponent<PoolsController>();
-                else
-                    DestroyImmediate(_controller.gameObject.GetComponent<PoolsController>());
-            }
+            if (_hasPooling)
+                _controller.gameObject.AddComponent<PoolsController>();
+            else
+                DestroyImmediate(_controller.gameObject.GetComponent<PoolsController>());
         }
     }
 }
