@@ -2,11 +2,9 @@
 
 Used libs:
 
-[LeoEcs](https://github.com/Leopotam/ecs)
+[LeoEcs](https://github.com/VirtualMaestro/leoecs-community)
 
-[ecs-unityintegration](https://github.com/Leopotam/ecs-unityintegration)
-
-[ecs-remotedebug](https://github.com/Leopotam/ecs-remotedebug)
+[ecs-unityintegration](https://github.com/VirtualMaestro/ecs-unityintegration-community)
 
 [ecs-ui](https://github.com/VirtualMaestro/ecs-ui.git)
 
