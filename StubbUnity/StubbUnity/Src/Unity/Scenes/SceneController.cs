@@ -149,6 +149,12 @@ namespace StubbUnity.Unity.Scenes
                 return;
             }
             
+            if (!World.IsAlive())
+            {
+                log.Warn("The ECS world is already destroyed!");
+                return;
+            }
+            
             _Hide();
             
             OnDispose();
