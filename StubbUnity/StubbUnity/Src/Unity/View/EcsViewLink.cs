@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
+using StubbUnity.StubbFramework.Common.Components;
 using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.View;
 using StubbUnity.StubbFramework.View.Components;
@@ -70,6 +71,7 @@ namespace StubbUnity.Unity.View
         {
             _entity = World.NewEntity();
             _entity.Get<EcsViewLinkComponent>().Value = this;
+            _entity.Get<IsJustCreatedComponent>();
         }
 
         public ref EcsEntity GetEntity()

@@ -1,4 +1,5 @@
 ﻿using Leopotam.Ecs;
+using StubbUnity.StubbFramework.Common.Components;
 using StubbUnity.StubbFramework.Core.Events;
 using StubbUnity.StubbFramework.Destroy.Systems;
 using StubbUnity.StubbFramework.Pause.Events;
@@ -17,6 +18,8 @@ namespace StubbUnity.StubbFramework.Core
             Add(new DestroyEntitySystem());
             Add(new PauseGameSystem());
             Add(new ResumeGameSystem());
+            
+            OneFrame<IsJustCreatedComponent>();
             
             OneFrame<PauseGameEvent>();
             OneFrame<ResumeGameEvent>();
