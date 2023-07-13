@@ -8,7 +8,12 @@ namespace StubbUnity.Unity.Physics.Dispatchers
     {
         void OnTriggerEnter2D(Collider2D other)
         {
-            Dispatcher.World.DispatchTriggerEnter2D(Dispatcher, other.GetComponent<IEcsViewLink>(), other);
+            var otherView = other.gameObject.GetComponent<IEcsViewLink>();
+            
+            if (otherView == null)
+                return;
+
+            Dispatcher.World.DispatchTriggerEnter2D(Dispatcher, otherView, other);
         }
     }
 }

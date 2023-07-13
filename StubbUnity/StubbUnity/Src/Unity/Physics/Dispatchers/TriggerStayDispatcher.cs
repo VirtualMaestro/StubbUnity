@@ -8,7 +8,12 @@ namespace StubbUnity.Unity.Physics.Dispatchers
     {
         void OnTriggerStay(Collider other)
         {
-            Dispatcher.World.DispatchTriggerStay(Dispatcher, other.GetComponent<IEcsViewLink>(), other);
+            var otherView = other.gameObject.GetComponent<IEcsViewLink>();
+            
+            if (otherView == null)
+                return;
+
+            Dispatcher.World.DispatchTriggerStay(Dispatcher, otherView, other);
         }
     }
 }
