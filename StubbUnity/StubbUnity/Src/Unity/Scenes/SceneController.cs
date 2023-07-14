@@ -1,5 +1,6 @@
 ﻿using System;
 using Leopotam.Ecs;
+using StubbUnity.StubbFramework.Common.Components;
 using StubbUnity.StubbFramework.Common.Names;
 using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Logging;
@@ -60,6 +61,7 @@ namespace StubbUnity.Unity.Scenes
         {
             _entity = World.NewEntity();
             _entity.Get<SceneComponent>().Scene = this;
+            _entity.Get<IsJustCreatedComponent>();
             
             // sends create event 
             World.NewEntity().Get<SceneCreatedEvent>().Scene = this;
