@@ -112,7 +112,7 @@ namespace StubbUnity.Unity
         /// </summary>
         protected void MapServices(IStubbContext context)
         {
-            context.Inject(new SceneService());
+            context.Inject(new SceneService(context.World));
             context.Inject(new TimeService());
         }
 

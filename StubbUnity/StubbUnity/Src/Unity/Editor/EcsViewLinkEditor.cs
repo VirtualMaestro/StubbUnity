@@ -21,8 +21,8 @@ namespace StubbUnity.Unity.Editor
                 viewLink.gameObject.EnableComponent<CollisionDispatchingSettingsComponent>(_hasPhysics);
             }
             
-            if (_hasPhysics)
-                viewLink.TypeId = EditorGUILayout.IntField("Phys. type id:", viewLink.TypeId);
+            // if (_hasPhysics)
+            //     viewLink.TypeId = EditorGUILayout.IntField("Phys. type id:", viewLink.TypeId);
         }
     }
 }

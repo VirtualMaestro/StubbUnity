@@ -1,4 +1,3 @@
-using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Extensions;
 using StubbUnity.StubbFramework.View;
 using UnityEngine;
@@ -11,9 +10,9 @@ namespace StubbUnity.Unity.Physics.Dispatchers
         {
             var otherView = other.gameObject.GetComponent<IEcsViewLink>();
             
-            if (otherView == null || !otherView.GetEntity().IsAlive() || !Dispatcher.GetEntity().IsAlive())
+            if (otherView == null)
                 return;
-            
+
             Dispatcher.World.DispatchCollisionEnter2D(Dispatcher, otherView, other);
         }
     }

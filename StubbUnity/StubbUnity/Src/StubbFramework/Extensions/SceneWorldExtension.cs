@@ -38,7 +38,7 @@ namespace StubbUnity.StubbFramework.Extensions
         /// </summary>
         public static void LoadScene(this EcsWorld world, IAssetName sceneName, bool unloadOthers, object payload = null)
         {
-            var loadingList = new List<ILoadingSceneConfig> {new LoadingSceneConfig {Name = sceneName, IsActive = true, IsMain = true, Payload = payload}};
+            var loadingList = new List<ILoadingSceneConfig> {new LoadingSceneConfig {Name = sceneName, IsActive = true, IsMain = false, Payload = payload}};
 
             LoadScenes(world, loadingList, unloadOthers);
         }

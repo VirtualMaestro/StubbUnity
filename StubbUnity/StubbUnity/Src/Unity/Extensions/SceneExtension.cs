@@ -1,6 +1,7 @@
 using Leopotam.Ecs;
 using StubbUnity.StubbFramework.Common.Names;
 using StubbUnity.StubbFramework.Scenes;
+using StubbUnity.Unity.Scenes;
 using UnityEngine.SceneManagement;
 
 namespace StubbUnity.Unity.Extensions
@@ -40,6 +41,46 @@ namespace StubbUnity.Unity.Extensions
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Deactivate all game objects on the scene (including SceneController and Content if there are)
+        /// </summary>
+        public static void Deactivate(this Scene scene)
+        {
+            var gos = scene.GetRootGameObjects();
+
+            foreach (var go in gos)
+                go.SetActive(false);
+        }
+
+        /// <summary>
+        /// Activate all game objects which are on the root (including SceneController and Content if there are). 
+        /// </summary>
+        public static void Activate(this Scene scene)
+        {
+            var gos = scene.GetRootGameObjects();
+
+            foreach (var go in gos)
+                go.SetActive(true);
+        }
+
+        /// <summary>
+        /// Activate only SceneController game object.
+        /// </summary>
+        public static void ActivateSceneController(this Scene scene)
+        {
+            if (scene.GetController(out var controller))
+                ((SceneController)controller).gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Deactivate only SceneController game object.
+        /// </summary>
+        public static void DeactivateSceneController(this Scene scene)
+        {
+            if (scene.GetController(out var controller))
+                ((SceneController)controller).gameObject.SetActive(false);
         }
     }
 }

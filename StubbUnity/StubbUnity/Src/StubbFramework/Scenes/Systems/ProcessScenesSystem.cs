@@ -18,11 +18,11 @@ namespace StubbUnity.StubbFramework.Scenes.Systems
             {
                 ref var loadScenes = ref _loadScenesFilter.Get1(idx);
 
-                _sceneService.Process(_CreateSeProcessConfig(loadScenes));
+                _sceneService.Process(_CreateProcessSetSceneConfig(loadScenes));
             }
         }
 
-        private ProcessSetScenesConfig _CreateSeProcessConfig(ProcessScenesEvent processSceneEvent)
+        private ProcessSetScenesConfig _CreateProcessSetSceneConfig(ProcessScenesEvent processSceneEvent)
         {
             var loadingSceneSet = ProcessSetScenesConfig.Get();
             loadingSceneSet.Name = processSceneEvent.Name;

@@ -15,7 +15,6 @@ namespace StubbUnity.Unity.Scenes
     public class SceneController : MonoBehaviour, ISceneController
     {
         public bool hasPooling;
-        public bool dontUnload;
         
         [SerializeField] 
         private GameObject content;
