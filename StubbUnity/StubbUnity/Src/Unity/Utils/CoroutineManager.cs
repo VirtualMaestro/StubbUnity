@@ -71,7 +71,7 @@ namespace StubbUnity.Unity.Utils
         /// <summary>
         /// Invokes given function one time after a delay in a given amount of seconds. 
         /// </summary>
-        public static ICJob OnceSeconds(Action func, int seconds)
+        public static ICJob OnceSeconds(Action func, float seconds)
         {
             return I._RunJob(func, seconds, -1, 1);
         }
@@ -204,9 +204,9 @@ namespace StubbUnity.Unity.Utils
 
             public readonly LinkedListNode<CoroutineJob> Node;
 
-            private long _initSeconds;
+            private long _initMilliseconds;
             private int _initFrames;
-            private long _seconds;
+            private long _milliseconds;
             private int _frames;
             private int _times;
             private Action _method;
@@ -232,8 +232,8 @@ namespace StubbUnity.Unity.Utils
 
             public void SetDelay(float seconds, int times = -1)
             {
-                _seconds = (long)(seconds * 1000);
-                _initSeconds = _seconds;
+                _milliseconds = (long)(seconds * 1000);
+                _initMilliseconds = _milliseconds;
                 _times = times;
             }
 
@@ -247,14 +247,14 @@ namespace StubbUnity.Unity.Utils
             // Returns 'true' if a job should be disposed
             public bool Process(long timeStep)
             {
-                _seconds -= timeStep;
+                _milliseconds -= timeStep;
 
-                if (_seconds > 0 || _frames-- > 0) 
+                if (_milliseconds > 0 || _frames-- > 0) 
                     return false;
                 
                 _method();
                     
-                _seconds = _initSeconds;
+                _milliseconds = _initMilliseconds;
                 _frames = _initFrames;
                 _times--;
 

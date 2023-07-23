@@ -5,7 +5,7 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
 {
     public class SceneConfigsBuilder<T, S> where T : ILoadingSceneConfig, new() where S : IAssetName, new()
     {
-        public static SceneConfigsBuilder<T, S> Create => new SceneConfigsBuilder<T, S>();
+        public static SceneConfigsBuilder<T, S> Create => new();
 
         private readonly List<ILoadingSceneConfig> _configs;
         private ILoadingSceneConfig _currentConfig;
@@ -42,18 +42,6 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
         public SceneConfigsBuilder<T, S> IsMain(bool value = true)
         {
             _currentConfig.IsMain = value;
-            return this;
-        }
-
-        public SceneConfigsBuilder<T, S> IsMultiple(bool value = true)
-        {
-            _currentConfig.IsSingle = value;
-            return this;
-        }
-
-        public SceneConfigsBuilder<T, S> WithPayload(object value)
-        {
-            _currentConfig.Payload = value;
             return this;
         }
 

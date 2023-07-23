@@ -6,6 +6,7 @@ using StubbUnity.StubbFramework.Scenes.Configurations;
 using StubbUnity.StubbFramework.Scenes.Events;
 using StubbUnity.StubbFramework.Scenes.Services;
 using StubbUnity.Unity.Extensions;
+using StubbUnity.Unity.Utils;
 using UnityEngine.SceneManagement;
 
 namespace StubbUnity.Unity.Scenes
@@ -15,12 +16,14 @@ namespace StubbUnity.Unity.Scenes
         private readonly EcsWorld _ecsWorld;
         private readonly SceneLoader _loader;
         private readonly SceneUnloader _unloader;
-        private readonly Queue<ProcessSetScenesConfig> _processingQueue;
+        private readonly Queue<ScenesLoadingConfiguration> _processingQueue;
         private readonly Dictionary<Scene, ILoadingSceneConfig> _loadedScenes;
-        private Scene _interstitial;
+        private Scene _interstitialScene;
         private bool _isInProgress;
         private bool _isLoadingDone;
         private bool _isUnloadingDone;
+        private ScenesLoadingConfiguration _configInProcess;
+        private CoroutineManager.ICJob _interstitialDelayJob;
         
         public SceneService(EcsWorld ecsWorld)
         {
@@ -38,9 +41,9 @@ namespace StubbUnity.Unity.Scenes
             _loadedScenes = new();
         }
         
-        public void Process(ProcessSetScenesConfig config)
+        public void Process(ScenesLoadingConfiguration loadingConfiguration)
         {
-            _processingQueue.Enqueue(config);
+            _processingQueue.Enqueue(loadingConfiguration);
             
             _ProcessNextConfig();
         }
@@ -53,25 +56,82 @@ namespace StubbUnity.Unity.Scenes
             _isInProgress = true;
             
             var configInProcess = _processingQueue.Dequeue();
+            _configInProcess = configInProcess;
             
             // check given scene names for validity
-            if (configInProcess.UnloadingList.Count > 0)
-                _FilterOutNonValidScenes(configInProcess.UnloadingList);
+            if (configInProcess.Unloadings.Count > 0)
+                _FilterOutNonValidScenes(configInProcess.Unloadings);
 
-            if (configInProcess.UnloadOthers)
+            if (configInProcess.IsUnloadOthers)
                 _CollectScenesOnStageToUnload(configInProcess);
 
-            if (configInProcess.UnloadingList.Count >= SceneManager.loadedSceneCount)
-                _CreateInterstitialScene();
+            _DeactivateAllCurrentScenes(configInProcess);
+            
+            if (configInProcess.HasInterstitial)
+            {
+                // There is an interstitial scene that has to be loaded
+                _LoadInterstitialScene(configInProcess.Interstitial.FullName);
+            }
+            else
+            {
+                if (configInProcess.Unloadings.Count >= SceneManager.loadedSceneCount)
+                    _CreateInterstitialScene();
+            
+                _Perform(configInProcess);
+            }
+        }
 
-            // Deactivate all current scenes
-            foreach (var sceneName in configInProcess.UnloadingList)
+        private void _LoadInterstitialScene(string interstitialFullSceneName)
+        {
+            SceneManager.sceneLoaded += _OnInterstitialSceneLoaded;
+            SceneManager.LoadSceneAsync(interstitialFullSceneName, LoadSceneMode.Additive);
+        }
+
+        private void _UnloadInterstitialScene()
+        {
+            _SetupLoadedScenes();
+            
+            _interstitialScene.Deactivate();
+            
+            SceneManager.sceneUnloaded += _OnInterstitialSceneUnloaded;
+            SceneManager.UnloadSceneAsync(_interstitialScene);
+        }
+
+        private void _OnInterstitialSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            SceneManager.sceneLoaded -= _OnInterstitialSceneLoaded;
+
+            _interstitialScene = scene;
+            
+            // Show interstitial scene for amount of seconds that is defined in InterstitialDuration
+            if (_configInProcess.InterstitialDuration > 0)
+                _interstitialDelayJob = CoroutineManager.OnceSeconds(_OnInterstitialDelayComplete, _configInProcess.InterstitialDuration);
+            
+            _Perform(_configInProcess);
+        }
+
+        private void _OnInterstitialSceneUnloaded(Scene scene)
+        {
+            SceneManager.sceneUnloaded -= _OnInterstitialSceneUnloaded;
+            _FinalizingLoadingConfiguration();
+        }
+
+        private void _OnInterstitialDelayComplete()
+        {
+            _interstitialDelayJob.Dispose();
+            _interstitialDelayJob = null;
+
+            if (_isLoadingDone && _isUnloadingDone)
+                _UnloadInterstitialScene();
+        }
+
+        private void _DeactivateAllCurrentScenes(ScenesLoadingConfiguration configInProcess)
+        {
+            foreach (var sceneName in configInProcess.Unloadings)
             {
                 var scene = SceneManager.GetSceneByPath(sceneName.FullName);
                 scene.Deactivate();
             }
-            
-            _Perform(configInProcess);
         }
 
         private void _FilterOutNonValidScenes(List<IAssetName> unloadingList)
@@ -85,35 +145,52 @@ namespace StubbUnity.Unity.Scenes
             }
         }
 
-        private void _Perform(ProcessSetScenesConfig config)
+        private void _Perform(ScenesLoadingConfiguration loadingConfiguration)
         {
             if (!_isUnloadingDone)
-                _unloader.Unload(config);
+                _unloader.Unload(loadingConfiguration);
             else if (!_isLoadingDone)
-                _loader.Load(config);
+                _loader.Load(loadingConfiguration);
             else // all scenes are loaded/unloaded
             {
-                if (_interstitial.path != null) //isLoaded
-                    SceneManager.UnloadSceneAsync(_interstitial);
-
-                _SetupLoadedScenes();
-                
-                // reset 
-                _isLoadingDone = false;
-                _isUnloadingDone = false;
-                _isInProgress = false;
-                
-                // notify ecs
-                _ecsWorld.NewEntity().Get<ScenesSetLoadingCompleteEvent>().ScenesSetName = config.Name;
-
-                _ProcessNextConfig();
+                // if there is a loaded interstitial scene and there is a delay for it
+                if (_interstitialScene.isLoaded)
+                {
+                    if (_interstitialDelayJob == null)
+                        _UnloadInterstitialScene();
+                }
+                else
+                {
+                    _SetupLoadedScenes();
+                    _FinalizingLoadingConfiguration();
+                }
             }
+        }
+
+        private void _FinalizingLoadingConfiguration()
+        {
+            // reset 
+            _isLoadingDone = false;
+            _isUnloadingDone = false;
+            _isInProgress = false;
+                
+            // notify ecs
+            _ecsWorld.NewEntity().Get<ScenesSetLoadingCompleteEvent>().ScenesSetName = _configInProcess.Name;
+
+            _configInProcess.Dispose();
+            _configInProcess = null;
+                
+            //
+            _ProcessNextConfig();
         }
 
         private void _SetupLoadedScenes()
         {
-            foreach (var (scene, config) in _loadedScenes)
+            foreach (var pair in _loadedScenes)
             {
+                var config = pair.Value;
+                var scene = pair.Key;
+                
                 if (config.IsMain)
                     SceneManager.SetActiveScene(scene);
                 
@@ -131,22 +208,24 @@ namespace StubbUnity.Unity.Scenes
             _loadedScenes.Clear();
         }
 
-        private void _CollectScenesOnStageToUnload(ProcessSetScenesConfig config)
+        private void _CollectScenesOnStageToUnload(ScenesLoadingConfiguration loadingConfiguration)
         {
             var builder = SceneName.Create;
             
             for (var i = 0; i < SceneManager.loadedSceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
-                builder.Add(scene.name, scene.path);
+                
+                if (!loadingConfiguration.HasException(scene.path))
+                    builder.Add(scene.name, scene.path);
             }
             
-            config.AddToUnload(builder.Build);
+            loadingConfiguration.AddToUnload(builder.Build);
         }
 
         private void _CreateInterstitialScene()
         {
-            _interstitial = SceneManager.CreateScene("InterstitialTempScene");
+            _interstitialScene = SceneManager.CreateScene("InterstitialTempScene");
         }
 
         //
@@ -159,10 +238,10 @@ namespace StubbUnity.Unity.Scenes
             _ecsWorld.NewEntity().Get<SceneLoadingCompleteEvent>().SceneName = scene.path;
         }
 
-        private void _OnAllScenesLoaded(ProcessSetScenesConfig config)
+        private void _OnAllScenesLoaded(ScenesLoadingConfiguration loadingConfiguration)
         {
             _isLoadingDone = true;
-            _Perform(config);
+            _Perform(loadingConfiguration);
         }
 
         private void _OnSceneUnloaded(Scene scene, IAssetName sceneName)
@@ -170,10 +249,10 @@ namespace StubbUnity.Unity.Scenes
             _ecsWorld.NewEntity().Get<SceneUnloadingCompleteEvent>().SceneName = scene.path;
         }
 
-        private void _OnAllScenesUnloaded(ProcessSetScenesConfig config)
+        private void _OnAllScenesUnloaded(ScenesLoadingConfiguration loadingConfiguration)
         {
             _isUnloadingDone = true;
-            _Perform(config);
+            _Perform(loadingConfiguration);
         }
 
         //
@@ -196,10 +275,10 @@ namespace StubbUnity.Unity.Scenes
     internal class SceneLoader
     {
         public event Action<Scene, ILoadingSceneConfig> OnSceneLoaded;
-        public event Action<ProcessSetScenesConfig> OnAllScenesLoaded;
+        public event Action<ScenesLoadingConfiguration> OnAllScenesLoaded;
     
         private readonly Queue<ILoadingSceneConfig> _queue;
-        private ProcessSetScenesConfig _currentSetScenesConfig;
+        private ScenesLoadingConfiguration _currentSetScenesLoadingConfiguration;
         private ILoadingSceneConfig _currentSceneConfig;
     
         public SceneLoader()
@@ -207,16 +286,16 @@ namespace StubbUnity.Unity.Scenes
             _queue = new Queue<ILoadingSceneConfig>(5);
         }
         
-        public void Load(ProcessSetScenesConfig config)
+        public void Load(ScenesLoadingConfiguration loadingConfiguration)
         {
-            if (_currentSetScenesConfig != null)
+            if (_currentSetScenesLoadingConfiguration != null)
                 return;
             
             SceneManager.sceneLoaded += _SceneLoaded;
             
-            _currentSetScenesConfig = config;
+            _currentSetScenesLoadingConfiguration = loadingConfiguration;
             
-            foreach (var sceneConfig in config.LoadingList)
+            foreach (var sceneConfig in loadingConfiguration.Loadings)
                 _queue.Enqueue(sceneConfig);
             
             _ProcessNextConfig();
@@ -242,8 +321,8 @@ namespace StubbUnity.Unity.Scenes
     
         private void _AllScenesLoaded()
         {
-            var setSceneConfig = _currentSetScenesConfig;
-            _currentSetScenesConfig = null;
+            var setSceneConfig = _currentSetScenesLoadingConfiguration;
+            _currentSetScenesLoadingConfiguration = null;
             _currentSceneConfig = null;
             
             SceneManager.sceneLoaded -= _SceneLoaded;
@@ -255,10 +334,10 @@ namespace StubbUnity.Unity.Scenes
     internal class SceneUnloader
     {
         public event Action<Scene, IAssetName> OnSceneUnloaded;
-        public event Action<ProcessSetScenesConfig> OnAllScenesUnloaded; 
+        public event Action<ScenesLoadingConfiguration> OnAllScenesUnloaded; 
     
         private readonly Queue<IAssetName> _queue;
-        private ProcessSetScenesConfig _currentSetScenesConfig;
+        private ScenesLoadingConfiguration _currentSetScenesLoadingConfiguration;
         private IAssetName _currentSceneName;
     
         public SceneUnloader()
@@ -266,16 +345,16 @@ namespace StubbUnity.Unity.Scenes
             _queue = new Queue<IAssetName>(5);
         }
         
-        public void Unload(ProcessSetScenesConfig config)
+        public void Unload(ScenesLoadingConfiguration loadingConfiguration)
         {
-            if (_currentSetScenesConfig != null)
+            if (_currentSetScenesLoadingConfiguration != null)
                 return;
             
             SceneManager.sceneUnloaded += _SceneUnloaded;
             
-            _currentSetScenesConfig = config;
+            _currentSetScenesLoadingConfiguration = loadingConfiguration;
             
-            foreach (var sceneConfig in config.UnloadingList)
+            foreach (var sceneConfig in loadingConfiguration.Unloadings)
                 _queue.Enqueue(sceneConfig);
             
             _ProcessNextConfig();
@@ -301,8 +380,8 @@ namespace StubbUnity.Unity.Scenes
     
         private void _AllScenesLoaded()
         {
-            var setSceneConfig = _currentSetScenesConfig;
-            _currentSetScenesConfig = null;
+            var setSceneConfig = _currentSetScenesLoadingConfiguration;
+            _currentSetScenesLoadingConfiguration = null;
             _currentSceneName = null;
             
             SceneManager.sceneUnloaded -= _SceneUnloaded;

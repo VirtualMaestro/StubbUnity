@@ -8,7 +8,7 @@ namespace StubbUnity.StubbFramework.Scenes.Services
     /// </summary>
     public interface ISceneService
     {
-        void Process(ProcessSetScenesConfig config);
+        void Process(ScenesLoadingConfiguration loadingConfiguration);
         bool HasScene(in IAssetName sceneName);
     }
 }

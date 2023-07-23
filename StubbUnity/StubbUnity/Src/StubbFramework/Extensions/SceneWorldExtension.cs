@@ -12,126 +12,50 @@ namespace StubbUnity.StubbFramework.Extensions
         /// Loads a scene by a name.
         /// It implies that scene will be activated immediately, and will be main. 
         /// </summary>
-        public static void LoadScene(this EcsWorld world, IAssetName sceneName, object payload = null)
+        public static void LoadScene(this EcsWorld world, IAssetName sceneName, string configName = null)
         {
-            var config = new LoadingSceneConfig {Name = sceneName, IsActive = true, IsMain = true, Payload = payload};
-            var list = new List<ILoadingSceneConfig> {config};
-
-            LoadScenes(world, list);
+            var config = ScenesLoadingConfiguration.Get(configName)
+                .AddToLoad(sceneName);
+            
+            _LoadScenesInternal(world, config);
         }
 
         /// <summary>
         /// Loads a scene by a name.
         /// It implies that scene will be activated immediately, and will be main. 
         /// </summary>
-        public static void LoadScene(this EcsWorld world, IAssetName sceneName, IAssetName unloadScene, object payload = null)
+        public static void LoadScene(this EcsWorld world, IAssetName sceneName, IAssetName unloadScene, string configName = null)
         {
-            var loadingList = new List<ILoadingSceneConfig> {new LoadingSceneConfig {Name = sceneName, IsActive = true, IsMain = true, Payload = payload}};
-            var unloadingList = new List<IAssetName> {unloadScene};
-
-            LoadScenes(world, loadingList, unloadingList);
+            var config = ScenesLoadingConfiguration.Get(configName)
+                .AddToLoad(sceneName)
+                .AddToUnload(unloadScene);
+            
+            _LoadScenesInternal(world, config);
         }
         
         /// <summary>
-        /// Loads a scene by a name and unload all others scene if 'unloadOthers' is true.
-        /// It implies that scene will be activated immediately, and will be main. 
+        /// Loads a scene by a name and unload all others scene.
         /// </summary>
-        public static void LoadScene(this EcsWorld world, IAssetName sceneName, bool unloadOthers, object payload = null)
+        public static void LoadSceneOnly(this EcsWorld world, IAssetName sceneName, string configName = null)
         {
-            var loadingList = new List<ILoadingSceneConfig> {new LoadingSceneConfig {Name = sceneName, IsActive = true, IsMain = false, Payload = payload}};
+            var config = ScenesLoadingConfiguration.Get(configName)
+                .AddToLoad(sceneName, true, true)
+                .UnloadOthers();
 
-            LoadScenes(world, loadingList, unloadOthers);
+            _LoadScenesInternal(world, config);
         }
 
         /// <summary>
-        /// Loads a scene by a config.  
+        /// Loads list of scenes by their names and unload list scenes by their names.
         /// </summary>
-        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, string configName = null)
+        public static void LoadScenesOnly(this EcsWorld world, List<IAssetName> loadSceneNames, string configName = null)
         {
-            var list = new List<ILoadingSceneConfig> {config};
-            LoadScenes(world, list, configName);
-        }
+            var config = ScenesLoadingConfiguration.Get(configName).UnloadOthers();
+            
+            foreach (var sceneName in loadSceneNames)
+                config.AddToLoad(sceneName);
 
-        /// <summary>
-        /// Loads a scene by a config and unload scene with a given name.  
-        /// </summary>
-        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, IAssetName unloadScene,
-            string configName = null)
-        {
-            var loadList = new List<ILoadingSceneConfig> {config};
-            var unloadList = new List<IAssetName> {unloadScene};
-            LoadScenes(world, loadList, unloadList, configName);
-        }
-
-        /// <summary>
-        /// Loads a scene by a config and unload scene with a given names.  
-        /// </summary>
-        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, List<IAssetName> unloadScenes,
-            string configName = null)
-        {
-            var list = new List<ILoadingSceneConfig> {config};
-            LoadScenes(world, list, unloadScenes, configName);
-        }
-
-        /// <summary>
-        /// Loads a scene by a config and unload others scenes.  
-        /// </summary>
-        public static void LoadScene(this EcsWorld world, ILoadingSceneConfig config, bool unloadOthers,
-            string configName = null)
-        {
-            var list = new List<ILoadingSceneConfig> {config};
-            LoadScenes(world, list, unloadOthers, configName);
-        }
-
-        /// <summary>
-        /// Add configuration of the scenes list to load.
-        /// LoadScenesComponent will be sent.
-        /// </summary>
-        /// <param name="world"> Extension to the EcsWorld</param>
-        /// <param name="configs">List of the ILoadingSceneConfig to load</param>
-        /// <param name="configName">When bunch of the scenes will be loaded, system will be notified with 'ScenesLoadComplete' component and the only field inside is this configName param, so it is possible to identify which set of scenes was loaded.</param>
-        public static void LoadScenes(this EcsWorld world, List<ILoadingSceneConfig> configs, string configName = null)
-        {
-            ref var loadScenes = ref world.NewEntity().Get<ProcessScenesEvent>();
-            loadScenes.Name = configName;
-            loadScenes.LoadingScenes = configs;
-            loadScenes.UnloadingScenes = null;
-            loadScenes.UnloadOthers = false;
-        }
-
-        /// <summary>
-        /// Add configuration of the scenes list to load.
-        /// LoadScenesComponent will be sent.
-        /// </summary>
-        /// <param name="world"> Extension to the EcsWorld</param>
-        /// <param name="configs">List of the ILoadingSceneConfig to load</param>
-        /// <param name="unloadScenes">scenes names which have to unload after given list config of new scenes will be loaded.</param>
-        /// <param name="configName">When bunch of the scenes will be loaded, system will be notified with 'ScenesLoadComplete' component and the only field inside is this configName param, so it is possible to identify which set of scenes was loaded.</param>
-        public static void LoadScenes(this EcsWorld world, List<ILoadingSceneConfig> configs,
-            List<IAssetName> unloadScenes, string configName = null)
-        {
-            ref var loadScenes = ref world.NewEntity().Get<ProcessScenesEvent>();
-            loadScenes.Name = configName;
-            loadScenes.LoadingScenes = configs;
-            loadScenes.UnloadingScenes = unloadScenes;
-            loadScenes.UnloadOthers = false;
-        }
-
-        /// <summary>
-        /// Add configuration of the scenes list to load.
-        /// LoadScenesComponent will be sent.
-        /// </summary>
-        /// <param name="world"> Extension to the EcsWorld</param>
-        /// <param name="configs">List of the ILoadingSceneConfig to load</param>
-        /// <param name="unloadOthers">if true all current non new scenes will be unloaded</param>
-        /// <param name="configName">When bunch of the scenes will be loaded, system will be notified with 'ScenesLoadComplete' component and the only field inside is this configName param, so it is possible to identify which set of scenes was loaded.</param>
-        public static void LoadScenes(this EcsWorld world, List<ILoadingSceneConfig> configs, bool unloadOthers,
-            string configName = null)
-        {
-            ref var loadScenes = ref world.NewEntity().Get<ProcessScenesEvent>();
-            loadScenes.Name = configName;
-            loadScenes.LoadingScenes = configs;
-            loadScenes.UnloadOthers = unloadOthers;
+            _LoadScenesInternal(world, config);
         }
 
         /// <summary>
@@ -140,18 +64,11 @@ namespace StubbUnity.StubbFramework.Extensions
         public static void LoadScenes(this EcsWorld world, List<IAssetName> loadSceneNames, List<IAssetName> unloadSceneNames,
             string configName = null)
         {
-            var configs = new List<ILoadingSceneConfig>();
-            
-            foreach (var sceneName in loadSceneNames)
-            {
-                var config = new LoadingSceneConfig {Name = sceneName, IsActive = true};
-                configs.Add(config);
-            }
-            
-            ref var loadScenes = ref world.NewEntity().Get<ProcessScenesEvent>();
-            loadScenes.Name = configName;
-            loadScenes.LoadingScenes = configs;
-            loadScenes.UnloadingScenes = unloadSceneNames;
+            var config = ScenesLoadingConfiguration.Get(configName)
+                .AddToLoad(loadSceneNames)
+                .AddToUnload(unloadSceneNames);
+
+            _LoadScenesInternal(world, config);
         }
 
         /// <summary>
@@ -159,8 +76,10 @@ namespace StubbUnity.StubbFramework.Extensions
         /// </summary>
         public static void UnloadScene(this EcsWorld world, IAssetName sceneName, string configName = null)
         {
-            var list = new List<IAssetName> {sceneName};
-            UnloadScenes(world, list, configName);
+            var config = ScenesLoadingConfiguration.Get(configName)
+                .AddToUnload(sceneName);
+            
+            _LoadScenesInternal(world, config);
         }
 
         /// <summary>
@@ -170,19 +89,20 @@ namespace StubbUnity.StubbFramework.Extensions
         /// </summary>
         public static void UnloadScenes(this EcsWorld world, List<IAssetName> sceneNames, string configName = null)
         {
-            ref var processScenesEvent = ref world.NewEntity().Get<ProcessScenesEvent>();
-            processScenesEvent.Name = configName;
-            processScenesEvent.UnloadingScenes = sceneNames;
+            var config = ScenesLoadingConfiguration.Get(configName)
+                .AddToUnload(sceneNames);
+            
+            _LoadScenesInternal(world, config);
         }
 
-        /// <summary>
-        /// Unloads all current scenes.
-        /// </summary>
-        public static void UnloadAllScenes(this EcsWorld world, string configName = null)
+        public static void LoadScenes(this EcsWorld world, ScenesLoadingConfiguration configuration)
         {
-            ref var processScenesEvent = ref world.NewEntity().Get<ProcessScenesEvent>();
-            processScenesEvent.Name = configName;
-            processScenesEvent.UnloadOthers = true;
+            _LoadScenesInternal(world, configuration.Clone());
+        }
+        
+        private static void _LoadScenesInternal(this EcsWorld world, ScenesLoadingConfiguration configuration)
+        {
+            world.NewEntity().Get<ProcessScenesEvent>().Configuration = configuration;
         }
 
         /// <summary>

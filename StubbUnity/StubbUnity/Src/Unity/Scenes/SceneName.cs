@@ -8,9 +8,9 @@ namespace StubbUnity.Unity.Scenes
         private static readonly Regex NormalizePathRegex =
             new Regex(@"^\s*/|Assets/|\w+.unity", RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
-        public static AssetNamesBuilder<SceneName> Create => new AssetNamesBuilder<SceneName>();
+        public static AssetNamesBuilder<SceneName> Create => new();
 
-        public SceneName() : base()
+        public SceneName()
         {
         }
 
@@ -31,7 +31,7 @@ namespace StubbUnity.Unity.Scenes
             path = base.FormatPath(path);
             path = path.Replace("\\", "/");
             path = NormalizePathRegex.Replace(path, string.Empty);
-            path = (path[path.Length - 1] != '/') ? (path + "/") : path;
+            path = path[path.Length - 1] != '/' ? path + "/" : path;
 
             return path;
         }

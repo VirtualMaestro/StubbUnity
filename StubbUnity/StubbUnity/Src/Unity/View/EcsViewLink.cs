@@ -20,9 +20,6 @@ namespace StubbUnity.Unity.View
 
         [SerializeField] private int typeId;
         
-        [HideInInspector]
-        public bool disableInitializationPhase;
-        
         private EcsEntity _entity = EcsEntity.Null;
 
         /// <summary>
@@ -52,7 +49,6 @@ namespace StubbUnity.Unity.View
         private void Start()
         {
             IsDestroyed = false;
-            if (disableInitializationPhase) return;
             
             // create ECS binding
             _InitEntity();

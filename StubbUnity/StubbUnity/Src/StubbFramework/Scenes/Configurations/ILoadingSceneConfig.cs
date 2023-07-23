@@ -14,13 +14,6 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
         /// </summary>
         bool IsMain { set; get; }
         
-        /// <summary>
-        /// Allow this scene to be more than one instance.
-        /// </summary>
-        bool IsSingle { set; get; }
-        
-        object Payload { set; get; }
-        
         ILoadingSceneConfig Clone();
      }
 }
