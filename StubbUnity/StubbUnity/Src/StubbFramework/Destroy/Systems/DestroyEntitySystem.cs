@@ -12,13 +12,9 @@ namespace StubbUnity.StubbFramework.Destroy.Systems
 
         public void Run()
         {
-            foreach (var index in _destroyEntityFilter)
-            {
-                _destroyEntityFilter.GetEntity(index).Destroy();
-            }
+            _destroyEntityFilter.Clear();
             
             _world.EndPhysicsFrame();
-
         }
     }
 }

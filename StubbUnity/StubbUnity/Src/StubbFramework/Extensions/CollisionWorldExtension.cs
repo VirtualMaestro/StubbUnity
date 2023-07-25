@@ -1,208 +1,127 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
-using StubbUnity.StubbFramework.Logging;
+using StubbUnity.StubbFramework.Physics;
 using StubbUnity.StubbFramework.Physics.Components;
-using StubbUnity.StubbFramework.View;
+using StubbUnity.Unity.Physics;
+using StubbUnity.Unity.Utils;
 
 namespace StubbUnity.StubbFramework.Extensions
 {
     public static class CollisionWorldExtension
     {
-        private static readonly Dictionary<int, bool> CollisionTable = new Dictionary<int, bool>();
-        private static readonly Dictionary<int, bool> RegisterCollisionTable = new Dictionary<int, bool>();
+        /// <summary>
+        /// Key - is hash of two typeIds (typeIdA & typeIdB).
+        /// Value - is tuple where first value is typeIdA (it allows to check order), and the second one is bitmask (for checking Collision types)
+        /// </summary>
+        private static readonly Dictionary<int, (int, int)> CollisionTable = new();
+        
+        /// <summary>
+        /// Key - is collision pair hash.
+        /// Value - is mask with CollisionType values.
+        /// </summary>
+        private static readonly Dictionary<int, int> RegisterCollisionTable = new();
 
-        public static void DispatchTriggerEnter(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchTriggerEnter(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var triggerEnter = ref entity.Get<TriggerEnterComponent>();
-            triggerEnter.ObjectA = objA;
-            triggerEnter.ObjectB = objB;
-            triggerEnter.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.TriggerEnter, out var entity))
+                entity.Get<IsTriggerEnterComponent>();
         }
 
-        public static void DispatchTriggerEnter2D(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchTriggerEnter2D(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var triggerEnter = ref entity.Get<TriggerEnter2DComponent>();
-            triggerEnter.ObjectA = objA;
-            triggerEnter.ObjectB = objB;
-            triggerEnter.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.TriggerEnter2d, out var entity))
+                entity.Get<IsTriggerEnter2dComponent>();
         }
 
-        public static void DispatchTriggerStay(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchTriggerStay(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var triggerStay = ref entity.Get<TriggerStayComponent>();
-            triggerStay.ObjectA = objA;
-            triggerStay.ObjectB = objB;
-            triggerStay.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.TriggerStay, out var entity))
+                entity.Get<IsTriggerStayComponent>();
         }
 
-        public static void DispatchTriggerStay2D(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchTriggerStay2D(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var triggerStay = ref entity.Get<TriggerStay2DComponent>();
-            triggerStay.ObjectA = objA;
-            triggerStay.ObjectB = objB;
-            triggerStay.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.TriggerStay2d, out var entity))
+                entity.Get<IsTriggerStay2dComponent>();
         }
 
-        public static void DispatchTriggerExit(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchTriggerExit(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var triggerExit = ref entity.Get<TriggerExitComponent>();
-            triggerExit.ObjectA = objA;
-            triggerExit.ObjectB = objB;
-            triggerExit.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.TriggerExit, out var entity))
+                entity.Get<IsTriggerExitComponent>();
         }
 
-        public static void DispatchTriggerExit2D(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchTriggerExit2D(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var triggerExit = ref entity.Get<TriggerExit2DComponent>();
-            triggerExit.ObjectA = objA;
-            triggerExit.ObjectB = objB;
-            triggerExit.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.TriggerExit2d, out var entity))
+                entity.Get<IsTriggerExit2dComponent>();
         }
 
-        public static void DispatchCollisionEnter(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchCollisionEnter(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var collisionEnter = ref entity.Get<CollisionEnterComponent>();
-            collisionEnter.ObjectA = objA;
-            collisionEnter.ObjectB = objB;
-            collisionEnter.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.CollisionEnter, out var entity))
+                entity.Get<IsCollisionEnterComponent>();
         }
 
-        public static void DispatchCollisionEnter2D(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchCollisionEnter2D(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var collisionEnter = ref entity.Get<CollisionEnter2DComponent>();
-            collisionEnter.ObjectA = objA;
-            collisionEnter.ObjectB = objB;
-            collisionEnter.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.CollisionEnter2d, out var entity))
+                entity.Get<IsCollisionEnter2dComponent>();
         }
 
-        public static void DispatchCollisionStay(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchCollisionStay(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var collisionStay = ref entity.Get<CollisionStayComponent>();
-            collisionStay.ObjectA = objA;
-            collisionStay.ObjectB = objB;
-            collisionStay.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.CollisionStay, out var entity))
+                entity.Get<IsCollisionStayComponent>();
         }
 
-        public static void DispatchCollisionStay2D(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchCollisionStay2D(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var collisionStay = ref entity.Get<CollisionStay2DComponent>();
-            collisionStay.ObjectA = objA;
-            collisionStay.ObjectB = objB;
-            collisionStay.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.CollisionStay2d, out var entity))
+                entity.Get<IsCollisionStay2dComponent>();
         }
 
-        public static void DispatchCollisionExit(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchCollisionExit(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
-
-            RegisterCollision(ref objA, ref objB, in result, in hash);
-
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var collisionExit = ref entity.Get<CollisionExitComponent>();
-            collisionExit.ObjectA = objA;
-            collisionExit.ObjectB = objB;
-            collisionExit.Info = collisionInfo;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.CollisionExit, out var entity))
+                entity.Get<IsCollisionExitComponent>();
         }
 
-        public static void DispatchCollisionExit2D(this EcsWorld world, IEcsViewLink objA, IEcsViewLink objB,
+        public static void DispatchCollisionExit2D(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
         {
-            if (CanDispatch(objA.TypeId, objB.TypeId, out int result, out int hash) == false) return;
+            if (_HandleCollision(world, objA, objB, collisionInfo, CollisionType.CollisionExit2d, out var entity))
+                entity.Get<IsCollisionExit2dComponent>();
+        }
+        
+        private static bool _HandleCollision(EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB, object collisionInfo, CollisionType collisionType, out EcsEntity entity)
+        {
+            entity = EcsEntity.Null;
+            
+            if (_CanDispatch(objA.TypeId, objB.TypeId, collisionType, out var isCorrectOrder, out var hash) == false) 
+                return false;
 
-            RegisterCollision(ref objA, ref objB, in result, in hash);
+            _RegisterCollision(ref objA, ref objB, collisionType, isCorrectOrder, hash);
+            
+            entity = world.NewEntity();
+            ref var collision = ref entity.Get<CollisionComponent>();
+            collision.ObjectA = objA;
+            collision.ObjectB = objB;
+            collision.Info = collisionInfo;
 
-            var entity = world.NewEntity();
-            entity.Get<CleanupCollisionComponent>();
-
-            ref var collisionExit = ref entity.Get<CollisionExit2DComponent>();
-            collisionExit.ObjectA = objA;
-            collisionExit.ObjectB = objB;
-            collisionExit.Info = collisionInfo;
+            return true;
         }
 
         /// <summary>
@@ -212,33 +131,24 @@ namespace StubbUnity.StubbFramework.Extensions
         /// <param name="world"></param>
         /// <param name="typeIdA"></param>
         /// <param name="typeIdB"></param>
-        /// <param name="shift"></param>
-        public static void AddCollisionPair(this EcsWorld world, int typeIdA, int typeIdB, int shift = 8)
+        /// <param name="collisionType"></param>
+        public static void AddCollisionPair(this EcsWorld world, int typeIdA, int typeIdB, CollisionType collisionType)
         {
-            _VerifyCollisionPair(world, typeIdA, typeIdB, shift);
+            var hash = _GetHash(typeIdA, typeIdB);
 
-            CollisionTable[_GetHash(typeIdA, typeIdB, shift)] = true;
-        }
-
-        /// <summary>
-        /// Check if given collision pair exist.
-        /// </summary>
-        /// <param name="world"></param>
-        /// <param name="typeIdA"></param>
-        /// <param name="typeIdB"></param>
-        /// <param name="shift"></param>
-        /// <returns>
-        /// -1 - no collision pair;
-        ///  0 - collision pair exists in given order;
-        ///  1 - collision pair exists in reverse order;
-        /// </returns>
-        public static int HasCollisionPair(this EcsWorld world, int typeIdA, int typeIdB, int shift = 8)
-        {
-            if (typeIdA <= 0 || typeIdB <= 0) return -1;
-            if (CollisionTable.ContainsKey(_GetHash(typeIdA, typeIdB, shift))) return 0;
-            if (CollisionTable.ContainsKey(_GetHash(typeIdB, typeIdA, shift))) return 1;
-
-            return -1;
+            if (CollisionTable.TryGetValue(hash, out var pair))
+            {
+                if (BitMask.IsSet(pair.Item2, (int)collisionType))
+                    return;
+                
+                BitMask.Set(pair.Item2, (int)collisionType);
+                CollisionTable[hash] = pair;
+            }
+            else
+            {
+                (int, int) newPair = (typeIdA, BitMask.Set(0, (int) collisionType));
+                CollisionTable.Add(hash, newPair);
+            }
         }
 
         public static void EndPhysicsFrame(this EcsWorld world)
@@ -247,61 +157,38 @@ namespace StubbUnity.StubbFramework.Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void RegisterCollision(ref IEcsViewLink objA, ref IEcsViewLink objB, in int result, in int hash)
+        private static void _RegisterCollision(ref EcsCollisionSettings objA, ref EcsCollisionSettings objB, CollisionType collisionType, bool isCorrectOrder, int hash)
         {
-            if (result == 1)
-            {
+            if (!isCorrectOrder)
                 (objA, objB) = (objB, objA);
-            }
 
-            RegisterCollisionTable[hash] = true;
+            if (RegisterCollisionTable.TryGetValue(hash, out var collisionMask))
+                RegisterCollisionTable[hash] = BitMask.Set(collisionMask, (int)collisionType);
+            else
+                RegisterCollisionTable.Add(hash, BitMask.Set(0, (int)collisionType));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool CanDispatch(int typeIdA, int typeIdB, out int result, out int hashResult, int shift = 8)
+        private static bool _CanDispatch(int typeIdA, int typeIdB, CollisionType collisionType, out bool isCorrectOrder, out int hash)
         {
-            result = -1;
-            hashResult = -1;
+            isCorrectOrder = true;
+            hash = _GetHash(typeIdA, typeIdB);
 
-            if (typeIdA <= 0 || typeIdB <= 0) return false;
+            if (!CollisionTable.TryGetValue(hash, out var pair) || !BitMask.IsSet(pair.Item2, (int)collisionType))
+                return false;
+            
+            isCorrectOrder = pair.Item1 == typeIdA;
+            
+            if (RegisterCollisionTable.TryGetValue(hash, out var collisionMask) && BitMask.IsSet(collisionMask, (int)collisionType))
+                return false;
 
-            var hash = _GetHash(typeIdA, typeIdB, shift);
-            if (CollisionTable.ContainsKey(hash))
-            {
-                result = 0;
-                hashResult = hash;
-                return RegisterCollisionTable.ContainsKey(hash) == false;
-            }
-
-            var reverseHash = _GetHash(typeIdB, typeIdA, shift);
-            if (CollisionTable.ContainsKey(reverseHash))
-            {
-                result = 1;
-                hashResult = reverseHash;
-                return RegisterCollisionTable.ContainsKey(reverseHash) == false;
-            }
-
-            return false;
+            return true;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static int _GetHash(int byte1, int byte2, int shift)
+        private static int _GetHash(int byte1, int byte2)
         {
-            return byte1 | byte2 << shift;
-        }
-
-        [Conditional("DEBUG")]
-        private static void _VerifyCollisionPair(EcsWorld world, int typeIdA, int typeIdB, int shift)
-        {
-            if (typeIdA <= 0 || typeIdB <= 0)
-            {
-                log.Error($"Wrong collision pair: {typeIdA}:{typeIdB} - collision type should be > 0.");
-            }
-
-            if (HasCollisionPair(world, typeIdA, typeIdB, shift) >= 0)
-            {
-                log.Warn($"Collision pair {typeIdA} : {typeIdB} is already added!");
-            }
+            return byte1 > byte2 ? byte2 | (byte1 << 16) : byte1 | (byte2 << 16);
         }
     }
 }

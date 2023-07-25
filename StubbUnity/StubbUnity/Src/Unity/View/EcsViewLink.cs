@@ -13,27 +13,10 @@ namespace StubbUnity.Unity.View
 {
     public class EcsViewLink : MonoBehaviour, IEcsViewLink, IPoolable
     {
-        private UnityEvent<EcsViewLink> _onDisposeEvent; 
-        public UnityEvent<EcsViewLink> OnDisposeEvent => _onDisposeEvent ??= new UnityEvent<EcsViewLink>();
-
-        public bool hasPhysics;
-
-        [SerializeField] private int typeId;
-        
         private EcsEntity _entity = EcsEntity.Null;
+        private UnityEvent<EcsViewLink> _onDisposeEvent; 
 
-        /// <summary>
-        /// int number which represents type for an object.
-        /// This type will be used for determination which object it is and for setting up collision pair.
-        /// It determines if collision event will be sent during a collision of two objects.
-        /// Default value 0, which means no collision events will be sent.
-        /// </summary>
-        public int TypeId 
-        {
-            get => typeId;
-            set => typeId = value;
-        }
-        
+        public UnityEvent<EcsViewLink> OnDisposeEvent => _onDisposeEvent ??= new UnityEvent<EcsViewLink>();
         public bool HasEntity => _entity != EcsEntity.Null && _entity.IsAlive();
         public string Name => gameObject.name;
         public bool IsDestroyed { get; private set; }
@@ -189,6 +172,11 @@ namespace StubbUnity.Unity.View
                 _entity.Destroy();
             
             OnDispose();
+        }
+
+        public override string ToString()
+        {
+            return $"Name: {Name}, IsDestroyed: {IsDestroyed}";
         }
     }
 }

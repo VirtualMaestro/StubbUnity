@@ -1,15 +1,23 @@
-using StubbUnity.Unity.View;
+using Leopotam.Ecs;
+using StubbUnity.StubbFramework.Core;
 using UnityEngine;
 
 namespace StubbUnity.Unity.Physics
 {
+    [RequireComponent(typeof(EcsCollisionSettings))]
     public class BasePhysicsDispatcher : MonoBehaviour
     {
-        protected EcsViewLink Dispatcher;
-        
+        protected EcsWorld World { get; private set; }
+        protected EcsCollisionSettings Settings { get; private set; }
+
+        private void Awake()
+        {
+            World = Stubb.World;
+        }
+
         private void Start()
         {
-            Dispatcher = GetComponent<EcsViewLink>();
+            Settings = gameObject.GetComponent<EcsCollisionSettings>();
         }
     }
 }

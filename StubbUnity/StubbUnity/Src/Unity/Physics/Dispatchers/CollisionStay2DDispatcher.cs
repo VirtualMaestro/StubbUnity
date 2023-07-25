@@ -1,5 +1,4 @@
 using StubbUnity.StubbFramework.Extensions;
-using StubbUnity.StubbFramework.View;
 using UnityEngine;
 
 namespace StubbUnity.Unity.Physics.Dispatchers
@@ -8,12 +7,12 @@ namespace StubbUnity.Unity.Physics.Dispatchers
     {
         void OnCollisionStay2D(Collision2D other)
         {
-            var otherView = other.gameObject.GetComponent<IEcsViewLink>();
+            var otherSettings = other.gameObject.GetComponent<EcsCollisionSettings>();
             
-            if (otherView == null)
+            if (otherSettings == null)
                 return;
 
-            Dispatcher.World.DispatchCollisionStay2D(Dispatcher, otherView, other);
+            World.DispatchCollisionStay2D(Settings, otherSettings, other);
         }
     }
 }

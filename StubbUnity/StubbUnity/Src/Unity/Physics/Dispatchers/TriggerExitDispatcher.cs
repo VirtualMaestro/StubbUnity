@@ -1,5 +1,4 @@
 using StubbUnity.StubbFramework.Extensions;
-using StubbUnity.StubbFramework.View;
 using UnityEngine;
 
 namespace StubbUnity.Unity.Physics.Dispatchers
@@ -8,12 +7,12 @@ namespace StubbUnity.Unity.Physics.Dispatchers
     {
         void OnTriggerExit(Collider other)
         {
-            var otherView = other.gameObject.GetComponent<IEcsViewLink>();
+            var otherSettings = other.gameObject.GetComponent<EcsCollisionSettings>();
             
-            if (otherView == null)
+            if (otherSettings == null)
                 return;
 
-            Dispatcher.World.DispatchTriggerExit(Dispatcher, otherView, other);
+            World.DispatchTriggerExit(Settings, otherSettings, other);
         }
     }
 }
