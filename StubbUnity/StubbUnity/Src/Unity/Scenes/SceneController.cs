@@ -61,9 +61,6 @@ namespace StubbUnity.Unity.Scenes
             _entity = World.NewEntity();
             _entity.Get<SceneComponent>().Scene = this;
             _entity.Get<IsJustCreatedComponent>();
-            
-            // sends create event 
-            World.NewEntity().Get<SceneCreatedEvent>().Scene = this;
         }
 
         /// <summary>
