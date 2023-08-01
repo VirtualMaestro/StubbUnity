@@ -17,8 +17,8 @@ namespace StubbUnity.StubbFramework.Scenes
             Add(new ActivateSceneSystem());
             Add(new DeactivateSceneSystem());
 
-            OneFrame<ScenesSetLoadingCompleteEvent>();
-            OneFrame<ScenesSetUnloadingCompleteEvent>();
+            OneFrame<ScenesLoadingConfigurationCompleteEvent>();
+            OneFrame<ScenesUnloadingConfigurationCompleteEvent>();
             OneFrame<SceneLoadingCompleteEvent>();
             OneFrame<SceneUnloadingCompleteEvent>();
             OneFrame<SceneDestroyedEvent>();

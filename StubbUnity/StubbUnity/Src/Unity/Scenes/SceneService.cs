@@ -175,7 +175,7 @@ namespace StubbUnity.Unity.Scenes
             _isInProgress = false;
                 
             // notify ecs
-            _ecsWorld.NewEntity().Get<ScenesSetLoadingCompleteEvent>().ScenesSetName = _configInProcess.Name;
+            _ecsWorld.NewEntity().Get<ScenesLoadingConfigurationCompleteEvent>().ConfigurationName = _configInProcess.Name;
 
             _configInProcess.Dispose();
             _configInProcess = null;
@@ -251,6 +251,7 @@ namespace StubbUnity.Unity.Scenes
 
         private void _OnAllScenesUnloaded(ScenesLoadingConfiguration loadingConfiguration)
         {
+            _ecsWorld.NewEntity().Get<ScenesUnloadingConfigurationCompleteEvent>().ConfigurationName = loadingConfiguration.Name;
             _isUnloadingDone = true;
             _Perform(loadingConfiguration);
         }
@@ -278,7 +279,7 @@ namespace StubbUnity.Unity.Scenes
         public event Action<ScenesLoadingConfiguration> OnAllScenesLoaded;
     
         private readonly Queue<ILoadingSceneConfig> _queue;
-        private ScenesLoadingConfiguration _currentSetScenesLoadingConfiguration;
+        private ScenesLoadingConfiguration _currentScenesLoadingConfiguration;
         private ILoadingSceneConfig _currentSceneConfig;
     
         public SceneLoader()
@@ -288,12 +289,12 @@ namespace StubbUnity.Unity.Scenes
         
         public void Load(ScenesLoadingConfiguration loadingConfiguration)
         {
-            if (_currentSetScenesLoadingConfiguration != null)
+            if (_currentScenesLoadingConfiguration != null)
                 return;
             
             SceneManager.sceneLoaded += _SceneLoaded;
             
-            _currentSetScenesLoadingConfiguration = loadingConfiguration;
+            _currentScenesLoadingConfiguration = loadingConfiguration;
             
             foreach (var sceneConfig in loadingConfiguration.Loadings)
                 _queue.Enqueue(sceneConfig);
@@ -321,8 +322,8 @@ namespace StubbUnity.Unity.Scenes
     
         private void _AllScenesLoaded()
         {
-            var setSceneConfig = _currentSetScenesLoadingConfiguration;
-            _currentSetScenesLoadingConfiguration = null;
+            var setSceneConfig = _currentScenesLoadingConfiguration;
+            _currentScenesLoadingConfiguration = null;
             _currentSceneConfig = null;
             
             SceneManager.sceneLoaded -= _SceneLoaded;
@@ -337,7 +338,7 @@ namespace StubbUnity.Unity.Scenes
         public event Action<ScenesLoadingConfiguration> OnAllScenesUnloaded; 
     
         private readonly Queue<IAssetName> _queue;
-        private ScenesLoadingConfiguration _currentSetScenesLoadingConfiguration;
+        private ScenesLoadingConfiguration _currentScenesLoadingConfiguration;
         private IAssetName _currentSceneName;
     
         public SceneUnloader()
@@ -347,12 +348,12 @@ namespace StubbUnity.Unity.Scenes
         
         public void Unload(ScenesLoadingConfiguration loadingConfiguration)
         {
-            if (_currentSetScenesLoadingConfiguration != null)
+            if (_currentScenesLoadingConfiguration != null)
                 return;
             
             SceneManager.sceneUnloaded += _SceneUnloaded;
             
-            _currentSetScenesLoadingConfiguration = loadingConfiguration;
+            _currentScenesLoadingConfiguration = loadingConfiguration;
             
             foreach (var sceneConfig in loadingConfiguration.Unloadings)
                 _queue.Enqueue(sceneConfig);
@@ -380,13 +381,13 @@ namespace StubbUnity.Unity.Scenes
     
         private void _AllScenesLoaded()
         {
-            var setSceneConfig = _currentSetScenesLoadingConfiguration;
-            _currentSetScenesLoadingConfiguration = null;
+            var scenesLoadingConfig = _currentScenesLoadingConfiguration;
+            _currentScenesLoadingConfiguration = null;
             _currentSceneName = null;
             
             SceneManager.sceneUnloaded -= _SceneUnloaded;
 
-            OnAllScenesUnloaded?.Invoke(setSceneConfig);
+            OnAllScenesUnloaded?.Invoke(scenesLoadingConfig);
         }
     }
 }
