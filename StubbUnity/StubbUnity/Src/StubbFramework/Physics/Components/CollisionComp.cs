@@ -6,7 +6,7 @@ namespace StubbUnity.StubbFramework.Physics.Components
     /// Contains an information about a collision.
     /// This component will be removed at the end of physics frame.
     /// </summary>
-    public struct CollisionComponent 
+    public struct CollisionComp 
     {
         public EcsCollisionSettings ObjectA;
         public EcsCollisionSettings ObjectB;

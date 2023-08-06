@@ -3,8 +3,8 @@
     /// <summary>
     /// Contains linked view object.
     /// </summary>
-    public struct EcsViewLinkComponent
+    public struct ViewComp
     {
-        public IEcsViewLink Value;
+        public IEcsViewLink View;
     }
 }

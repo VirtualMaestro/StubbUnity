@@ -5,5 +5,5 @@ namespace StubbUnity.StubbFramework.Physics.Components
     /// <summary>
     /// Marker-component for 3d physics trigger during the Exit phase.
     /// </summary>
-    public struct IsTriggerExitComponent : IEcsIgnoreInFilter {}
+    public struct IsTriggerExit : IEcsIgnoreInFilter {}
 }

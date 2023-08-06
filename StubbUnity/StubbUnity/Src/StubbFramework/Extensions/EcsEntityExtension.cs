@@ -6,15 +6,15 @@ namespace StubbUnity.StubbFramework.Extensions
 {
     public static class EcsEntityExtension
     {
-        public static void DestroyDelayEndFrame(ref this EcsEntity entity)
+        public static void DestroyEntityEndFrame(ref this EcsEntity entity)
         {
-            entity.Get<DestroyEntityComponent>();
+            entity.Get<DestroyEntityAction>();
         }
 
-        public static void DestroyDelay(ref this EcsEntity entity, long milliseconds)
+        public static void DestroyEntityWithDelay(ref this EcsEntity entity, long milliseconds)
         {
-            entity.Get<DestroyEntityComponent>();
-            entity.Get<DelayComponent>().Milliseconds = milliseconds;
+            entity.Get<DestroyEntityAction>();
+            entity.Get<DelayComp>().Milliseconds = milliseconds;
         }
     }
 }

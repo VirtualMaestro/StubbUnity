@@ -7,7 +7,7 @@ namespace StubbUnity.StubbFramework.Scenes.Systems
     public sealed class DeactivateSceneSystem : IEcsRunSystem
     {
         private EcsFilter<DeactivateSceneEvent> _deactivateEventFilter;
-        private EcsFilter<SceneComponent, IsSceneActiveComponent> _inactiveScenesFilter;
+        private EcsFilter<SceneComp, SceneActiveState> _inactiveScenesFilter;
 
         public void Run()
         {

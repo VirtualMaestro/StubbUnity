@@ -14,12 +14,13 @@ namespace StubbUnity.StubbFramework.Core
         public SystemTailFeature(EcsWorld world, string name = "TailSystems") : base(world, name)
         {
             Add(new SceneFeature(World));
-            Add(new DestroyEcsViewLinkSystem());
+            Add(new DestroyViewSystem());
             Add(new DestroyEntitySystem());
             Add(new PauseGameSystem());
             Add(new ResumeGameSystem());
             
-            OneFrame<IsJustCreatedComponent>();
+            OneFrame<IsViewJustConstructed>();
+            OneFrame<IsViewJustInitialized>();
             
             OneFrame<PauseGameEvent>();
             OneFrame<ResumeGameEvent>();

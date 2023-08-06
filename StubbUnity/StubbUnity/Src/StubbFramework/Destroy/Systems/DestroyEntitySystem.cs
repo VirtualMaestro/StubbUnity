@@ -8,7 +8,7 @@ namespace StubbUnity.StubbFramework.Destroy.Systems
     public sealed class DestroyEntitySystem : IEcsRunSystem
     {
         private EcsWorld _world;
-        private readonly EcsFilter<DestroyEntityComponent>.Exclude<DelayComponent> _destroyEntityFilter = null;
+        private readonly EcsFilter<DestroyEntityAction>.Exclude<DelayComp> _destroyEntityFilter = null;
 
         public void Run()
         {

@@ -35,12 +35,12 @@ namespace StubbUnity.StubbFramework.Extensions
         }
 
         /// <summary>
-        /// Mark all entities in a filter with DestroyEntityComponent. 
+        /// Mark all entities in a filter with DestroyEntityComponent, so they will be destroyed at the end of the frame. 
         /// </summary>
         public static void MarkDestroy (this EcsFilter filter)
         {
             foreach (var idx in filter)
-                filter.GetEntity(idx).Get<DestroyEntityComponent>();
+                filter.GetEntity(idx).Get<DestroyEntityAction>();
         }
     }
 }

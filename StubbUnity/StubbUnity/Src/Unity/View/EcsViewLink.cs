@@ -25,16 +25,18 @@ namespace StubbUnity.Unity.View
         private void Awake()
         {
             World = Stubb.World;
+            IsDestroyed = false;
+            
+            // create ECS binding
+            _InitEntity();
             
             OnConstruct();
         }
 
         private void Start()
         {
-            IsDestroyed = false;
-            
-            // create ECS binding
-            _InitEntity();
+            _entity.Get<IsViewJustInitialized>();
+            _entity.Get<ViewReadyToUseState>();
             
             OnInitialize();
         }
@@ -59,9 +61,11 @@ namespace StubbUnity.Unity.View
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void _InitEntity()
         {
-            _entity = World.NewEntity();
-            _entity.Get<EcsViewLinkComponent>().Value = this;
-            _entity.Get<IsJustCreatedComponent>();
+            if (!HasEntity)
+                _entity = World.NewEntity();
+            
+            _entity.Get<ViewComp>().View = this;
+            _entity.Get<IsViewJustConstructed>();
         }
 
         public ref EcsEntity GetEntity()

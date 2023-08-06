@@ -38,6 +38,9 @@ namespace StubbUnity.Unity.Scenes
             IsDestroyed = false;
             _scene = gameObject.scene;
             SceneName = new SceneName(_scene.name, _scene.path);
+            
+            // create ECS binding
+            _InitEntity();
         }
 
         private void Start()
@@ -45,8 +48,8 @@ namespace StubbUnity.Unity.Scenes
             if (content == null)
                 throw new Exception($"Content wasn't set for the controller of the scene '{SceneName}'!");
 
-            // create ECS binding
-            _InitEntity();
+            _entity.Get<IsViewJustInitialized>();
+            _entity.Get<ViewReadyToUseState>();
 
             if (_shouldBeShown)
                 _Show();
@@ -58,9 +61,11 @@ namespace StubbUnity.Unity.Scenes
 
         private void _InitEntity()
         {
-            _entity = World.NewEntity();
-            _entity.Get<SceneComponent>().Scene = this;
-            _entity.Get<IsJustCreatedComponent>();
+            if (!HasEntity)
+                _entity = World.NewEntity();
+            
+            _entity.Get<SceneComp>().Scene = this;
+            _entity.Get<IsViewJustConstructed>();
         }
 
         /// <summary>
@@ -88,10 +93,10 @@ namespace StubbUnity.Unity.Scenes
             if (content != null)
                 content.SetActive(true);
             
-            if (_entity.Has<IsSceneInactiveComponent>())
-                _entity.Del<IsSceneInactiveComponent>();
+            if (_entity.Has<SceneInactiveState>())
+                _entity.Del<SceneInactiveState>();
 
-            _entity.Get<IsSceneActiveComponent>();
+            _entity.Get<SceneActiveState>();
             
             // sends event scene has been activated
             World.NewEntity().Get<SceneActivatedEvent>().Scene = this;
@@ -111,10 +116,10 @@ namespace StubbUnity.Unity.Scenes
             if (content != null)
                 content.SetActive(false);
             
-            if (_entity.Has<IsSceneActiveComponent>())
-                _entity.Del<IsSceneActiveComponent>();
+            if (_entity.Has<SceneActiveState>())
+                _entity.Del<SceneActiveState>();
                 
-            _entity.Get<IsSceneInactiveComponent>();
+            _entity.Get<SceneInactiveState>();
             
             // sends event scene has been deactivated
             World.NewEntity().Get<SceneDeactivatedEvent>().Scene = this;

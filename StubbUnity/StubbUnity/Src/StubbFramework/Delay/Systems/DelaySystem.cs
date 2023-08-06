@@ -6,7 +6,7 @@ namespace StubbUnity.StubbFramework.Delay.Systems
 {
     public sealed class DelaySystem : IEcsRunSystem
     {
-        private EcsFilter<DelayComponent> _filterDelay;
+        private EcsFilter<DelayComp> _filterDelay;
         private ITimeService _timeService;
 
         public void Run()
@@ -21,7 +21,7 @@ namespace StubbUnity.StubbFramework.Delay.Systems
 
                 if (delay.Frames <= 0 && delay.Milliseconds <= 0)
                 {
-                    _filterDelay.GetEntity(index).Del<DelayComponent>();
+                    _filterDelay.GetEntity(index).Del<DelayComp>();
                 }
             }
         }

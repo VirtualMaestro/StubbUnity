@@ -9,16 +9,16 @@ namespace StubbUnity.StubbFramework.Pause.Systems
     {
         private readonly EcsWorld _world = null;
         private readonly EcsFilter<PauseGameEvent> _pauseGameFilter = null;
-        private readonly EcsFilter<EcsViewLinkComponent> _viewLinkFilter = null;
+        private readonly EcsFilter<ViewComp> _viewLinkFilter = null;
         
         public void Run()
         {
             if (_pauseGameFilter.IsEmpty()) return;
 
             foreach (var idx in _viewLinkFilter)
-                _viewLinkFilter.Get1(idx).Value.OnPause();
+                _viewLinkFilter.Get1(idx).View.OnPause();
 
-            _world.NewEntity().Get<GameOnPauseComponent>();
+            _world.NewEntity().Get<GameOnPauseState>();
         }
     }
 }

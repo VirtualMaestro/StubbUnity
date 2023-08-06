@@ -6,7 +6,7 @@ namespace StubbUnity.StubbFramework.Physics.Systems
 {
     public sealed class CleanupCollisionSystem : IEcsRunSystem
     {
-        private EcsFilter<CollisionComponent> _cleanupCollisionFilter;
+        private EcsFilter<CollisionComp> _cleanupCollisionFilter;
         
         public void Run()
         {
