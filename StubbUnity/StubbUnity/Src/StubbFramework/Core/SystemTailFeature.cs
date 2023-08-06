@@ -1,10 +1,10 @@
 ﻿using Leopotam.Ecs;
-using StubbUnity.StubbFramework.Common.Components;
 using StubbUnity.StubbFramework.Core.Events;
 using StubbUnity.StubbFramework.Destroy.Systems;
 using StubbUnity.StubbFramework.Pause.Events;
 using StubbUnity.StubbFramework.Pause.Systems;
 using StubbUnity.StubbFramework.Scenes;
+using StubbUnity.StubbFramework.View.Components;
 using StubbUnity.StubbFramework.View.Systems;
 
 namespace StubbUnity.StubbFramework.Core

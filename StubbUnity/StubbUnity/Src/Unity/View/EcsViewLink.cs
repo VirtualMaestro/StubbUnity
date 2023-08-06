@@ -1,6 +1,5 @@
 using System.Runtime.CompilerServices;
 using Leopotam.Ecs;
-using StubbUnity.StubbFramework.Common.Components;
 using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.View;
 using StubbUnity.StubbFramework.View.Components;
@@ -73,8 +72,15 @@ namespace StubbUnity.Unity.View
             return ref _entity;
         }
 
+        /// <summary>
+        /// If an entity already exist all the components will be moved to the new given entity.
+        /// The old entity will be destroyed. 
+        /// </summary>
         public void SetEntity(ref EcsEntity entity)
         {
+            if (HasEntity)
+                _entity.MoveTo(in entity);
+            
             _entity = entity;
         }
 

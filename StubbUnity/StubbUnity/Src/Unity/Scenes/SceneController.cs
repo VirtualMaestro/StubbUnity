@@ -1,12 +1,12 @@
 ﻿using System;
 using Leopotam.Ecs;
-using StubbUnity.StubbFramework.Common.Components;
 using StubbUnity.StubbFramework.Common.Names;
 using StubbUnity.StubbFramework.Core;
 using StubbUnity.StubbFramework.Logging;
 using StubbUnity.StubbFramework.Scenes;
 using StubbUnity.StubbFramework.Scenes.Components;
 using StubbUnity.StubbFramework.Scenes.Events;
+using StubbUnity.StubbFramework.View.Components;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

@@ -1,6 +1,6 @@
 using Leopotam.Ecs;
 
-namespace StubbUnity.StubbFramework.Common.Components
+namespace StubbUnity.StubbFramework.View.Components
 {
     /**
      * One-frame component-marker shows that the current entity was just created.
