@@ -141,11 +141,12 @@ namespace StubbUnity.StubbFramework.Extensions
                 if (BitMask.IsSet(pair.Item2, (int)collisionType))
                     return;
                 
-                BitMask.Set(pair.Item2, (int)collisionType);
+                pair.Item2 = BitMask.Set(pair.Item2, (int)collisionType);
                 CollisionTable[hash] = pair;
             }
             else
             {
+				// we are storing first param id of the first collider to know the order (which one registered first), and collision type for this pair.
                 (int, int) newPair = (typeIdA, BitMask.Set(0, (int) collisionType));
                 CollisionTable.Add(hash, newPair);
             }
