@@ -14,13 +14,18 @@ namespace StubbUnity.StubbFramework.Extensions
         /// Key - is hash of two typeIds (typeIdA & typeIdB).
         /// Value - is tuple where first value is typeIdA (it allows to check order), and the second one is bitmask (for checking Collision types)
         /// </summary>
-        private static readonly Dictionary<int, (int, int)> CollisionTable = new();
+        private static readonly Dictionary<int, (int, int)> CollisionPairsTable = new();
         
         /// <summary>
         /// Key - is collision pair hash.
         /// Value - is mask with CollisionType values.
         /// </summary>
         private static readonly Dictionary<int, int> RegisterCollisionTable = new();
+                
+        /// <summary>
+        /// Returns number of registered collision pairs without taking into account how many CollisionType's between them.
+        /// </summary>
+        public static int NumCollisionPairs(this EcsWorld world) => CollisionPairsTable.Count;
 
         public static void DispatchTriggerEnter(this EcsWorld world, EcsCollisionSettings objA, EcsCollisionSettings objB,
             object collisionInfo)
@@ -136,19 +141,19 @@ namespace StubbUnity.StubbFramework.Extensions
         {
             var hash = _GetHash(typeIdA, typeIdB);
 
-            if (CollisionTable.TryGetValue(hash, out var pair))
+            if (CollisionPairsTable.TryGetValue(hash, out var pair))
             {
                 if (BitMask.IsSet(pair.Item2, (int)collisionType))
                     return;
                 
                 pair.Item2 = BitMask.Set(pair.Item2, (int)collisionType);
-                CollisionTable[hash] = pair;
+                CollisionPairsTable[hash] = pair;
             }
             else
             {
 				// we are storing first param id of the first collider to know the order (which one registered first), and collision type for this pair.
                 (int, int) newPair = (typeIdA, BitMask.Set(0, (int) collisionType));
-                CollisionTable.Add(hash, newPair);
+                CollisionPairsTable.Add(hash, newPair);
             }
         }
 
@@ -175,7 +180,7 @@ namespace StubbUnity.StubbFramework.Extensions
             isCorrectOrder = true;
             hash = _GetHash(typeIdA, typeIdB);
 
-            if (!CollisionTable.TryGetValue(hash, out var pair) || !BitMask.IsSet(pair.Item2, (int)collisionType))
+            if (!CollisionPairsTable.TryGetValue(hash, out var pair) || !BitMask.IsSet(pair.Item2, (int)collisionType))
                 return false;
             
             isCorrectOrder = pair.Item1 == typeIdA;
