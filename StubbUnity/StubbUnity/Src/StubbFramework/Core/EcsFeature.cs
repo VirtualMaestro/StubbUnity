@@ -6,11 +6,11 @@ namespace StubbUnity.StubbFramework.Core
     public class EcsFeature : IEcsSystem
     {
         private bool _isEnable;
+        private bool _isInit;
         private EcsSystems _parentSystems;
         private readonly EcsSystems _internalSystems;
-
         private readonly EcsWorld _world;
-
+        
         /// <summary>
         /// For internal use.
         /// </summary>
@@ -46,6 +46,8 @@ namespace StubbUnity.StubbFramework.Core
             _parentSystems.Add(this);
             _parentSystems.Add(_internalSystems);
 
+            _isInit = true;
+            
             if (!_isEnable)
                 Enable = _isEnable;
         }
@@ -57,7 +59,8 @@ namespace StubbUnity.StubbFramework.Core
             {
                 _isEnable = value;
 
-                _EnableSystems(_internalSystems.Name, _isEnable);
+                if (_isInit)
+                    _EnableSystems(_internalSystems.Name, _isEnable);
             }
         }
 
