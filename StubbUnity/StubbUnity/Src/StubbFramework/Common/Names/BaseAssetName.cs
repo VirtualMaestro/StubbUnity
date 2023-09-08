@@ -56,13 +56,13 @@ namespace StubbUnity.StubbFramework.Common.Names
         protected virtual string FormatName(string name)
         {
             name = name.Trim();
-            log.Assert(name != string.Empty, $"Incorrect asset name '{name}'!");
+            log.Assert( !string.IsNullOrEmpty(name), "Asset/Scene can't has null or empty name!");
             return name;
         }
 
         protected virtual string FormatPath(string path)
         {
-            return (path == null || (path = path.Trim()) == string.Empty) ? string.Empty : path;
+            return path == null || (path = path.Trim()) == string.Empty ? string.Empty : path;
         }
 
         protected virtual string FormatFullName(string name, string path)
