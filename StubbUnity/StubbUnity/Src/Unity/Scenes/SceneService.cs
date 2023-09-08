@@ -13,7 +13,7 @@ namespace StubbUnity.Unity.Scenes
 {
     public class SceneService : ISceneService
     {
-        private readonly EcsWorld _ecsWorld;
+        private readonly EcsWorld _world;
         private readonly SceneLoader _loader;
         private readonly SceneUnloader _unloader;
         private readonly Queue<ScenesLoadingConfiguration> _processingQueue;
@@ -25,9 +25,9 @@ namespace StubbUnity.Unity.Scenes
         private ScenesLoadingConfiguration _configInProcess;
         private CoroutineManager.ICJob _interstitialDelayJob;
         
-        public SceneService(EcsWorld ecsWorld)
+        public SceneService(EcsWorld world)
         {
-            _ecsWorld = ecsWorld;
+            _world = world;
             
             _loader = new SceneLoader();
             _loader.OnSceneLoaded += _OnSceneLoaded;
@@ -175,7 +175,7 @@ namespace StubbUnity.Unity.Scenes
             _isInProgress = false;
                 
             // notify ecs
-            _ecsWorld.NewEntity().Get<ScenesLoadingConfigurationCompleteEvent>().ConfigurationName = _configInProcess.Name;
+            _world.NewEntity().Get<ScenesLoadingConfigurationCompleteEvent>().ConfigurationName = _configInProcess.Name;
 
             _configInProcess.Dispose();
             _configInProcess = null;
@@ -235,7 +235,7 @@ namespace StubbUnity.Unity.Scenes
             
             scene.Deactivate();
             
-            _ecsWorld.NewEntity().Get<SceneLoadingCompleteEvent>().SceneName = scene.path;
+            _world.NewEntity().Get<SceneLoadingCompleteEvent>().SceneName = config.Name;
         }
 
         private void _OnAllScenesLoaded(ScenesLoadingConfiguration loadingConfiguration)
@@ -244,14 +244,14 @@ namespace StubbUnity.Unity.Scenes
             _Perform(loadingConfiguration);
         }
 
-        private void _OnSceneUnloaded(Scene scene, IAssetName sceneName)
+        private void _OnSceneUnloaded(IAssetName sceneName)
         {
-            _ecsWorld.NewEntity().Get<SceneUnloadingCompleteEvent>().SceneName = scene.path;
+            _world.NewEntity().Get<SceneUnloadingCompleteEvent>().SceneName = sceneName;
         }
 
         private void _OnAllScenesUnloaded(ScenesLoadingConfiguration loadingConfiguration)
         {
-            _ecsWorld.NewEntity().Get<ScenesUnloadingConfigurationCompleteEvent>().ConfigurationName = loadingConfiguration.Name;
+            _world.NewEntity().Get<ScenesUnloadingConfigurationCompleteEvent>().ConfigurationName = loadingConfiguration.Name;
             _isUnloadingDone = true;
             _Perform(loadingConfiguration);
         }
@@ -278,15 +278,10 @@ namespace StubbUnity.Unity.Scenes
         public event Action<Scene, ILoadingSceneConfig> OnSceneLoaded;
         public event Action<ScenesLoadingConfiguration> OnAllScenesLoaded;
     
-        private readonly Queue<ILoadingSceneConfig> _queue;
+        private readonly Queue<ILoadingSceneConfig> _queue = new(5);
         private ScenesLoadingConfiguration _currentScenesLoadingConfiguration;
         private ILoadingSceneConfig _currentSceneConfig;
-    
-        public SceneLoader()
-        {
-            _queue = new Queue<ILoadingSceneConfig>(5);
-        }
-        
+
         public void Load(ScenesLoadingConfiguration loadingConfiguration)
         {
             if (_currentScenesLoadingConfiguration != null)
@@ -334,18 +329,13 @@ namespace StubbUnity.Unity.Scenes
 
     internal class SceneUnloader
     {
-        public event Action<Scene, IAssetName> OnSceneUnloaded;
+        public event Action<IAssetName> OnSceneUnloaded;
         public event Action<ScenesLoadingConfiguration> OnAllScenesUnloaded; 
     
-        private readonly Queue<IAssetName> _queue;
+        private readonly Queue<IAssetName> _queue = new(5);
         private ScenesLoadingConfiguration _currentScenesLoadingConfiguration;
         private IAssetName _currentSceneName;
-    
-        public SceneUnloader()
-        {
-            _queue = new Queue<IAssetName>(5);
-        }
-        
+
         public void Unload(ScenesLoadingConfiguration loadingConfiguration)
         {
             if (_currentScenesLoadingConfiguration != null)
@@ -375,7 +365,7 @@ namespace StubbUnity.Unity.Scenes
     
         private void _SceneUnloaded(Scene scene)
         {
-            OnSceneUnloaded?.Invoke(scene, _currentSceneName);
+            OnSceneUnloaded?.Invoke(_currentSceneName);
             _ProcessNextConfig();
         }
     

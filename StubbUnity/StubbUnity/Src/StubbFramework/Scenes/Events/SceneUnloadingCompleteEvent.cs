@@ -1,3 +1,5 @@
+using StubbUnity.StubbFramework.Common.Names;
+
 namespace StubbUnity.StubbFramework.Scenes.Events
 {
     /// <summary>
@@ -5,6 +7,6 @@ namespace StubbUnity.StubbFramework.Scenes.Events
     /// </summary>
     public struct SceneUnloadingCompleteEvent
     {
-        public string SceneName;
+        public IAssetName SceneName;
     }
 }
