@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using StubbUnity.Unity.Physics;
@@ -23,6 +24,23 @@ namespace StubbUnity.StubbFramework.Physics
         /// Returns number of registered collision pairs without taking into account how many CollisionType's between them.
         /// </summary>
         public static int NumCollisionPairs() => CollisionPairsTable.Count;
+                
+        /// <summary>
+        /// Returns number of registered collision pairs taking into account how many CollisionType's between them.
+        /// Warning: Expensive invocation!
+        /// </summary>
+        public static int TotalNumCollisionPairs()
+        {
+            var totalPairs = 0;
+            var collisionTypes = Enum.GetValues(typeof(CollisionType));
+            
+            foreach (var pair in CollisionPairsTable.Values)
+                foreach (var collisionType in collisionTypes)
+                    if (BitMask.IsSet(pair.Item2, (int)collisionType))
+                        totalPairs++;
+
+            return totalPairs;
+        }
         
          /// <summary>
         /// Add two uniques ids (ints) as collision pair.
