@@ -1,4 +1,9 @@
+#if DEVELOPMENT_BUILD 
+using System;
+#endif
+
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using StubbUnity.StubbFramework.Common.Names;
 using StubbUnity.StubbFramework.Pooling;
 
@@ -45,6 +50,8 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
         
         public ScenesLoadingConfiguration AddToLoad(IAssetName sceneName, bool isActive = true, bool isMain = false)
         {
+            _ValidateSceneNames(sceneName, "AddToLoad");
+            
             var config = new LoadingSceneConfig {Name = sceneName, IsActive = isActive, IsMain = isMain};
             AddToLoad(config);
             return this;
@@ -55,8 +62,7 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
         /// </summary>
         public ScenesLoadingConfiguration AddToLoad(List<IAssetName> sceneNames, bool isActive = true)
         {
-            if (sceneNames == null || sceneNames.Count == 0) 
-                return this;
+            _ValidateSceneNames(sceneNames, "AddToLoad");
             
             foreach (var sceneName in sceneNames)
                 AddToLoad(sceneName, isActive);                
@@ -66,14 +72,15 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
         
         public ScenesLoadingConfiguration AddToLoad(ILoadingSceneConfig config)
         {
+            _ValidateConfigs(config, "AddToLoad");
+            
             Loadings.Add(config);
             return this;
         }
 
         public ScenesLoadingConfiguration AddToLoad(List<ILoadingSceneConfig> configs)
         {
-            if (configs == null || configs.Count == 0) 
-                return this;
+            _ValidateConfigs(configs, "AddToLoad");
             
             foreach (var config in configs)
                 AddToLoad(config);
@@ -83,14 +90,15 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
 
         public ScenesLoadingConfiguration AddToUnload(IAssetName sceneName)
         {
+            _ValidateSceneNames(sceneName, "AddToUnload");
+            
             Unloadings.Add(sceneName);
             return this;
         }
         
         public ScenesLoadingConfiguration AddToUnload(List<IAssetName> sceneNames)
         {
-            if (sceneNames == null || sceneNames.Count == 0) 
-                return this;
+            _ValidateSceneNames(sceneNames, "AddToUnload");
             
             foreach (var sceneName in sceneNames)
                 AddToUnload(sceneName);
@@ -100,20 +108,23 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
 
         public ScenesLoadingConfiguration AddToExcept(string sceneFullName)
         {
+            _ValidateSceneNames(sceneFullName, "AddToExcept");
+            
             _exceptions.Add(sceneFullName);
             return this;
         }
 
         public ScenesLoadingConfiguration AddToExcept(IAssetName sceneName)
         {
+            _ValidateSceneNames(sceneName, "AddToExcept");
+            
             AddToExcept(sceneName.FullName);
             return this;
         }
 
         public ScenesLoadingConfiguration AddToExcept(List<IAssetName> sceneNames)
         {
-            if (sceneNames == null || sceneNames.Count == 0) 
-                return this;
+            _ValidateSceneNames(sceneNames, "AddToExcept");
             
             foreach (var sceneName in sceneNames)
                 AddToExcept(sceneName);
@@ -158,6 +169,57 @@ namespace StubbUnity.StubbFramework.Scenes.Configurations
             var config = Pools.I.Get<ScenesLoadingConfiguration>().Get();
             config.Name = name;
             return config;
+        }
+     
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void _ValidateSceneNames(string sceneName, string prefix)
+        {
+#if DEVELOPMENT_BUILD 
+            if (string.IsNullOrEmpty(sceneName))
+                throw new Exception($"{prefix} : World.LoadScene(s): Given scene name for loading/unloading is null!");
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void _ValidateSceneNames(IAssetName sceneName, string prefix)
+        {
+#if DEVELOPMENT_BUILD 
+            if (sceneName == null)
+                throw new Exception($"{prefix}: World.LoadScene(s): Given scene name for loading/unloading is null!");
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void _ValidateSceneNames(List<IAssetName> loadSceneNames, string prefix)
+        {
+#if DEVELOPMENT_BUILD
+            if (loadSceneNames == null) 
+                throw new Exception($"{prefix}: World.LoadScene(s): Given list of scene names for loading/unloading is null!");
+            
+            foreach (var sceneName in loadSceneNames)
+                _ValidateSceneNames(sceneName, prefix);                
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void _ValidateConfigs(ILoadingSceneConfig config, string prefix)
+        {
+#if DEVELOPMENT_BUILD 
+            if (config == null)
+                throw new Exception($"{prefix}: World.LoadScene(s): Given scene config for loading/unloading is null!");
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void _ValidateConfigs(List<ILoadingSceneConfig> configs, string prefix)
+        {
+#if DEVELOPMENT_BUILD
+            if (configs == null) 
+                throw new Exception($"{prefix}: World.LoadScene(s): Given list of scene configs for loading/unloading is null!");
+            
+            foreach (var config in configs)
+                _ValidateConfigs(config, prefix);                
+#endif
         }
     }
 }
