@@ -20,8 +20,12 @@ namespace StubbUnity.Unity
         private bool _hasFocus = true;
         private bool _isPaused;
 
+        [SerializeField]
+        private bool enablePhysics;
+        
         [Tooltip("Enable UI events emitter to provide ui events to ecs tier")]
-        public bool enableUiEmitter;
+        [SerializeField]
+        private bool enableUiEmitter;
         public EcsWorld World => _context.World;
         public IEcsDebug Debug { get; private set; }
 
@@ -31,57 +35,58 @@ namespace StubbUnity.Unity
 
             Debug = CreateDebug();
             _context = CreateContext();
-            _physicsContext = CreatePhysicsContext();
+            
+            if (enablePhysics)
+                _physicsContext = CreatePhysicsContext();
 
             MapServices(_context);
-            OnConstruct(_context);
+            
+            OnCreateSystems(_context.MainFeature);
+            
+            if (_physicsContext != null)
+                OnCreatePhysicsSystems(_physicsContext.MainFeature);
 
-            if (!enableUiEmitter) return;
-            
-            var emitter = gameObject.GetComponent<EcsUiEmitter>();
-            
-            if (emitter != null)
-                _context.MainFeature.InternalSystems.InjectUi(emitter);
+            if (enableUiEmitter) 
+                _context.MainFeature.InternalSystems.InjectUi(gameObject.AddComponent<EcsUiEmitter>());
         }
 
         private void Start()
         {
-            OnInitialize(_context);
+            OnPreInitialize();
             
             _context.Init();
             _physicsContext?.Init();
             
             DontDestroyOnLoad(gameObject);
             
-            OnPostInitialize(_context);
+            OnInitialize();
         }
 
         /// <summary>
-        /// Have to be overriden by user for main feature or for all (Head, Main, Tail).
-        /// It is called in the Awake phase before context and systems were initialized.
+        /// Override for injecting, creating and adding user systems to main loop (Update).
+        /// Awake phase.
         /// </summary>
-        protected virtual void OnConstruct(IStubbContext context)
-        {
-            
-        }
+        protected virtual void OnCreateSystems(EcsFeature feature)
+        { }
 
         /// <summary>
-        /// It is called in the Start phase before context and system were initialized and share data injected.
-        /// It is used if some data should be injected or any other initializations.
+        /// Override for injecting, creating and adding user systems to physics loop (FixedUpdate).
+        /// Awake phase.
         /// </summary>
-        protected virtual void OnInitialize(IStubbContext context)
-        {
-            
-        }
+        protected virtual void OnCreatePhysicsSystems(EcsFeature feature)
+        { }
+
+        /// <summary>
+        /// Invokes in Start phase before contexts are initialized. 
+        /// </summary>
+        protected virtual void OnPreInitialize()
+        { }
         
         /// <summary>
-        /// It is called in the Start phase after context and all systems were initialized and share data injected,
-        /// but before the first update invocation.
+        /// Invokes in Start phase after contexts are initialized. 
         /// </summary>
-        protected virtual void OnPostInitialize(IStubbContext context)
-        {
-            
-        }
+        protected virtual void OnInitialize()
+        { }
         
         /// <summary>
         /// Override if need custom context. 
@@ -104,7 +109,7 @@ namespace StubbUnity.Unity
         /// </summary>
         protected virtual IPhysicsContext CreatePhysicsContext()
         {
-            return default;
+            return new PhysicsContext(_context.World);
         }
         
         /// <summary>

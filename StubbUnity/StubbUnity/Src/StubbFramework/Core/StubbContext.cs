@@ -38,6 +38,7 @@ namespace StubbUnity.StubbFramework.Core
         protected virtual void InitFeatures()
         {
             HeadFeature = new SystemHeadFeature(World);
+            MainFeature = new EcsFeature(_world, "UserSystems");
             TailFeature = new SystemTailFeature(World);
         }
                 

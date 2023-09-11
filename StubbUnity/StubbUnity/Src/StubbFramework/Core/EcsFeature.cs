@@ -10,7 +10,7 @@ namespace StubbUnity.StubbFramework.Core
         private EcsSystems _parentSystems;
         private readonly EcsSystems _internalSystems;
         private readonly EcsWorld _world;
-        
+
         /// <summary>
         /// For internal use.
         /// </summary>
@@ -64,7 +64,7 @@ namespace StubbUnity.StubbFramework.Core
             }
         }
 
-        protected void Add(IEcsSystem system)
+        public void Add(IEcsSystem system)
         {
             if (system is EcsFeature feature)
                 feature.Init(_internalSystems);
@@ -75,12 +75,12 @@ namespace StubbUnity.StubbFramework.Core
         /// <summary>
         /// Injects only in scope of this feature (so all children systems).
         /// </summary>
-        protected void Inject(object data, Type overridenType = null)
+        public void Inject(object data, Type overridenType = null)
         {
             _internalSystems.Inject(data, overridenType);
         }
 
-        protected void OneFrame<T>() where T : struct
+        public void OneFrame<T>() where T : struct
         {
             _internalSystems.OneFrame<T>();
         }
