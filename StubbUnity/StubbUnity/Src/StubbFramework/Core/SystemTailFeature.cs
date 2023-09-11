@@ -11,7 +11,7 @@ namespace StubbUnity.StubbFramework.Core
 {
     public class SystemTailFeature : EcsFeature
     {
-        public SystemTailFeature(EcsWorld world, string name = "TailSystems") : base(world, name)
+        public SystemTailFeature(EcsWorld world, string name = "Tail") : base(world, name)
         {
             Add(new SceneFeature(World));
             Add(new DestroyViewSystem());

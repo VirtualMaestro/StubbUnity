@@ -11,8 +11,8 @@ namespace StubbUnity.StubbFramework.Physics
 
         protected override void InitFeatures()
         {
-            MainFeature = new EcsFeature(World, "UserPhysicsSystems");
-            TailFeature = new PhysicsTailFeature(World);
+            MainFeature = new EcsFeature(World, "UserPhysics");
+            TailFeature = new PhysicsTailFeature(World, "TailPhysics");
         }
 
         public override void Destroy()

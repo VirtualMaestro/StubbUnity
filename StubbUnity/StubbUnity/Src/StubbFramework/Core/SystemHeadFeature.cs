@@ -6,7 +6,7 @@ namespace StubbUnity.StubbFramework.Core
 {
     public class SystemHeadFeature : EcsFeature
     {
-        public SystemHeadFeature(EcsWorld world, string name = "HeadSystems") : base(world, name)
+        public SystemHeadFeature(EcsWorld world, string name = "Head") : base(world, name)
         {
             Add(new TimeSystem());
             Add(new DelaySystem());
